@@ -1,3 +1,18 @@
+const themeBtn = document.getElementById('theme-btn');
+const themes = ['dark', 'light', 'inferno'];
+const themeIcons = { dark: '🌙', light: '☀️', inferno: '🔥' };
+
+themeBtn.onclick = () => {
+    let current = document.body.getAttribute('data-theme');
+    let next = themes[(themes.indexOf(current) + 1) % themes.length];
+    document.body.setAttribute('data-theme', next);
+    themeBtn.innerText = themeIcons[next];
+};
+
+const slider = document.getElementById('pixelSizeSlider');
+const sliderVal = document.getElementById('pixelSizeValue');
+slider.oninput = () => sliderVal.innerText = slider.value;
+
 document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('fileInput');
     const convertBtn = document.getElementById('convertBtn');
@@ -109,6 +124,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         downloadBtn.style.display='block';
         downloadScaledBtn.style.display='block';
+		
+		document.getElementById('originalCanvas').classList.remove('hidden');
+		document.getElementById('pixelCanvas').classList.remove('hidden');
+		document.getElementById('downloadBtn').style.display = 'flex';
+		document.getElementById('downloadScaledBtn').style.display = 'flex';
     });
 
     function createCheckerboardPattern(size){

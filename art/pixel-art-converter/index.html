@@ -3,77 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Art Converter with Background Removal</title>
+    <title>Pixel Art Studio</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <div class="upload-section">
-            <p>Upload an image to convert it into pixel art</p>
+<body data-theme="dark">
+
+    <div class="sidebar">
+        <div class="header-row">
+            <h1>Pixel Art Studio</h1>
+            <button class="theme-toggle" id="theme-btn">🌙</button>
+        </div>
+
+        <div class="control-group">
+            <label>1. Select Image</label>
             <input type="file" id="fileInput" accept="image/*">
-            <br>
-            <button id="convertBtn">Convert to Pixel Art</button>
-            <br>
-            <button id="downloadBtn">Download Pixel Art</button>
-            <br>
-            <button id="downloadScaledBtn">Download Scaled Version</button>
         </div>
 
-        <div class="slider-container">
-            <label for="pixelSizeSlider">Pixel Size: <span id="pixelSizeValue">8</span>px</label>
+        <div class="control-group">
+            <label>2. Pixel Density: <span id="pixelSizeValue" style="color:var(--accent)">8</span>px</label>
             <input type="range" id="pixelSizeSlider" min="1" max="32" value="8">
+            <div style="display:flex; align-items:center; gap:8px; margin-top:5px;">
+                <input type="checkbox" id="autoScaleCheckbox">
+                <label style="text-transform:none; font-weight:400;">Auto-scale for large images</label>
+            </div>
         </div>
 
-        <div class="checkbox-container">
-            <label>
-                <input type="checkbox" id="autoScaleCheckbox"> Auto Scale Pixel Size
-            </label>
-        </div>
-
-        <div class="background-removal">
-            <h3>Background Removal</h3>
-            <p>Remove background color and make it transparent</p>
-            <div class="color-picker-container">
+        <div class="control-group">
+            <label>3. Transparency</label>
+            <div class="color-well">
                 <input type="color" id="bgColorPicker" value="#ffffff">
-                <label for="bgColorPicker">Background Color:</label>
-                <button id="pickColorBtn">Pick Color from Image</button>
+                <button class="btn btn-outline" id="pickColorBtn" style="padding:4px 8px; font-size:0.7rem;">Sample Eye-dropper</button>
             </div>
-            <div class="checkbox-container">
-                <label>
-                    <input type="checkbox" id="removeBgCheckbox" checked> Remove Background
-                </label>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:5px;">
+                <input type="checkbox" id="removeBgCheckbox">
+                <label style="text-transform:none; font-weight:400;">Remove selected color</label>
             </div>
         </div>
 
-        <div class="info-panel">
-            <p>Adjust the slider to control pixelation level. Smaller values create more detailed pixel art.</p>
-        </div>
+        <button class="btn btn-primary" id="convertBtn">✨ Process Pixels</button>
 
-        <div class="preview-container">
-            <div class="preview-box">
-                <h3>Original Image</h3>
-                <canvas id="originalCanvas" class="preview-canvas hidden"></canvas>
+        <div class="control-group" style="margin-top:auto; gap:10px;">
+            <button class="btn btn-success" id="downloadBtn" style="display:none;">💾 Save PNG</button>
+            <button class="btn btn-outline" id="downloadScaledBtn" style="display:none;">🖼️ Save 4K Scale</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="preview-grid">
+            <div class="preview-card" id="cardOriginal">
+                <h3>Source Image</h3>
+                <canvas id="originalCanvas" class="hidden"></canvas>
             </div>
-            <div class="preview-box">
-                <h3>Pixel Art</h3>
-                <canvas id="pixelCanvas" class="preview-canvas hidden"></canvas>
+            <div class="preview-card" id="cardPixel">
+                <h3>Pixel Preview</h3>
+                <canvas id="pixelCanvas" class="hidden"></canvas>
             </div>
         </div>
 
         <div class="instructions">
-            <h3>How to Use:</h3>
-            <ul>
-                <li>Click "Choose Image" to select an image file (JPG, PNG, GIF, WebP, AVIF)</li>
-                <li>Adjust the pixel size using the slider (smaller = more detailed)</li>
-                <li>Toggle "Auto Scale Pixel Size" to automatically adjust based on image dimensions</li>
-                <li>Click "Pick Color from Image" to select a background color</li>
-                <li>Toggle "Remove Background" to make background transparent</li>
-                <li>Click "Convert to Pixel Art" to process the image</li>
-                <li>Click "Download Pixel Art" to save the result</li>
-                <li>Click "Download Scaled Version" to get a larger resolution version</li>
-                <li>Transparent areas show a checkerboard pattern (8px grid)</li>
-                <li>Works in all modern browsers including Chrome, Firefox, Safari, Edge</li>
-            </ul>
+            <strong>Pro Tip:</strong> Adjust the Pixel Density slider to find the perfect retro balance. Once converted, the "4K Scale" option uses nearest-neighbor upscaling to keep your pixels crisp at high resolutions.
         </div>
     </div>
 

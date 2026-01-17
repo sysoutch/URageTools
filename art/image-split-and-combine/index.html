@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Image Splitter & Combiner</title>
+      <style>
+         /* === your original CSS unchanged === */
+         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+         body { background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c); color: #fff; min-height: 100vh; }
+         .container { max-width: 1200px; margin: 0 auto; }
+         h1 { font-size: 2.8rem; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+         .subtitle { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+         .main-content { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 30px; }
+         .panel { background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+         .upload-panel { flex: 1; min-width: 300px; }
+         .split-panel { flex: 2; min-width: 500px; }
+         .combine-panel { flex: 1; min-width: 300px; }
+         .panel-title { font-size: 1.5rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(255, 255, 255, 0.2); }
+         .form-group { margin-bottom: 20px; }
+         label { display: block; margin-bottom: 8px; font-weight: 500; }
+         input, select, button { width: 100%; padding: 12px 15px; border-radius: 8px; border: none; background: rgba(255, 255, 255, 0.1); color: white; font-size: 1rem; }
+         input:focus, select:focus { outline: 2px solid #4dabf7; background: rgba(255, 255, 255, 0.15); }
+         button { background: linear-gradient(to right, #4dabf7, #3bc9db); color: white; font-weight: bold; cursor: pointer; transition: all 0.3s ease; border: none; padding: 14px; margin-top: 10px; }
+         button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+         button:active { transform: translateY(0); }
+         .canvas-container { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+         .canvas-wrapper { flex: 1; min-width: 250px; background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 15px; text-align: center; }
+         canvas { max-width: 100%; background: #000; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); }
+         .preview-title { margin-bottom: 10px; font-size: 1.2rem; }
+         .instructions { background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 25px; margin-top: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+         .instructions h2 { margin-bottom: 15px; }
+         .instructions ol { padding-left: 20px; }
+         .instructions li { margin-bottom: 10px; line-height: 1.6; }
+         .instructions code { background: rgba(0, 0, 0, 0.5); padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+         footer { text-align: center; padding: 20px; margin-top: 30px; opacity: 0.8; font-size: 0.9rem; }
+         @media (max-width: 768px) {
+         .main-content { flex-direction: column; }
+         .canvas-container { flex-direction: column; }
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <div class="main-content">
+            <div class="panel upload-panel">
+               <h2 class="panel-title">Upload Texture</h2>
+               <div class="form-group">
+                  <label for="texture-upload">Upload Image</label>
+                  <input type="file" id="texture-upload" accept="image/*">
+               </div>
+               <div class="form-group">
+                  <label for="texture-preview">Preview</label>
+                  <canvas id="texture-preview" width="300" height="300"></canvas>
+               </div>
+            </div>
+            <div class="panel split-panel">
+               <h2 class="panel-title">Split Texture</h2>
+               <div class="form-group">
+                  <label for="split-x">Columns (X)</label>
+                  <input type="number" id="split-x" min="1" max="20" value="4">
+               </div>
+               <div class="form-group">
+                  <label for="split-y">Rows (Y)</label>
+                  <input type="number" id="split-y" min="1" max="20" value="4">
+               </div>
+				<div class="form-group">
+				   <label for="split-offset-x">Offset X (px)</label>
+				   <input type="number" id="split-offset-x" min="0" max="5000" value="0">
+				</div>
+				<div class="form-group">
+				   <label for="split-offset-y">Offset Y (px)</label>
+				   <input type="number" id="split-offset-y" min="0" max="5000" value="0">
+				</div>
+               <div class="form-group">
+                  <label for="split-padding">Padding (px)</label>
+                  <input type="number" id="split-padding" min="0" max="50" value="5">
+               </div>
+			   <div class="form-group">
+				  <label>
+					<input type="checkbox" id="padding-edge-only">
+					Padding only at edges
+				  </label>
+				</div>
+
+               <div class="form-group">
+                  <label for="split-output">Output Format</label>
+                  <select id="split-output">
+                     <option value="png">PNG (Lossless)</option>
+                     <option value="jpeg">JPEG (Lossy)</option>
+                     <option value="webp">WebP (Modern)</option>
+                  </select>
+               </div>
+               <button id="split-btn">Split Texture</button>
+               <button id="download-splits-btn">Download Split Images</button>
+               <div class="canvas-container">
+                  <div class="canvas-wrapper">
+                     <h3 class="preview-title">Split Result</h3>
+                     <canvas id="split-canvas" width="300" height="300"></canvas>
+                  </div>
+                  <div class="canvas-wrapper">
+                     <h3 class="preview-title">Original Texture</h3>
+                     <canvas id="original-canvas" width="300" height="300"></canvas>
+                  </div>
+               </div>
+            </div>
+            <div class="panel combine-panel">
+               <h2 class="panel-title">Combine Textures</h2>
+               <div class="form-group">
+                  <label for="combine-cols">Columns</label>
+                  <input type="number" id="combine-cols" min="1" max="10" value="3">
+               </div>
+               <div class="form-group">
+                  <label for="combine-rows">Rows</label>
+                  <input type="number" id="combine-rows" min="1" max="10" value="3">
+               </div>
+               <div class="form-group">
+                  <label for="combine-padding">Padding (px)</label>
+                  <input type="number" id="combine-padding" min="0" max="50" value="5">
+               </div>
+               <div class="form-group">
+                  <label for="combine-output">Output Format</label>
+                  <select id="combine-output">
+                     <option value="png">PNG (Lossless)</option>
+                     <option value="jpeg">JPEG (Lossy)</option>
+                     <option value="webp">WebP (Modern)</option>
+                  </select>
+               </div>
+               <button id="combine-btn">Combine Textures</button>
+               <div class="canvas-container">
+                  <div class="canvas-wrapper">
+                     <h3 class="preview-title">Input Textures</h3>
+                     <canvas id="input-canvas" width="300" height="300"></canvas>
+                  </div>
+                  <div class="canvas-wrapper">
+                     <h3 class="preview-title">Combined Result</h3>
+                     <canvas id="combined-canvas" width="300" height="300"></canvas>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="instructions">
+            <h2>How to Use This Tool</h2>
+            <ol>
+               <li>Upload an image using the file picker or paste an image from your clipboard (Ctrl+V or Cmd+V)</li>
+               <li>Adjust the split parameters (columns, rows, padding) and click "Split Texture"</li>
+               <li>Adjust the combine parameters (columns, rows, padding) and click "Combine Textures"</li>
+               <li>Use the "Paste" functionality to quickly upload images from your clipboard</li>
+            </ol>
+         </div>
+      </div>
+      <script>
+         document.addEventListener('DOMContentLoaded', () => {
+         const texturePreview = document.getElementById('texture-preview');
+         const originalCanvas = document.getElementById('original-canvas');
+         const splitCanvas = document.getElementById('split-canvas');
+         const inputCanvas = document.getElementById('input-canvas');
+         const combinedCanvas = document.getElementById('combined-canvas');
+         
+         const texturePreviewCtx = texturePreview.getContext('2d');
+         const originalCtx = originalCanvas.getContext('2d');
+         const splitCtx = splitCanvas.getContext('2d');
+         const inputCtx = inputCanvas.getContext('2d');
+         const combinedCtx = combinedCanvas.getContext('2d');
+         
+         let originalImage = null; // store uploaded image
+         let originalWidth = 300;
+         let originalHeight = 300;
+         
+         function resizeCanvasToImage(img) {
+          originalWidth = img.naturalWidth;
+          originalHeight = img.naturalHeight;
+         
+          // resize related canvases
+          [texturePreview, originalCanvas, splitCanvas].forEach(c => {
+         c.width = originalWidth;
+         c.height = originalHeight;
+          });
+         }
+         
+         function drawSampleTexture(ctx, w, h) {
+          ctx.clearRect(0, 0, w, h);
+          const grad = ctx.createLinearGradient(0, 0, w, h);
+          grad.addColorStop(0, '#4a00e0');
+          grad.addColorStop(1, '#8e2de2');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = 'rgba(255,255,255,0.1)';
+          for (let i = 0; i < 20; i++) {
+         const x = Math.random() * w;
+         const y = Math.random() * h;
+         const r = 5 + Math.random() * 15;
+         ctx.beginPath();
+         ctx.arc(x, y, r, 0, Math.PI * 2);
+         ctx.fill();
+          }
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 20px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('Sample Texture', w / 2, h / 2);
+         }
+         
+		function splitTexture() {
+		  if (!originalImage) return;
+
+		  const cols = +document.getElementById('split-x').value;
+		  const rows = +document.getElementById('split-y').value;
+		  const padding = +document.getElementById('split-padding').value;
+		  const offsetX = +document.getElementById('split-offset-x').value;
+		  const offsetY = +document.getElementById('split-offset-y').value;
+		  const edgeOnly = document.getElementById('padding-edge-only').checked;
+
+		  splitCtx.clearRect(0, 0, splitCanvas.width, splitCanvas.height);
+
+		  const totalWidth = originalWidth - offsetX;
+		  const totalHeight = originalHeight - offsetY;
+
+		  let cellW, cellH;
+
+		  if (edgeOnly) {
+			// Tiles touch each other; padding only around edges
+			cellW = totalWidth / cols;
+			cellH = totalHeight / rows;
+		  } else {
+			// Original behavior: padding between tiles
+			cellW = (totalWidth - (cols + 1) * padding) / cols;
+			cellH = (totalHeight - (rows + 1) * padding) / rows;
+		  }
+
+		  for (let y = 0; y < rows; y++) {
+			for (let x = 0; x < cols; x++) {
+			  const posX = edgeOnly
+				? padding + x * cellW
+				: padding + x * (cellW + padding);
+			  const posY = edgeOnly
+				? padding + y * cellH
+				: padding + y * (cellH + padding);
+
+			  splitCtx.drawImage(
+				originalCanvas,
+				offsetX + x * (totalWidth / cols),
+				offsetY + y * (totalHeight / rows),
+				totalWidth / cols,
+				totalHeight / rows,
+				posX,
+				posY,
+				cellW,
+				cellH
+			  );
+
+			  splitCtx.strokeStyle = 'rgba(0,0,0,0.3)';
+			  splitCtx.lineWidth = 2;
+			  splitCtx.strokeRect(posX, posY, cellW, cellH);
+			}
+		  }
+		}
+
+         
+         function exportSplitImages() {
+          if (!originalImage) return alert("Please upload an image first!");
+          const cols = +document.getElementById('split-x').value;
+          const rows = +document.getElementById('split-y').value;
+          const padding = +document.getElementById('split-padding').value;
+          const format = document.getElementById('split-output').value;
+          const offsetX = +document.getElementById('split-offset-x').value;
+          const offsetY = +document.getElementById('split-offset-y').value;
+         
+          const tileW = originalWidth / cols;
+          const tileH = originalHeight / rows;
+         
+          const tileCanvas = document.createElement('canvas');
+          tileCanvas.width = tileW;
+          tileCanvas.height = tileH;
+          const tileCtx = tileCanvas.getContext('2d');
+         
+          for (let y = 0; y < rows; y++) {
+         for (let x = 0; x < cols; x++) {
+           tileCtx.clearRect(0, 0, tileW, tileH);
+         	tileCtx.drawImage(
+         	  originalCanvas,
+         	  offsetX + x * tileW, offsetY + y * tileH, tileW, tileH,
+         	  0, 0, tileW, tileH
+         	);
+           const mimeType = format === 'jpeg' ? 'image/jpeg' :
+         				   format === 'webp' ? 'image/webp' :
+         				   'image/png';
+           const dataURL = tileCanvas.toDataURL(mimeType);
+           const a = document.createElement('a');
+           a.href = dataURL;
+           a.download = `split_${y}-${x}.${format}`;
+           a.click();
+         }
+          }
+         }
+         
+         function combineTextures() {
+          const cols = +document.getElementById('combine-cols').value;
+          const rows = +document.getElementById('combine-rows').value;
+          const padding = +document.getElementById('combine-padding').value;
+          combinedCtx.clearRect(0, 0, combinedCanvas.width, combinedCanvas.height);
+         
+          const cellW = (combinedCanvas.width - (cols + 1) * padding) / cols;
+          const cellH = (combinedCanvas.height - (rows + 1) * padding) / rows;
+         
+          for (let y = 0; y < rows; y++) {
+         for (let x = 0; x < cols; x++) {
+           const posX = padding + x * (cellW + padding);
+           const posY = padding + y * (cellH + padding);
+           const hue = (x * 30 + y * 20) % 360;
+           combinedCtx.fillStyle = `hsl(${hue},70%,50%)`;
+           combinedCtx.fillRect(posX, posY, cellW, cellH);
+           combinedCtx.strokeStyle = 'rgba(0,0,0,0.3)';
+           combinedCtx.strokeRect(posX, posY, cellW, cellH);
+         }
+          }
+         }
+         
+         function handleImageLoad(img) {
+          resizeCanvasToImage(img);
+          texturePreviewCtx.drawImage(img, 0, 0, originalWidth, originalHeight);
+          originalCtx.drawImage(img, 0, 0, originalWidth, originalHeight);
+          originalImage = img;
+          splitTexture();
+         }
+         
+         document.getElementById('texture-upload').addEventListener('change', e => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = ev => {
+         const img = new Image();
+         img.onload = () => handleImageLoad(img);
+         img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+         });
+         
+         document.addEventListener('paste', e => {
+          const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+          for (const item of items) {
+         if (item.kind === 'file') {
+           const file = item.getAsFile();
+           if (file && file.type.startsWith('image/')) {
+         	const reader = new FileReader();
+         	reader.onload = ev => {
+         	  const img = new Image();
+         	  img.onload = () => handleImageLoad(img);
+         	  img.src = ev.target.result;
+         	};
+         	reader.readAsDataURL(file);
+           }
+         }
+          }
+         });
+         
+         document.getElementById('split-btn').addEventListener('click', splitTexture);
+         document.getElementById('combine-btn').addEventListener('click', combineTextures);
+         
+		// ✅ Auto-update split preview on input changes
+		['split-x', 'split-y', 'split-padding', 'split-offset-x', 'split-offset-y', 'padding-edge-only']
+		  .forEach(id => {
+			document.getElementById(id).addEventListener('input', splitTexture);
+		  });
+
+         function drawInitialTextures() {
+          drawSampleTexture(originalCtx, originalCanvas.width, originalCanvas.height);
+          drawSampleTexture(inputCtx, inputCanvas.width, inputCanvas.height);
+          drawSampleTexture(texturePreviewCtx, texturePreview.width, texturePreview.height);
+          splitTexture();
+          combineTextures();
+         }
+         drawInitialTextures();
+         
+         document.getElementById('download-splits-btn').addEventListener('click', exportSplitImages);
+         
+         const ol = document.querySelector('.instructions ol');
+         ol.innerHTML += `<li>Alternatively, you can <strong>paste images directly from your clipboard</strong> (Ctrl+V or Cmd+V).</li>`;
+         });
+      </script>
+   </body>
+</html>
