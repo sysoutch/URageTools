@@ -88,6 +88,38 @@
             margin-bottom: 15px;
         }
 
+        /* Lock Button Styles */
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .lock-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            color: rgba(255,255,255,0.3);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .lock-btn.locked {
+            color: var(--primary);
+        }
+
+        /* ADSR Visual Container */
+        .adsr-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
         input[type=range] { flex: 1; margin-left: 15px; accent-color: var(--primary); }
 
         .main-actions {
@@ -97,6 +129,25 @@
 
         .btn-play { background: linear-gradient(135deg, #00c9ff, #007bff); flex: 2; font-weight: bold; border: none; }
         .btn-download { background: linear-gradient(135deg, var(--primary), var(--secondary)); flex: 1; font-weight: bold; border: none; }
+
+        .visualizer-container {
+            width: 100%;
+            height: 100px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        canvas { width: 100%; height: 100%; }
+
+        /* Random Button Style */
+        .btn-random {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            margin-bottom: 10px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -120,18 +171,48 @@
         <button onclick="setWave('triangle', this)">Tri</button>
     </div>
 
+
+    <div class="visualizer-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <button class="btn-random" onclick="randomize()">🎲 Randomize Params</button>
+
     <div class="controls">
         <div class="control-group">
-            <label>Freq</label>
+            <div class="control-header">
+                <label>Freq</label>
+            </div>
             <input type="range" id="freq" min="50" max="2000" value="440">
+            <button class="lock-btn" id="lock-freq" onclick="toggleLock(this)">🔓</button>
         </div>
+
         <div class="control-group">
-            <label>Length</label>
-            <input type="range" id="duration" min="0.05" max="1.5" step="0.05" value="0.3">
+            <div class="control-header">
+                <label>Length</label>
+            </div>
+            <input type="range" id="duration" min="0.05" max="2.0" step="0.05" value="0.3">
+            <button class="lock-btn" id="lock-duration" onclick="toggleLock(this)">🔓</button>
         </div>
+
         <div class="control-group">
-            <label>Slide</label>
+            <div class="control-header">
+                <label>Slide</label>
+            </div>
             <input type="range" id="slide" min="-1000" max="1000" step="10" value="-400">
+            <button class="lock-btn" id="lock-slide" onclick="toggleLock(this)">🔓</button>
+        </div>
+
+        <span class="section-label">Envelope (ADSR)</span>
+        <div class="adsr-grid">
+            <div class="control-group">
+                <label>Atk</label>
+                <input type="range" id="attack" min="0" max="0.5" step="0.01" value="0.01">
+            </div>
+            <div class="control-group">
+                <label>Dec</label>
+                <input type="range" id="decay" min="0" max="0.5" step="0.01" value="0.1">
+            </div>
         </div>
     </div>
 
@@ -141,11 +222,13 @@
     </div>
 </div>
 
-
-
 <script>
     let waveType = 'square';
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const canvas = document.getElementById('canvas');
+    const canvasCtx = canvas.getContext('2d');
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
 
     function setWave(type, btn) {
         waveType = type;
@@ -177,26 +260,71 @@
         };
     }
 
+    function toggleLock(btn) {
+        btn.classList.toggle('locked');
+        btn.innerText = btn.classList.contains('locked') ? '🔒' : '🔓';
+    }
+
+    function randomize() {
+        // Only change if NOT locked
+        if (!document.getElementById('lock-freq').classList.contains('locked')) {
+            document.getElementById('freq').value = Math.floor(Math.random() * 1500 + 100);
+        }
+
+        if (!document.getElementById('lock-duration').classList.contains('locked')) {
+            document.getElementById('duration').value = (Math.random() * 1.5 + 0.1).toFixed(2);
+        }
+        
+        if (!document.getElementById('lock-slide').classList.contains('locked')) {
+            document.getElementById('slide').value = Math.floor(Math.random() * 2000 - 1000);
+        }
+
+        const waves = ['square', 'sawtooth', 'sine', 'triangle'];
+        const randomWave = waves[Math.floor(Math.random() * waves.length)];
+        const buttons = document.querySelectorAll('#waveSelectors button');
+        buttons.forEach(btn => {
+            if(btn.innerText.toLowerCase().includes(randomWave.substring(0,3))) {
+                setWave(randomWave, btn);
+            }
+        });
+
+        playSFX();
+    }
+
     function playSFX() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        const p = getParams();
+        
+        const p = {
+            startFreq: parseFloat(document.getElementById('freq').value),
+            duration: parseFloat(document.getElementById('duration').value),
+            slide: parseFloat(document.getElementById('slide').value),
+            attack: parseFloat(document.getElementById('attack').value),
+            decay: parseFloat(document.getElementById('decay').value)
+        };
+
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
+        // Frequency Slide
         osc.type = waveType;
         osc.frequency.setValueAtTime(p.startFreq, audioCtx.currentTime);
-        
-        // Calculate end frequency (clamped to prevent errors)
         const endFreq = Math.max(1, p.startFreq + p.slide);
         osc.frequency.exponentialRampToValueAtTime(endFreq, audioCtx.currentTime + p.duration);
 
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + p.duration);
+        // ADSR Envelope Logic
+        const now = audioCtx.currentTime;
+        gain.gain.setValueAtTime(0, now);
+        // Attack: Fade in to max volume
+        gain.gain.linearRampToValueAtTime(0.3, now + p.attack);
+        // Decay: Fade down to "sustain" level (we'll use 0.0001 for a clean tail)
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + p.attack + p.decay + p.duration);
 
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(analyser); // From previous visualizer step
+        analyser.connect(audioCtx.destination);
+
         osc.start();
-        osc.stop(audioCtx.currentTime + p.duration);
+        osc.stop(now + p.duration + p.attack + p.decay);
     }
 
     async function downloadSFX() {
@@ -254,6 +382,32 @@
         }
         return new Blob([buffer], {type: "audio/wav"});
     }
+
+    function draw() {
+        requestAnimationFrame(draw);
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyser.getByteTimeDomainData(dataArray);
+
+        canvasCtx.fillStyle = 'rgba(15, 15, 26, 0.2)';
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = '#ff8a00';
+        canvasCtx.beginPath();
+
+        const sliceWidth = canvas.width * 1.0 / bufferLength;
+        let x = 0;
+        for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * canvas.height / 2;
+            if (i === 0) canvasCtx.moveTo(x, y);
+            else canvasCtx.lineTo(x, y);
+            x += sliceWidth;
+        }
+        canvasCtx.lineTo(canvas.width, canvas.height / 2);
+        canvasCtx.stroke();
+    }
+    draw();
 </script>
 </body>
 </html>

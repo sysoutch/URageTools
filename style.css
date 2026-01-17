@@ -208,7 +208,7 @@ body {
     padding: 16px 24px;
     
     /* Opaque Gradient: From Deep Zinc to Burnt Orange */
-    background: linear-gradient(90deg, #18181b 0%, #27272a 40%, #431407 100%);
+    background: linear-gradient(90deg, #313131 0%, #bd973d 40%, #431407 100%);
     
     /* Solid thick accent on the left */
     border-left: 6px solid #ff8a00;

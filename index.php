@@ -38,7 +38,7 @@ function getToolThumbnail($category, $folder) {
             return $category . '/' . $folder . '/' . $matches[1];
         }
     }
-    return 'placeholder.png';
+    return null;
 }
 ?>
 <!DOCTYPE html>
