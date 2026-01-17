@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Favicon Studio - URage</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2>🎯 URage Favicon Studio</h2>
+    <p>Drop a square image to generate your production-ready bundle.</p>
+    
+    <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        Click or Drag & Drop Image
+        <input type="file" id="fileInput" hidden accept="image/*">
+    </div>
+
+    <div id="result">
+        <div class="preview-grid" id="previewGrid">
+            <div class="preview-item"><img id="p16"><br><small>16x16</small></div>
+            <div class="preview-item"><img id="p32"><br><small>32x32</small></div>
+            <div class="preview-item"><img id="p180"><br><small>180x180</small></div>
+        </div>
+        
+        <button id="dlBtn" style="display:none;" onclick="downloadBundle()">DOWNLOAD ICON BUNDLE (.ZIP)</button>
+        <div id="status" class="status"></div>
+        
+        <code id="codeSnippet" style="display:none;">&lt;!-- Copy this into your &lt;head&gt; --&gt;
+&lt;link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"&gt;
+&lt;link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"&gt;
+&lt;link rel="manifest" href="/site.webmanifest"&gt;</code>
+    </div>
+</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script src="script.js"></script>
+
+</body>
+</html>

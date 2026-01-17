@@ -1,0 +1,106 @@
+/* Modern Dark Theme */
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; 
+    background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+    color: white;
+}
+
+/* Glassmorphism Container */
+.container { 
+    background: rgba(255, 255, 255, 0.05); 
+    padding: 40px; 
+    border-radius: 20px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5); 
+    text-align: center; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    max-width: 90%;
+}
+
+h1 {
+    margin-top: 0;
+    background: linear-gradient(to right, #00c9ff, #92fe9d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.8rem;
+}
+
+/* Hidden File Input with Custom Label */
+#upload { display: none; }
+.upload-label {
+    display: inline-block;
+    padding: 12px 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+.upload-label:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Checkerboard Canvas */
+canvas { 
+    border-radius: 10px;
+    margin-top: 20px; 
+    max-width: 100%; 
+    height: auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    /* Traditional transparency checkerboard pattern */
+    background-image: 
+        linear-gradient(45deg, #222 25%, transparent 25%), 
+        linear-gradient(-45deg, #222 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #222 75%), 
+        linear-gradient(-45deg, transparent 75%, #222 75%);
+    background-size: 20px 20px; 
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-color: #333; 
+}
+
+.controls { 
+    margin: 25px 0;
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+/* Modern Range Input */
+input[type=range] {
+    cursor: pointer;
+    width: 200px;
+    accent-color: #00c9ff;
+}
+
+#opacityValue {
+    font-weight: bold;
+    color: #00c9ff;
+    margin-left: 10px;
+}
+
+/* Action Button */
+button { 
+    padding: 15px 30px; 
+    cursor: pointer; 
+    background: linear-gradient(135deg, #00c9ff 0%, #007bff 100%);
+    color: white; 
+    border: none; 
+    border-radius: 50px; 
+    font-weight: bold;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 201, 255, 0.3);
+}
+
+button:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 201, 255, 0.5);
+}
+
+button:active { transform: translateY(0); }

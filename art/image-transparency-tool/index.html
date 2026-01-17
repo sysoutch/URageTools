@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Transparency Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Image Transparency Tool</h1>
+    
+    <label for="upload" class="upload-label">
+        📁 Choose an Image or Drag & Drop
+    </label>
+    <input type="file" id="upload" accept="image/*"><br>
+
+    <div class="controls">
+        <label for="opacityRange">Adjust Opacity: </label>
+        <input type="range" id="opacityRange" min="0" max="100" value="100">
+        <span id="opacityValue">100%</span>
+    </div>
+
+    <canvas id="canvas"></canvas><br><br>
+    
+    <button id="download">Download PNG</button>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
