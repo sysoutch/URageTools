@@ -50,8 +50,28 @@ function getToolThumbnail($category, $folder) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+	<div class="hero-wrapper">
+		<div class="hero-bg">
+			<div class="blob blob-1"></div>
+			<div class="blob blob-2"></div>
+		</div>
+		<div class="hero-content">
+			<div class="hero-badge">URage Tools</div>
+			<h1>Forge Your <span>Visual Assets</span> with Precision</h1>
+			<p>A suite of high-performance tools for developers and artists to crop, scale, and pixelate images for any platform in seconds.</p>
+			
+			<div class="hero-actions">
+				<a href="#cropper" class="cta-btn btn-filled">
+					<span>✂️</span> Image Crop & Scale
+				</a>
+				<a href="#pixel-art" class="cta-btn btn-glass">
+					<span>🎨</span> Pixel Art Studio
+				</a>
+			</div>
+		</div>
+		<div class="scroll-down">↓</div>
+	</div>
     <div class="container">
-        <h1>Our Toolset</h1>
 
         <?php foreach ($categories as $catKey => $catName): ?>
             <?php
@@ -67,8 +87,10 @@ function getToolThumbnail($category, $folder) {
             ?>
 
             <?php if (!empty($tools)): ?>
+				<div class="header category-header" id="<?php echo "header" . $catKey; ?>">
+					<h2><?php echo $catName; ?></h2>
+				</div>
                 <div class="category-wrapper">
-                    <h2 class="category-header"><?php echo $catName; ?></h2>
                     <div class="tools-grid">
                         <?php foreach ($tools as $tool): 
                             $description = getToolDescription($catKey, $tool);
@@ -80,9 +102,13 @@ function getToolThumbnail($category, $folder) {
                         ?>
                             <div class="tool-card">
                                 <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> Thumbnail">
-                                <h2><?php echo $cleanName; ?></h2>
-                                <p><?php echo htmlspecialchars($description); ?></p>
-                                <a href="<?php echo $catKey . '/' . $tool; ?>/">Open tool →</a>
+                                <div class="tool-card-content">
+                                    <h2><?php echo $cleanName; ?></h2>
+                                    <p><?php echo htmlspecialchars($description); ?></p>
+                                    <form action="<?php echo $catKey . '/' . $tool; ?>" class="tool-form">
+                                        <input type="submit" value="Open tool" class="btn-inferno-stretch" />
+                                    </form>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
