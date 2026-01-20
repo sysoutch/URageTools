@@ -1,6 +1,5 @@
 <?php
 $baseDir = __DIR__;
-// Define your subfolders and their display titles
 $categories = [
     'art'      => 'Art & Design',
     'audio'    => 'Audio & Sound Lab',
@@ -8,7 +7,6 @@ $categories = [
     'plan' => 'Planning Tools'
 ];
 
-// Reusable function to get tool description from index.html inside subfolders
 function getToolDescription($category, $folder) {
     $indexFile = __DIR__ . '/' . $category . '/' . $folder . '/index.html';
     if (!file_exists($indexFile)) return "";
@@ -24,7 +22,6 @@ function getToolDescription($category, $folder) {
     return "";
 }
 
-// Reusable function to get tool thumbnail from subfolders
 function getToolThumbnail($category, $folder) {
     $thumbPath = __DIR__ . '/' . $category . '/' . $folder . '/thumbnail.png';
     if (file_exists($thumbPath)) {
@@ -46,15 +43,49 @@ function getToolThumbnail($category, $folder) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools - URage</title>
+
+    <title>URage Tools - Free Online Web Utilities</title>
+    <meta name="description" content="A collection of fast, free, and privacy-focused web tools for developers and creators. Featuring a Seamless Texture Maker, HTML Separator, and more.">
+    <link rel="canonical" href="https://tools.urage.net/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tools.urage.net/">
+    <meta property="og:title" content="URage Tools - Powerful Utilities for Developers">
+    <meta property="og:description" content="Explore a suite of professional tools for web development and 3D art. No sign-up required, all tools run directly in your browser.">
+    <meta property="og:image" content="https://tools.urage.net/thumbnail.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="URage Tools">
+    <meta name="twitter:description" content="Free browser-based tools for web developers and digital artists.">
+    <meta name="twitter:image" content="https://tools.urage.net/thumbnail.png">
+
     <link rel="stylesheet" href="style.css">
+    <link href="fontawesome/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <header class="header">
+        <div class="header-container">
+            <div class="site-branding">
+                <a href="https://tools.urage.net/" title="URage Tools">
+                    <img height="48" class="site-logo" src="logo.png" alt="URage Tools">
+                </a>
+            </div>
+            <div class="header-socials">
+                <a href="https://urage.net/discord" class="social-icon" data-label="Discord"><span><i class="fa-brands fa-discord"></i></span></a>
+                <a href="https://urage.net/youtube" class="social-icon" data-label="YouTube"><span><i class="fa-brands fa-youtube"></i></span></a>
+                <a href="https://urage.net/bluesky" class="social-icon" data-label="Bluesky"><span><i class="fa-brands fa-bluesky"></i></span></a>
+                <a href="https://urage.net/github" class="social-icon" data-label="GitHub"><span><i class="fa-brands fa-github"></i></span></a>
+            </div>
+        </div>
+    </header>
+
 	<div class="hero-wrapper">
-		<div class="hero-bg">
-			<div class="blob blob-1"></div>
-			<div class="blob blob-2"></div>
-		</div>
+		<main id="viewport" class="hero-bg">
+            <!-- <div class="animation-container">
+                <canvas id="lavaCanvas"></canvas>
+            </div> -->
+            <canvas id="mainCanvas"></canvas>
+        </main>
 		<div class="hero-content">
 			<div class="hero-badge">URage Tools</div>
 			<h1>Forge Your <span>Visual Assets</span> with Precision</h1>
@@ -71,8 +102,10 @@ function getToolThumbnail($category, $folder) {
 		</div>
 		<div class="scroll-down">↓</div>
 	</div>
-    <div class="container">
+    <header>
 
+    </header>
+    <div class="container">
         <?php foreach ($categories as $catKey => $catName): ?>
             <?php
             // Scan only directories within the category folder
@@ -87,7 +120,7 @@ function getToolThumbnail($category, $folder) {
             ?>
 
             <?php if (!empty($tools)): ?>
-				<div class="header category-header" id="<?php echo "header" . $catKey; ?>">
+				<div class="category-header" id="<?php echo "header" . $catKey; ?>">
 					<h2><?php echo $catName; ?></h2>
 				</div>
                 <div class="category-wrapper">
@@ -101,7 +134,7 @@ function getToolThumbnail($category, $folder) {
                             $cleanName = ucwords(str_replace('-', ' ', $tool));
                         ?>
                             <div class="tool-card">
-                                <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> Thumbnail">
+                                <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> Thumbnail" loading="lazy" />
                                 <div class="tool-card-content">
                                     <h2><?php echo $cleanName; ?></h2>
                                     <p><?php echo htmlspecialchars($description); ?></p>
@@ -117,5 +150,7 @@ function getToolThumbnail($category, $folder) {
         <?php endforeach; ?>
 
     </div>
+    
+    <script src="script.js"></script>
 </body>
 </html>

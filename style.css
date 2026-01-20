@@ -6,11 +6,11 @@
 
 body {
     /* A soft gradient background looks more modern than flat white */
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #e6dfc3 0%, #e8c2c1 100%);
     min-height: 100vh;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: #2d3436;
-    line-height: 1.6;
+    line-height: 1;
 }
 
 :root {
@@ -18,6 +18,90 @@ body {
 	--secondary: #f97316;
 	--bg-dark: #09090b;
 	--text-main: #ffffff;
+}
+
+.header {
+    justify-content: space-between;
+    align-items: center;
+    top: 0;
+    background: #282626;
+    color: #c4393996;
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+    height: 54px;
+    align-content: center;
+}
+
+.header-container {
+    max-width: 1140px;
+    margin: 0 auto;      /* Centers the container */
+    padding: 0 20px;     /* Prevents content from touching edges on mobile */
+    
+    /* This keeps branding and socials on the same line */
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.header-socials {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.social-icon {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #333338;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+/* The "Inferno" Hover State */
+.social-icon:hover {
+    background: #ff8a00;
+    border-color: #ffb35a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 138, 0, 0.4);
+}
+
+/* Changing icon color or grayscale filter on hover */
+.social-icon:hover span {
+    filter: brightness(0) saturate(100%); /* Turns emojis/icons black on orange bg */
+}
+
+/* Tooltip Label */
+.social-icon::after {
+    content: attr(data-label);
+    position: absolute;
+    top: 48px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #000000;
+    color: #ffffff;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    border: 1px solid #ff8a00;
+}
+
+.social-icon:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 .hero-wrapper {
@@ -40,7 +124,18 @@ body {
 	z-index: 1;
 }
 
-.blob {
+#viewport { flex-grow: 1; background: #000; overflow: hidden; }
+@keyframes lavaFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
+
+.ripple {
+    border-radius: 50%; transform: scale(0);
+    animation: rippleEffect 1s ease-out; pointer-events: none;
+    border: 2px solid var(--primary); z-index: 5;
+}
+@keyframes rippleEffect { 0% { transform: scale(0); opacity: 0.8; } 100% { transform: scale(4); opacity: 0; } }
+
+/* .blob {
 	position: absolute;
 	filter: blur(80px);
 	border-radius: 50%;
@@ -51,10 +146,60 @@ body {
 .blob-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; }
 .blob-2 { width: 500px; height: 500px; background: var(--secondary); bottom: -150px; right: -100px; animation-delay: -5s; }
 
+.animation-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.highlight {
+    color: #ff5500;
+    font-weight: bold;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 1.5s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
 @keyframes move {
 	from { transform: translate(0, 0) scale(1); }
 	to { transform: translate(100px, 100px) scale(1.2); }
-}
+} */
 
 /* Content Styling */
 .hero-content {
@@ -90,13 +235,14 @@ body {
 
 .hero-content h1 span {
 	background: linear-gradient(90deg, var(--primary), var(--secondary));
+    background-clip: var(--text-main);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
 
 .hero-content p {
 	font-size: 1.2rem;
-	color: #a1a1aa;
+	color: #fff;
 	line-height: 1.6;
 	margin-bottom: 40px;
 	max-width: 600px;
@@ -162,14 +308,6 @@ body {
 	40% {transform: translateY(-10px) translateX(-50%);}
 	60% {transform: translateY(-5px) translateX(-50%);}
 }
-	
-.header {
-  position: sticky;
-  top: 0;
-  padding: 10px 16px;
-  background: #555;
-  color: #f1f1f1;
-}
 
 /* 2. Main Container */
 .container {
@@ -202,13 +340,15 @@ body {
 
 /* Header style for Planning, Dev, Art */
 .category-header {
+    position: sticky;
+    top: 0;
     font-size: 0.7rem;
     color: #ffffff;
     margin: 40px 0 25px 0;
     padding: 16px 24px;
     
     /* Opaque Gradient: From Deep Zinc to Burnt Orange */
-    background: linear-gradient(90deg, #313131 0%, #bd973d 40%, #431407 100%);
+    background: linear-gradient(90deg, #313131 0%, #bd553d 40%, #bd9549 100%);
     
     /* Solid thick accent on the left */
     border-left: 6px solid #ff8a00;
@@ -258,7 +398,7 @@ body {
 .tool-card {
     display: flex;
     flex-direction: column;
-    background: white;
+    background: #fffaf0;
     border-radius: 10px;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
@@ -282,48 +422,37 @@ body {
 
 /* Specific class for the button */
 .btn-inferno-stretch {
-    /* Stretch to full width */
     width: 100%;
     display: block;
-    
-    /* Layout & Spacing */
     padding: 14px 24px;
     cursor: pointer;
     outline: none;
-    
-    /* Typography */
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 0.9rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    
-    /* Colors - Opaque & Consistent */
-    background: linear-gradient(180deg, #27272a 0%, #18181b 100%);
-    color: #ffffff;
-    border: 2px solid #3f3f46;
+    background: linear-gradient(180deg, #f9bf81 0%, #ac5757 100%);
+    color: #fffaea;
+    border: 2px solid #604242;
     border-radius: 4px;
-    
-    /* Animation */
     transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-    
-    /* Sharp industrial shadow */
-    box-shadow: 0 4px 0px 0px #000000;
+    box-shadow: 0 4px 0px 0px #514848;
 }
 
 /* Hover State - "Ignite" */
 .btn-inferno-stretch:hover {
-    background: #ff8a00; /* Solid Inferno Orange */
-    color: #000000;      /* High contrast black text */
-    border-color: #ffb35a;
+    background: #b18658; /* Solid Inferno Orange */
+    color: #ffffff;      /* High contrast black text */
+    border-color: #8b4343;
     transform: translateY(-2px);
-    box-shadow: 0 6px 0px 0px #000000;
+    box-shadow: 0 6px 0px 0px #514848;
 }
 
 /* Active State - Physical click effect */
 .btn-inferno-stretch:active {
     transform: translateY(2px);
-    box-shadow: 0 0px 0px 0px #000000;
+    box-shadow: 0 0px 0px 0px #514848;
 }
 /* --- RESPONSIVE DESIGN (Media Queries) --- */
 

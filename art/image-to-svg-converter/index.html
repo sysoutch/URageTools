@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro SVG Vectorizer (Local)</title>
+    <script src="imagetracer_v1.2.6.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f5f7fa; color: #333; display: flex; justify-content: center; padding: 40px; }
+        .container { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); max-width: 1000px; width: 100%; }
+        h1 { margin-top: 0; color: #1a202c; font-size: 1.5rem; }
+        .drop-zone { border: 2px dashed #e2e8f0; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: 0.2s; background: #fdfdfd; margin-bottom: 20px; position: relative; }
+        .drop-zone:hover { border-color: #4299e1; background: #ebf8ff; }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #edf2f7; }
+        .control-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.8rem; font-weight: bold; color: #64748b; }
+        .val-display { font-weight: normal; color: #3182ce; float: right; }
+        .preview-area { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .box { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden; background: #fff; position: relative; }
+        
+        /* THE FIX: Force SVG to be visible */
+        #svgContainer { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        #svgContainer svg { width: 100% !important; height: auto !important; max-height: 320px; display: block; }
+        
+        img { max-width: 100%; max-height: 320px; height: auto; object-fit: contain; }
+        
+        /* Spinner */
+        #spinner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; z-index: 10; }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        button#dlBtn { background: #3182ce; color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 1rem; font-weight: 600; margin-top: 20px; transition: 0.2s; }
+        button#dlBtn:hover { background: #2b6cb0; }
+        button#dlBtn:disabled { background: #cbd5e0; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Professional Vectorizer</h1>
+    <div class="controls">
+        <div class="control-group">
+            <label>Preset Quick-Start</label>
+            <select id="presetSelect">
+                <option value="custom">-- Custom Controls --</option>
+                <option value="default">Balanced</option>
+                <option value="posterized2">2-Color Logo</option>
+                <option value="curvy">Super Smooth</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>Smoothness <span class="val-display" id="smoothVal">1.0</span></label>
+            <input type="range" id="smoothSlider" min="0.1" max="5" step="0.1" value="1.0">
+        </div>
+        <div class="control-group">
+            <label>Colors <span class="val-display" id="colorVal">16</span></label>
+            <input type="range" id="colorSlider" min="2" max="64" step="1" value="16">
+        </div>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+        <strong>Drag an image here</strong> or click to select
+        <input type="file" id="fileInput" accept="image/png, image/jpeg" style="display: none;">
+    </div>
+
+    <div class="preview-area">
+        <div class="box">
+            <label>Original</label>
+            <img id="imgPreview">
+        </div>
+        <div class="box">
+            <label>SVG Preview</label>
+            <div id="spinner"></div>
+            <div id="svgContainer"></div>
+        </div>
+    </div>
+
+    <button id="dlBtn" disabled>Download SVG File</button>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const imgPreview = document.getElementById('imgPreview');
+    const svgContainer = document.getElementById('svgContainer');
+    const dlBtn = document.getElementById('dlBtn');
+    const spinner = document.getElementById('spinner');
+    const smoothSlider = document.getElementById('smoothSlider');
+    const colorSlider = document.getElementById('colorSlider');
+    const presetSelect = document.getElementById('presetSelect');
+
+    let currentSvgString = "";
+
+    dropZone.onclick = () => fileInput.click();
+
+    fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imgPreview.src = event.target.result;
+                imgPreview.onload = () => runConversion();
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const updateUI = () => {
+        document.getElementById('smoothVal').innerText = smoothSlider.value;
+        document.getElementById('colorVal').innerText = colorSlider.value;
+        if (imgPreview.src) runConversion();
+    };
+
+    // Use "change" instead of "input" for smoother performance on big files
+    smoothSlider.onchange = updateUI;
+    colorSlider.onchange = updateUI;
+
+    presetSelect.onchange = () => {
+        if (presetSelect.value === 'default') { smoothSlider.value = 1.0; colorSlider.value = 16; }
+        if (presetSelect.value === 'posterized2') { smoothSlider.value = 0.5; colorSlider.value = 2; }
+        if (presetSelect.value === 'curvy') { smoothSlider.value = 3.0; colorSlider.value = 12; }
+        updateUI();
+    };
+
+    function runConversion() {
+        if (typeof ImageTracer === 'undefined') return;
+        
+        spinner.style.display = "block";
+        svgContainer.style.opacity = "0.3";
+
+        const options = {
+            ltres: parseFloat(smoothSlider.value),
+            qtres: parseFloat(smoothSlider.value),
+            numberofcolors: parseInt(colorSlider.value),
+            pathomit: 8,
+            blurradius: 0.5,
+            strokewidth: 0.5, 
+            linefilter: true,
+            viewbox: true 
+        };
+
+        // Delay slightly to allow spinner to show
+        setTimeout(() => {
+            try {
+                ImageTracer.imageToSVG(
+                    imgPreview.src, 
+                    (svgString) => {
+                        currentSvgString = svgString;
+                        svgContainer.innerHTML = svgString;
+                        
+                        // Ensure the SVG has proper attributes for display
+                        const svgElement = svgContainer.querySelector('svg');
+                        if(svgElement) {
+                            svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                        }
+
+                        dlBtn.disabled = false;
+                        spinner.style.display = "none";
+                        svgContainer.style.opacity = "1";
+                    },
+                    options
+                );
+            } catch (err) {
+                console.error("Tracing failed:", err);
+                spinner.style.display = "none";
+            }
+        }, 50);
+    }
+
+    dlBtn.onclick = () => {
+        const blob = new Blob([currentSvgString], {type: 'image/svg+xml'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'vector.svg';
+        a.click();
+    };
+</script>
+
+</body>
+</html>

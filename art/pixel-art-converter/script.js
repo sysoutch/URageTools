@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const bgColorPicker = document.getElementById('bgColorPicker');
     const pickColorBtn = document.getElementById('pickColorBtn');
     const removeBgCheckbox = document.getElementById('removeBgCheckbox');
+    const autoConvertCheckbox = document.getElementById('autoConvertCheckbox');
     const originalCanvas = document.getElementById('originalCanvas');
     const pixelCanvas = document.getElementById('pixelCanvas');
     const originalCtx = originalCanvas.getContext('2d');
@@ -31,6 +32,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     pixelSizeValue.textContent = pixelSizeSlider.value;
     pixelSizeSlider.addEventListener('input', () => pixelSizeValue.textContent = pixelSizeSlider.value);
+
+    // Add event listeners for auto-convert
+    pixelSizeSlider.addEventListener('input', function() {
+        if (autoConvertCheckbox.checked && originalCanvas.width && originalCanvas.height) {
+            convertImage();
+        }
+    });
+
+    autoScaleCheckbox.addEventListener('change', function() {
+        if (autoConvertCheckbox.checked && originalCanvas.width && originalCanvas.height) {
+            convertImage();
+        }
+    });
+
+    removeBgCheckbox.addEventListener('change', function() {
+        if (autoConvertCheckbox.checked && originalCanvas.width && originalCanvas.height) {
+            convertImage();
+        }
+    });
+
+    bgColorPicker.addEventListener('input', function() {
+        if (autoConvertCheckbox.checked && originalCanvas.width && originalCanvas.height) {
+            convertImage();
+        }
+    });
 
     fileInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -50,6 +76,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     originalCanvas.classList.remove('hidden');
                     pixelCanvas.classList.remove('hidden');
                     convertBtn.disabled = false;
+                    
+                    // Auto-convert if enabled
+                    if (autoConvertCheckbox.checked) {
+                        convertImage();
+                    }
                 };
                 img.src = event.target.result;
             };
@@ -83,6 +114,11 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please select an image first!');
             return;
         }
+        convertImage();
+    });
+
+    // Function to perform the image conversion
+    function convertImage() {
         const pixelSize = parseInt(pixelSizeSlider.value);
         const autoScale = autoScaleCheckbox.checked;
         const removeBg = removeBgCheckbox.checked;
@@ -109,17 +145,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const checkerboardPattern = createCheckerboardPattern(8);
         pixelCtx.fillStyle = checkerboardPattern;
         pixelCtx.fillRect(0,0,pixelCanvas.width,pixelCanvas.height);
-        for(let y=0;y<height;y+=actualPixelSize){
-            for(let x=0;x<width;x+=actualPixelSize){
-                const idx = (y*width+x)*4;
-                const r=data[idx],g=data[idx+1],b=data[idx+2],a=data[idx+3];
-                if(removeBg && a<128) continue;
-                if(removeBg){
+        
+        // Process image to pixel art using block-based approach
+        for(let y = 0; y < height; y += actualPixelSize) {
+            for(let x = 0; x < width; x += actualPixelSize) {
+                // Get the dominant color in this block
+                const dominantColor = getDominantColorInBlock(data, x, y, width, height, actualPixelSize);
+                
+                // Skip if removing background and this is background color
+                if(removeBg) {
                     const bgRgb = hexToRgb(bgColor);
-                    if(bgRgb && Math.abs(r-bgRgb.r)<30 && Math.abs(g-bgRgb.g)<30 && Math.abs(b-bgRgb.b)<30) continue;
+                    if(bgRgb && Math.abs(dominantColor.r-bgRgb.r)<30 && Math.abs(dominantColor.g-bgRgb.g)<30 && Math.abs(dominantColor.b-bgRgb.b)<30) {
+                        continue;
+                    }
                 }
-                pixelCtx.fillStyle=`rgba(${r},${g},${b},${a/255})`;
-                pixelCtx.fillRect(x,y,actualPixelSize,actualPixelSize);
+                
+                // Draw the block with the dominant color
+                pixelCtx.fillStyle = `rgba(${dominantColor.r},${dominantColor.g},${dominantColor.b},${dominantColor.a/255})`;
+                pixelCtx.fillRect(x, y, actualPixelSize, actualPixelSize);
             }
         }
         downloadBtn.style.display='block';
@@ -129,7 +172,47 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.getElementById('pixelCanvas').classList.remove('hidden');
 		document.getElementById('downloadBtn').style.display = 'flex';
 		document.getElementById('downloadScaledBtn').style.display = 'flex';
-    });
+    };
+
+    function getDominantColorInBlock(data, startX, startY, width, height, blockSize) {
+        let colorCount = {};
+        let totalPixels = 0;
+
+        for (let y = 0; y < blockSize && startY + y < height; y++) {
+            for (let x = 0; x < blockSize && startX + x < width; x++) {
+                const idx = ((startY + y) * width + (startX + x)) * 4;
+                const r = data[idx];
+                const g = data[idx + 1];
+                const b = data[idx + 2];
+                const a = data[idx + 3];
+
+                // Skip transparent pixels
+                if (a < 128) continue;
+
+                const color = {
+                    r: r,
+                    g: g,
+                    b: b,
+                    a: a
+                };
+
+                const colorKey = `${color.r},${color.g},${color.b},${color.a}`;
+                if (colorCount[colorKey]) {
+                    colorCount[colorKey]++;
+                } else {
+                    colorCount[colorKey] = 1;
+                }
+                totalPixels++;
+            }
+        }
+
+        const dominantColorKey = Object.keys(colorCount).reduce((a, b) => colorCount[a] > colorCount[b] ? a : b, null);
+        if (!dominantColorKey) {
+            return { r: 0, g: 0, b: 0, a: 0 };
+        }
+        const [r, g, b, a] = dominantColorKey.split(',').map(Number);
+        return { r, g, b, a };
+    }
 
     function createCheckerboardPattern(size){
         const canvas=document.createElement('canvas');

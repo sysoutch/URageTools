@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade Studio Pro - URage Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1 style="margin:0; font-weight: 800; letter-spacing: -1px;">ARCADE <span style="color:var(--primary)">STUDIO</span> PRO</h1>
+    <p style="color:#666; margin-bottom: 20px;">Click the image to pick a color, or use hardware presets.</p>
+
+    <div class="main-layout">
+        <div class="preview-area">
+            <input type="file" id="upload" accept="image/*">
+            <div class="canvas-container">
+                <canvas id="canvas"></canvas>
+            </div>
+        </div>
+
+        <div class="color-panel">
+            <div class="tool-box">
+                <label>Hardware Presets</label>
+                <select id="presetSelect">
+                    <option value="none">Current Palette</option>
+                    <option value="dmg_classic">GameBoy DMG (Original Green)</option>
+                    <option value="pocket_silver">GameBoy Pocket (Grayscale)</option>
+                    <option value="light_teal">GameBoy Light (Teal Glow)</option>
+                    <option value="pico8">PICO-8 (Retro 16)</option>
+                </select>
+                
+                <label>Color Decimation</label>
+                <input type="range" id="decimateSlider" min="2" max="64" value="64">
+                <div style="font-size: 11px; color: #555; margin-top: 8px; display: flex; justify-content: space-between;">
+                    <span>Complexity</span>
+                    <span id="sliderVal">64 Colors</span>
+                </div>
+                <button class="btn" style="margin-top:15px; background: #222;" onclick="processImage()">Apply Hardware Filter</button>
+            </div>
+
+            <h3>Active Palette <span id="colorCount" class="badge">0</span></h3>
+            <div class="color-grid" id="paletteGrid"></div>
+
+            <div class="tool-box" style="border-color: #222;">
+                <label>Precision Swapper</label>
+                <input type="color" id="colorPicker" value="#ff4500">
+                <button class="btn" id="applySwap">Swap Selected Color</button>
+                <button class="btn btn-secondary" onclick="download()">Download PNG</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
