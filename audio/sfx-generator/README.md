@@ -1,103 +1,102 @@
 # URage Pulse - SFX Generator
 
-A web-based sound effects generator that creates unique audio samples using the Web Audio API. This tool allows you to create, play, and download custom sound effects with real-time parameter controls.
+A powerful Web Audio API-based sound effects generator that allows you to create custom audio samples with various waveforms, parameters, and presets.
 
 ## Features
 
-- **Real-time Sound Generation**: Creates audio using the Web Audio API
-- **Multiple Waveforms**: Square, Sawtooth, Sine, and Triangle waveforms
-- **ADSR Envelope Controls**: Attack, Decay, and Sustain parameters for sound shaping
-- **Frequency Sliding**: Smooth frequency transitions for dynamic effects
-- **Preset System**: Save and load custom sound effect presets
-- **Visualizer**: Real-time audio waveform visualization
-- **Download Functionality**: Export generated sounds as WAV files
-- **Randomization**: Generate random sound parameters with one click
+- **Multiple Waveform Types**: Square, Sawtooth, Sine, and Triangle waveforms
+- **Preset System**: Predefined sound effects for quick use (Jump, Explosion, Blip, Laser, Powerup, Shoot, Hit, Bounce)
+- **Real-time Visualization**: Audio waveform visualization during playback
+- **Parameter Controls**: 
+  - Frequency (Freq)
+  - Duration (Length)
+  - Slide (frequency slide effect)
+  - ADSR Envelope (Attack, Decay)
+- **Save & Load Presets**: Store your custom sound effects for later use
+- **Randomize Function**: Generate random sound effects with one click
+- **Download WAV Files**: Export your creations as WAV audio files
+
+## How It Works
+
+This tool uses the Web Audio API to generate sound effects in real-time. You can adjust various parameters to create different sounds:
+
+1. **Waveform Selection**: Choose between different waveform types that affect the sound character
+2. **Frequency Control**: Adjust the base frequency of the sound
+3. **Duration**: Control how long the sound lasts
+4. **Slide**: Create pitch slide effects by adjusting the frequency over time
+5. **ADSR Envelope**: Control the attack and decay of the sound for more natural sound shaping
+
+## Usage Instructions
+
+1. **Select a Preset**: Click on any preset button (Jump, Explosion, Blip, etc.) to load a predefined sound effect
+2. **Adjust Parameters**: Use the sliders to modify the sound characteristics:
+   - **Freq**: Base frequency of the sound
+   - **Length**: Duration of the sound effect
+   - **Slide**: Pitch slide effect (positive values increase pitch, negative values decrease pitch)
+   - **Attack/Decay**: Control the envelope of the sound
+3. **Waveform Selection**: Choose between Square, Sawtooth, Sine, and Triangle waveforms
+4. **Play Sound**: Click the "🔊 PLAY" button to hear your sound effect
+5. **Download**: Click the "💾 WAV" button to download your sound effect as a WAV file
+6. **Save Preset**: Click "💾 Save Preset" to save your current settings for later use
 
 ## Controls
 
-### Waveform Selection
-- **Square**: Harsh, digital sound
-- **Sawtooth**: Bright, buzzy tone
-- **Sine**: Smooth, pure tone
-- **Triangle**: Soft, mellow sound
+- **Waveform Buttons**: Select different waveform types
+- **Lock Buttons**: Lock parameters to prevent accidental changes
+- **Randomize Button**: Generate random sound effect parameters
+- **Preset Buttons**: Load predefined sound effects
+- **Play Button**: Play the current sound effect
+- **Download Button**: Save the sound effect as a WAV file
+- **Save Preset Button**: Save current settings as a custom preset
+- **Load Preset Button**: Load previously saved presets
 
-### Parameters
-- **Frequency**: Base pitch of the sound (50Hz - 2000Hz)
-- **Length**: Duration of the sound effect (0.05s - 2.0s)
-- **Slide**: Frequency transition effect (-1000 to 1000)
-- **Attack**: Time to reach maximum volume (0-0.5s)
-- **Decay**: Time to fade out to sustain level (0-0.5s)
+## Technical Details
 
-### Buttons
-- **PLAY**: Generate and play the current sound
-- **WAV**: Download the current sound as a WAV file
-- **Save Preset**: Save current parameters as a preset
-- **Load Preset**: Load a previously saved preset
-- **🎲 Randomize Params**: Generate random sound parameters
-- **Lock Waveform**: Lock waveform selection to prevent accidental changes
+This tool uses the Web Audio API for sound generation and the Canvas API for real-time waveform visualization. All processing happens in the browser - no external dependencies or server requests required.
 
-## Technical Implementation
+### Supported Parameters
 
-### Core Components
-
-1. **Web Audio API Integration**:
-   - Uses OscillatorNode for sound generation
-   - Implements GainNode for volume control
-   - Applies ADSR envelope for sound shaping
-   - Uses exponential ramping for smooth frequency transitions
-
-2. **Preset System**:
-   - Stores presets in localStorage
-   - Presets include all parameters and timestamp
-   - Simple numeric selection interface
-
-3. **Audio Visualization**:
-   - Canvas-based waveform display
-   - Real-time audio analysis using AnalyserNode
-   - Smooth animation using requestAnimationFrame
-
-4. **Download Functionality**:
-   - Uses OfflineAudioContext for rendering
-   - Converts audio buffer to WAV format
-   - Creates downloadable file with proper headers
-
-### File Structure
-
-```
-sfx-generator/
-├── index.html          # Main HTML structure
-├── style.css           # Styling and layout
-└── script.js           # Core JavaScript functionality
-```
-
-### Key Functions
-
-- `playSFX()`: Generates and plays the current sound
-- `downloadSFX()`: Renders and downloads the sound as WAV
-- `savePreset()`: Saves current parameters to localStorage
-- `loadPresets()`: Loads saved presets from localStorage
-- `applyPreset()`: Applies predefined sound parameters
-- `randomize()`: Generates random sound parameters
-- `draw()`: Updates the audio visualization
-
-## Usage
-
-1. Adjust parameters using the sliders
-2. Select a waveform type
-3. Click "PLAY" to hear the sound
-4. Use "WAV" to download the sound
-5. Save custom presets using "Save Preset"
-6. Load saved presets using "Load Preset"
-7. Use "🎲 Randomize Params" for creative inspiration
+- **Waveform Types**: square, sawtooth, sine, triangle
+- **Frequency Range**: 50Hz to 2000Hz
+- **Duration Range**: 0.05s to 2.0s
+- **Slide Range**: -1000 to 1000 (frequency change over time)
+- **Attack Range**: 0 to 0.5 seconds
+- **Decay Range**: 0 to 0.5 seconds
 
 ## Browser Compatibility
 
-This application requires a modern browser with Web Audio API support:
+This tool requires a modern browser with Web Audio API support:
 - Chrome 14+
 - Firefox 25+
 - Safari 6+
-- Edge 14+
+- Edge 12+
 
 ## License
 
-This project is open source and available under the MIT License.
+MIT License
+
+Copyright (c) 2026 URageTools
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+## Author
+
+URageTools - A collection of creative web tools for developers and designers
+
+For more information about this project, visit our GitHub repository.
