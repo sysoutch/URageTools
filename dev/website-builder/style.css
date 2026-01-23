@@ -46,6 +46,7 @@ body, html {
 .logo span { color: var(--accent); }
 
 #device-switcher { 
+    position: inherit;
     background: rgba(0,0,0,0.3); 
     padding: 4px; 
     border-radius: 10px; 
@@ -209,4 +210,43 @@ body, html {
     z-index: 9999; display: none; background: var(--accent); color: white; 
     padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; 
     box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+}
+
+/* --- 10. IMPORT HTML DIV --- */
+.import-html-div {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    z-index: 1000;
+    display: none;
+}
+.import-html-div .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.import-html-div .panel-body {
+    padding: 10px 0;
+}
+.import-html-div .import-html-content {
+    text-align: center;
+}
+.import-html-div .import-html-content p {
+    margin: 10px 0;
+}
+.import-html-div .import-html-content input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    background: #0f172a;
+    border: 1px solid var(--border);
+    color: #fff;
+    border-radius: 6px;
 }

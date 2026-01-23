@@ -6,11 +6,126 @@
 
 body {
     /* A soft gradient background looks more modern than flat white */
-    background: linear-gradient(135deg, #e6dfc3 0%, #e8c2c1 100%);
+    background: linear-gradient(135deg, #e6dfc3 0%, #e8c2c1 25%, #d8b4a0 50%, #e8c2c1 75%, #e6dfc3 100%);
     min-height: 100vh;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: #2d3436;
     line-height: 1;
+    display: flex;
+    flex-direction: column;
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.site-footer {
+    margin-top: auto;
+    background: linear-gradient(135deg, #282626 0%, #1a1818 100%);
+    color: #ffffff;
+    padding: 20px 0 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.footer-content {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.main-site-link {
+    text-align: center;
+}
+
+.main-site-link img {
+    width: 128px;
+    height: 128px;
+    margin-bottom: 20px;
+}
+
+.footer-section {
+    flex: 1;
+}
+
+.footer-section h3 {
+    color: #ff8a00;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.footer-section h4 {
+    color: #ff8a00;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.footer-section p {
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #ff8a00;
+}
+
+.social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.social-links a {
+    color: #ddd;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #ff8a00;
+    text-decoration: none;
+}
+
+.footer-bottom {
+    max-width: 1140px;
+    margin: 30px auto 0;
+    padding: 20px 20px 10px;
+    border-top: 1px solid #444;
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
 }
 
 :root {
@@ -24,13 +139,15 @@ body {
     justify-content: space-between;
     align-items: center;
     top: 0;
-    background: #282626;
+    background: linear-gradient(135deg, #282626 0%, #1a1818 100%);
+    backdrop-filter: blur(10px);
     color: #c4393996;
     position: absolute;
     z-index: 99;
     width: 100%;
     height: 54px;
     align-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .header-container {
@@ -51,6 +168,14 @@ body {
     align-items: center;
 }
 
+.header-socials a {
+    color: #ddd;
+}
+
+.header-socials a:visited {
+    color: #ddd;
+}
+
 .social-icon {
     position: relative;
     width: 38px;
@@ -58,20 +183,22 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    border: 1px solid #333338;
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
     text-decoration: none;
     font-size: 1.2rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
 /* The "Inferno" Hover State */
 .social-icon:hover {
-    background: #ff8a00;
+    background: linear-gradient(135deg, #ff8a00 0%, #ff5a00 100%);
     border-color: #ffb35a;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(255, 138, 0, 0.4);
+    backdrop-filter: blur(5px);
 }
 
 /* Changing icon color or grayscale filter on hover */
@@ -271,6 +398,7 @@ canvas {
 .btn-filled {
 	background: var(--text-main);
 	color: var(--bg-dark);
+    text-decoration: none;
 }
 
 .btn-filled:hover {
@@ -342,7 +470,7 @@ canvas {
 .category-header {
     position: sticky;
     top: 0;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     color: #ffffff;
     margin: 40px 0 25px 0;
     padding: 16px 24px;
@@ -364,10 +492,16 @@ canvas {
     gap: 15px;
     
     /* Sharp shadow for depth */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 	
 	/* Prevent overlapping when hover over cards */
 	z-index: 99;
+    
+    /* Add some rounded corners for modern look */
+    border-radius: 8px;
+    
+    /* Add subtle animation */
+    transition: all 0.3s ease;
 }
 
 /* The Number Badge - No transparency here either */
@@ -378,7 +512,8 @@ canvas {
     font-size: 0.9rem;
     font-family: monospace;
     font-weight: 800;
-    border-radius: 2px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .tools-grid {
@@ -413,14 +548,68 @@ canvas {
     padding: 24px;
 }
 
-/* The container form stretching to full width */
-.tool-form {
-    width: 100%;
-    margin-top: auto; /* pushes the form to the bottom */
-    padding-top: 20px; /* Adds space between content and button */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    cursor: pointer;
+    outline: none;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 4px;
+    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 0px 0px #514848;
+    border: 2px solid #604242;
+    background: linear-gradient(180deg, #f9bf81 0%, #ac5757 100%);
+    color: #fffaea;
 }
 
-/* Specific class for the button */
+/* Hover State - "Ignite" */
+.btn:hover {
+    background: #b18658; /* Solid Inferno Orange */
+    color: #ffffff;      /* High contrast black text */
+    border-color: #8b4343;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0px 0px #514848;
+}
+
+/* Active State - Physical click effect */
+.btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 0px 0px 0px #514848;
+}
+
+.btn-filled {
+    background: var(--text-main);
+    color: var(--bg-dark);
+    text-decoration: none;
+    border: 2px solid #604242;
+    box-shadow: 0 4px 0px 0px #514848;
+}
+
+.btn-filled:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    background: #f4f4f5;
+}
+
+.btn-glass {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-main);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.btn-glass:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--primary);
+}
+
+/* Inferno Button Style */
 .btn-inferno-stretch {
     width: 100%;
     display: block;
@@ -432,27 +621,51 @@ canvas {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    background: linear-gradient(180deg, #f9bf81 0%, #ac5757 100%);
-    color: #fffaea;
-    border: 2px solid #604242;
-    border-radius: 4px;
-    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow: 0 4px 0px 0px #514848;
+    text-decoration: none;
+    text-align: center;
+    background: linear-gradient(135deg, #ff9d2d 0%, #f55353 100%);
+    color: #ffffff;
+    border: 2px solid #f56f6ff5;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 8px rgba(255, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 
 /* Hover State - "Ignite" */
 .btn-inferno-stretch:hover {
-    background: #b18658; /* Solid Inferno Orange */
-    color: #ffffff;      /* High contrast black text */
-    border-color: #8b4343;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0px 0px #514848;
+    background: linear-gradient(135deg, #ffa31a 0%, #f15d5d 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 10px rgba(255, 0, 0, 0.3);
+    z-index: 2;
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Active State - Physical click effect */
 .btn-inferno-stretch:active {
-    transform: translateY(2px);
-    box-shadow: 0 0px 0px 0px #514848;
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2);
+}
+
+/* Button ripple effect */
+.btn-inferno-stretch::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: width 0.4s, height 0.4s;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.btn-inferno-stretch:active::before {
+    width: 150px;
+    height: 150px;
 }
 /* --- RESPONSIVE DESIGN (Media Queries) --- */
 

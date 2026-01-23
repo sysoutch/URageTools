@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URage Pulse | 8-Bit Visualizer</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #00ff41; /* Matrix/Retro Green */
+            --ui-panel: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #visualizer-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #111 0%, #000 100%);
+            position: relative;
+        }
+
+        canvas {
+            image-rendering: pixelated;
+            max-width: 90%;
+            max-height: 80%;
+            border: 4px solid #333;
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.1);
+        }
+
+        .controls {
+            background: var(--ui-panel);
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            border-top: 2px solid #333;
+        }
+
+        .upload-btn {
+            background: var(--accent);
+            color: black;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+        }
+
+        .upload-btn:hover { background: #fff; }
+
+        input[type="file"] { display: none; }
+
+        .status-text {
+            color: var(--accent);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .visual-settings {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="visualizer-container">
+    <canvas id="visualizerCanvas"></canvas>
+</div>
+
+<div class="controls">
+    <label class="upload-btn">
+        Load Track
+        <input type="file" id="audioUpload" accept="audio/*">
+    </label>
+    
+    <div class="status-text" id="status">Ready to Rock</div>
+
+    <div class="visual-settings">
+        <label>Pixel Size: 
+            <select id="pixelSize" onchange="initCanvas()">
+                <option value="16">16-Bit (Smooth)</option>
+                <option value="32" selected>8-Bit (Chunky)</option>
+                <option value="64">4-Bit (Extreme)</option>
+            </select>
+        </label>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('visualizerCanvas');
+    const ctx = canvas.getContext('2d');
+    const audioUpload = document.getElementById('audioUpload');
+    const statusText = document.getElementById('status');
+
+    let audioCtx, analyser, source, dataArray;
+    let peaks = []; // Store falling peaks for 8-bit effect
+
+    function initCanvas() {
+        // We set the canvas coordinate space small to get the pixelated look
+        const size = parseInt(document.getElementById('pixelSize').value);
+        canvas.width = size * 16;  // Aspect ratio
+        canvas.height = size * 9;
+        peaks = new Array(size * 16).fill(0);
+    }
+
+    audioUpload.onchange = function() {
+        const files = this.files;
+        if (files.length === 0) return;
+
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256; // Smaller FFT for chunkier visual
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const audioData = e.target.result;
+            audioCtx.decodeAudioData(audioData, (buffer) => {
+                if (source) source.stop();
+                
+                source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                source.start(0);
+                
+                statusText.innerText = "Playing: " + files[0].name;
+                draw();
+            });
+        };
+        reader.readAsArrayBuffer(files[0]);
+    };
+
+    function draw() {
+        requestAnimationFrame(draw);
+        
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        analyser.getByteFrequencyData(dataArray);
+
+        // Clear canvas with a slight trail effect
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const barWidth = canvas.width / (bufferLength / 2);
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+            const barHeight = (dataArray[i] / 255) * canvas.height;
+            
+            // Color logic (Retro Spectrum)
+            const hue = (i / bufferLength) * 360;
+            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+
+            // Draw pixelated bar
+            // We round the values to keep them aligned to the "pixel grid"
+            const gridY = Math.floor(canvas.height - barHeight);
+            ctx.fillRect(x, gridY, barWidth - 1, barHeight);
+
+            // Draw Falling Peak
+            if (barHeight > peaks[i]) {
+                peaks[i] = barHeight;
+            } else {
+                peaks[i] -= 0.5; // Gravity
+            }
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(x, canvas.height - peaks[i] - 2, barWidth - 1, 2);
+
+            x += barWidth;
+        }
+    }
+
+    // Initialize
+    initCanvas();
+</script>
+
+</body>
+</html>

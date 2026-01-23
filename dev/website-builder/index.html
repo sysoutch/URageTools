@@ -29,6 +29,7 @@
                 <button class="btn btn-secondary" onclick="editor.runCommand('preview')"><i class="fa fa-eye"></i> Preview</button>
                 <button class="btn btn-secondary" onclick="editor.runCommand('open-templates')"><i class="fa fa-cubes"></i> Templates</button>
                 <button class="btn btn-secondary" onclick="editor.runCommand('save-to-library')"><i class="fa fa-bookmark"></i> Save to Lib</button>
+                <button class="btn btn-secondary" onclick="toggleImportHtmlPanel()"><i class="fa fa-file-import"></i> Import HTML</button>
                 <button class="btn btn-blue" id="global-settings-trigger"><i class="fa fa-gear"></i> Settings</button>
                 <button class="btn btn-green" onclick="editor.runCommand('publish-site')"><i class="fa fa-cloud-arrow-down"></i> Publish</button>
             </div>
@@ -49,6 +50,21 @@
             <div class="panel-label">Traits / Settings</div>
             <div id="traits-container"></div>
         </aside>
+    </div>
+
+    <!-- Import HTML Panel -->
+    <div id="import-html-div" class="import-html-div">
+        <div class="panel-header">
+            <h3>Import HTML</h3>
+            <button class="btn btn-secondary" onclick="toggleImportHtmlPanel()"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="panel-body">
+            <div class="import-html-content">
+                <p>Upload your HTML file to import it into the editor:</p>
+                <input type="file" id="html-file-input" accept=".html,.htm" style="margin: 10px 0;">
+                <button class="btn btn-blue" onclick="importHtmlFile()">Import HTML</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

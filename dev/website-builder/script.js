@@ -1,4 +1,3 @@
-// 1. ORIGINAL SITE CONFIG & GLOBAL SETTINGS
 let siteConfig = {
     title: 'My Project',
     desc: 'Built with StudioHTML5',
@@ -33,7 +32,137 @@ const editor = grapesjs.init({
     }
 });
 
-// 2. DEVICE PANEL SETUP
+// Add JavaScript trait for elements
+editor.TraitManager.addType('javascript', {
+    createInput({ trait }) {
+        const input = document.createElement('textarea');
+        input.className = 'trait-input';
+        input.placeholder = 'Enter JavaScript code. (e.g., alert("Hello!");)';
+        input.style.width = '100%';
+        input.style.height = '100px';
+        input.style.resize = 'vertical';
+        return input;
+    },
+    onEvent({ elInput, component, trait }) {
+        const value = elInput.value;
+        component.addAttributes({ 'data-js': value });
+    }
+});
+
+// Add a global JavaScript trait for site-wide scripts
+editor.TraitManager.addType('global-javascript', {
+    createInput({ trait }) {
+        const input = document.createElement('textarea');
+        input.className = 'trait-input';
+        input.placeholder = 'Enter global JavaScript code. (e.g., function myFunction() { ... })';
+        input.style.width = '100%';
+        input.style.height = '150px';
+        input.style.resize = 'vertical';
+        return input;
+    },
+    onEvent({ elInput, component, trait }) {
+        const value = elInput.value;
+        // Store global JS in a special attribute or in a global variable
+        if (!window.globalJS) window.globalJS = '';
+        window.globalJS += value + '\n';
+    }
+});
+
+// Add a command to open a JavaScript editor panel
+editor.Commands.add('open-js-editor', {
+    run: (ed) => {
+        const jsContent = window.globalJS || '';
+        const jsEditor = prompt('Edit global JavaScript code:', jsContent);
+        if (jsEditor !== null) {
+            window.globalJS = jsEditor;
+        }
+    }
+});
+
+// Add transition trait with cubic-bezier, delay and behavior
+editor.TraitManager.addType('transition', {
+    createInput({ trait }) {
+        const container = document.createElement('div');
+        container.className = 'trait-transition';
+        
+        // Timing function dropdown
+        const timingSelect = document.createElement('select');
+        timingSelect.className = 'trait-input';
+        timingSelect.innerHTML = `
+            <option value="ease">Ease</option>
+            <option value="linear">Linear</option>
+            <option value="ease-in">Ease-in</option>
+            <option value="ease-out">Ease-out</option>
+            <option value="ease-in-out">Ease-in-out</option>
+            <option value="cubic-bezier">Cubic Bezier</option>
+        `;
+        timingSelect.style.width = '100%';
+        timingSelect.style.marginBottom = '10px';
+        
+        // Delay input
+        const delayInput = document.createElement('input');
+        delayInput.type = 'text';
+        delayInput.className = 'trait-input';
+        delayInput.placeholder = 'Transition delay (e.g., 0s, 0.5s)';
+        delayInput.style.width = '100%';
+        delayInput.style.marginBottom = '10px';
+        
+        // Behavior input
+        const behaviorSelect = document.createElement('select');
+        behaviorSelect.className = 'trait-input';
+        behaviorSelect.innerHTML = `
+            <option value="normal">Normal</option>
+            <option value="allow-discrete">Allow Discrete</option>
+            <option value="forwards">Forwards</option>
+            <option value="backwards">Backwards</option>
+            <option value="both">Both</option>
+        `;
+        behaviorSelect.style.width = '100%';
+        
+        container.appendChild(timingSelect);
+        container.appendChild(delayInput);
+        container.appendChild(behaviorSelect);
+        
+        return container;
+    },
+    onEvent({ elInput, component, trait }) {
+        const timingSelect = elInput.querySelector('select');
+        const delayInput = elInput.querySelector('input[type="text"]');
+        const behaviorSelect = elInput.querySelectorAll('select')[1];
+        
+        const timing = timingSelect.value;
+        const delay = delayInput.value || '0s';
+        const behavior = behaviorSelect.value;
+        
+        // Set CSS transition properties
+        const transitionValue = `${timing} ${delay} ${behavior}`;
+        component.addStyle({ transition: transitionValue });
+    }
+});
+
+// Make JavaScript trait available for all components
+editor.on('component:add', (component) => {
+    // Add JavaScript trait to all newly added components
+    if (!component.getTrait('javascript')) {
+        component.addTrait({
+            type: 'javascript',
+            name: 'javascript',
+            label: 'JavaScript'
+        });
+    }
+});
+
+// Add a command to open a JavaScript editor panel
+editor.Commands.add('open-js-editor', {
+    run: (ed) => {
+        const jsContent = window.globalJS || '';
+        const jsEditor = prompt('Edit global JavaScript code:', jsContent);
+        if (jsEditor !== null) {
+            window.globalJS = jsEditor;
+        }
+    }
+});
+
 editor.Panels.addPanel({
     id: 'devices-panel', el: '#device-switcher',
     buttons: [
@@ -49,19 +178,20 @@ editor.Commands.add('set-device-tablet', { run: ed => ed.setDevice('tablet') });
 editor.Commands.add('set-device-mobile-portrait', { run: ed => ed.setDevice('mobile-portrait') });
 editor.Commands.add('set-device-mobile-landscape', { run: ed => ed.setDevice('mobile-landscape') });
 
-// 3. FULL BLOCK MANAGER RESTORATION
 const bm = editor.BlockManager;
 
-bm.add('nav-sticky', {
-    label: '<i class="fa fa-window-maximize"></i><div>Sticky Nav</div>',
-    category: 'Navigation',
-    content: `<nav class="sticky top-0 z-50 flex items-center justify-between px-8 py-4 bg-white shadow-md">
-        <div class="text-xl font-bold text-blue-600">LOGO</div>
-        <div class="hidden md:flex space-x-6 text-gray-600 font-medium">
-            <a href="#" class="hover:text-blue-600">Home</a><a href="#" class="hover:text-blue-600">Services</a>
-        </div>
-        <button class="bg-blue-600 text-white px-5 py-2 rounded-lg">Action</button>
-    </nav>`
+bm.add('button', {
+    label: '<i class="fa fa-mouse-pointer"></i><div>Button</div>',
+    category: 'Basic',
+    content: `<button class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold">Click Me</button>`
+});
+
+bm.add('canvas', {
+    label: '<i class="fa fa-th"></i><div>Canvas</div>',
+    category: 'Basic',
+    content: `<div class="w-full h-64 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+        <span class="text-gray-500">Canvas Area</span>
+    </div>`
 });
 
 bm.add('hero-modern', {
@@ -79,6 +209,18 @@ bm.add('hero-modern', {
     </section>`
 });
 
+bm.add('nav-sticky', {
+    label: '<i class="fa fa-window-maximize"></i><div>Sticky Nav</div>',
+    category: 'Navigation',
+    content: `<nav class="sticky top-0 z-50 flex items-center justify-between px-8 py-4 bg-white shadow-md">
+        <div class="text-xl font-bold text-blue-600">LOGO</div>
+        <div class="hidden md:flex space-x-6 text-gray-600 font-medium">
+            <a href="#" class="hover:text-blue-600">Home</a><a href="#" class="hover:text-blue-600">Services</a>
+        </div>
+        <button class="bg-blue-600 text-white px-5 py-2 rounded-lg">Action</button>
+    </nav>`
+});
+
 bm.add('nav-float', {
     label: '<i class="fa fa-ellipsis-h"></i><div>Floating Nav</div>',
     category: 'Navigation',
@@ -92,10 +234,9 @@ bm.add('nav-float', {
 bm.add('footer-modern', {
     label: '<i class="fa fa-arrow-down"></i><div>Footer</div>',
     category: 'Navigation',
-    content: `<footer class="bg-gray-900 text-gray-300 py-12 px-8 text-center text-xs">© 2026 StudioHTML5.</footer>`
+    content: `<footer class="bg-gray-900 text-gray-300 py-12 px-8 text-center text-xs fixed bottom-0 left-0 w-full">© 2026 StudioHTML5.</footer>`
 });
 
-// 4. FULL TEMPLATE LOGIC RESTORATION
 const tpls = {
     startup: {
         label: 'SaaS Growth', category: 'Landing', icon: 'fa-rocket',
@@ -200,7 +341,6 @@ window.applyTpl = (key) => {
     editor.Modal.close();
 };
 
-// Quick View Functionality
 window.showQuickPreview = (key) => {
     const tpl = tpls[key];
     const frame = document.getElementById('preview-frame');
@@ -209,7 +349,6 @@ window.showQuickPreview = (key) => {
     document.getElementById('preview-title').innerText = tpl.label;
     overlay.style.display = 'flex';
     
-    // Inject content into iframe
     const doc = frame.contentWindow.document;
     doc.open();
     doc.write(`<html><head><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"><style>${tpl.css}</style></head><body>${tpl.html}</body></html>`);
@@ -245,7 +384,6 @@ window.processSaveTemplate = () => {
     const cat = document.getElementById('new-tpl-cat').value;
     const id = 'custom_' + Date.now();
 
-    // Add to the tpls object
     tpls[id] = {
         label: name,
         category: cat,
@@ -258,7 +396,6 @@ window.processSaveTemplate = () => {
     editor.Modal.close();
 };
 
-// 5. FULL SETTINGS LOGIC RESTORATION
 document.getElementById('global-settings-trigger').onclick = () => {
     editor.Modal.setTitle('Site Settings').setContent(`
         <div class="modal-body">
@@ -281,7 +418,6 @@ window.saveAllSettings = () => {
     editor.Modal.close();
 };
 
-// 6. FULL PUBLISH LOGIC (FIXED)
 editor.Commands.add('publish-site', {
     run: (ed) => {
         const zip = new JSZip();
@@ -293,6 +429,16 @@ editor.Commands.add('publish-site', {
                       <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${siteConfig.gaId}');<\/script>`;
         }
 
+        // Extract JavaScript from elements
+        let jsContent = '';
+        const components = ed.getComponents();
+        components.forEach(component => {
+            const js = component.getAttributes()['data-js'];
+            if (js) {
+                jsContent += js + '\n';
+            }
+        });
+
         const finalOutput = `<!DOCTYPE html><html lang="en"><head>
             <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${siteConfig.title}</title>
@@ -300,14 +446,13 @@ editor.Commands.add('publish-site', {
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
             ${gaPart}<style>${ed.getCss()}${darkStyle}</style>
-        </head><body>${ed.getHtml()}</body></html>`;
+        </head><body>${ed.getHtml()}<script>${jsContent}</script></body></html>`;
         
         zip.file("index.html", finalOutput);
         zip.generateAsync({type:"blob"}).then(content => saveAs(content, "project.zip"));
     }
 });
 
-// 7. PREVIEW MODE FIXES (CLEAN PATCH)
 editor.on('run:preview', () => {
     editor.select(); 
     const frames = editor.Canvas.getFrames();
@@ -336,4 +481,99 @@ document.body.insertAdjacentHTML('beforeend', `
         </div>
         <button id="preview-apply-btn" class="btn btn-blue" style="margin-top:20px; padding: 12px 40px;">Use This Template</button>
     </div>
+
+    <!-- Import HTML Panel -->
+    <div id="import-html-div" class="import-html-div" style="display: none;">
+        <div class="panel-header">
+            <h3>Import HTML</h3>
+            <button class="btn btn-secondary" onclick="toggleImportHtmlPanel()"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="panel-body">
+            <div class="import-html-content">
+                <p>Upload your HTML file to import it into the editor:</p>
+                <input type="file" id="html-file-input" accept=".html,.htm" style="margin: 10px 0;">
+                <button class="btn btn-blue" onclick="importHtmlFile()">Import HTML</button>
+            </div>
+        </div>
+    </div>
 `);
+
+function toggleImportHtmlPanel() {
+    const importDiv = document.getElementById('import-html-div');
+    if (importDiv.style.display === 'none') {
+        importDiv.style.display = 'block';
+    } else {
+        importDiv.style.display = 'none';
+    }
+}
+
+function importHtmlFile() {
+    const fileInput = document.getElementById('html-file-input');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select an HTML file to import.');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const bodyContent = doc.body.innerHTML;
+            
+            let cssContent = '';
+            const styleElements = doc.querySelectorAll('style');
+            styleElements.forEach(style => {
+                cssContent += style.innerHTML;
+            });
+            
+            const elementsWithStyles = doc.querySelectorAll('[style]');
+            elementsWithStyles.forEach(element => {
+                const inlineStyle = element.getAttribute('style');
+                if (inlineStyle) {
+                    const elementSelector = element.tagName.toLowerCase();
+                    cssContent += `${elementSelector} { ${inlineStyle} }`;
+                }
+            });
+
+            // Extract JavaScript content
+            let jsContent = '';
+            const scriptElements = doc.querySelectorAll('script');
+            scriptElements.forEach(script => {
+                if (script.src) {
+                    // For external scripts, we could potentially load them, but for now we'll skip
+                    // In a real implementation, you might want to handle external scripts differently
+                } else {
+                    // For inline scripts, extract the content
+                    jsContent += script.innerHTML + '\n';
+                }
+            });
+
+            editor.setComponents('');
+            editor.setStyle('');
+            
+            editor.setComponents(bodyContent);
+            
+            if (cssContent.trim()) {
+                editor.addStyle(cssContent);
+            }
+            
+            // If there's JavaScript content, we could potentially add it to a script manager
+            // For now, we'll just log it to console for debugging purposes
+            if (jsContent.trim()) {
+                console.log('Imported JavaScript content:', jsContent);
+                // In a real implementation, you might want to add this to a script manager or editor
+            }
+            
+            fileInput.value = '';
+            toggleImportHtmlPanel();
+        } catch (error) {
+            console.error('Error importing HTML:', error);
+            alert('Error importing HTML. Please check the file and try again.');
+        }
+    };
+    reader.readAsText(file);
+}

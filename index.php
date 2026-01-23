@@ -47,6 +47,11 @@ function getToolThumbnail($category, $folder) {
     <title>URage Tools - Free Online Web Utilities</title>
     <meta name="description" content="A collection of fast, free, and privacy-focused web tools for developers and creators. Featuring a Seamless Texture Maker, HTML Separator, and more.">
     <link rel="canonical" href="https://tools.urage.net/">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tools.urage.net/">
@@ -60,24 +65,10 @@ function getToolThumbnail($category, $folder) {
     <meta name="twitter:image" content="https://tools.urage.net/thumbnail.png">
 
     <link rel="stylesheet" href="style.css">
-    <link href="fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="_shared/fontawesome/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="header-container">
-            <div class="site-branding">
-                <a href="https://tools.urage.net/" title="URage Tools">
-                    <img height="48" class="site-logo" src="logo.png" alt="URage Tools">
-                </a>
-            </div>
-            <div class="header-socials">
-                <a href="https://urage.net/discord" class="social-icon" data-label="Discord"><span><i class="fa-brands fa-discord"></i></span></a>
-                <a href="https://urage.net/youtube" class="social-icon" data-label="YouTube"><span><i class="fa-brands fa-youtube"></i></span></a>
-                <a href="https://urage.net/bluesky" class="social-icon" data-label="Bluesky"><span><i class="fa-brands fa-bluesky"></i></span></a>
-                <a href="https://urage.net/github" class="social-icon" data-label="GitHub"><span><i class="fa-brands fa-github"></i></span></a>
-            </div>
-        </div>
-    </header>
+    <?php include 'header.html'; ?>
 
 	<div class="hero-wrapper">
 		<main id="viewport" class="hero-bg">
@@ -88,8 +79,8 @@ function getToolThumbnail($category, $folder) {
         </main>
 		<div class="hero-content">
 			<div class="hero-badge">URage Tools</div>
-			<h1>Forge Your <span>Visual Assets</span> with Precision</h1>
-			<p>A suite of high-performance tools for developers and artists to crop, scale, and pixelate images for any platform in seconds.</p>
+			<h1>Powerful Utilities for <span>Developers & Artists</span></h1>
+			<p>A collection of fast, free, and privacy-focused web tools for web development and 3D art. No sign-up required, all tools run directly in your browser.</p>
 			
 			<div class="hero-actions">
 				<a href="#cropper" class="cta-btn btn-filled">
@@ -138,9 +129,7 @@ function getToolThumbnail($category, $folder) {
                                 <div class="tool-card-content">
                                     <h2><?php echo $cleanName; ?></h2>
                                     <p><?php echo htmlspecialchars($description); ?></p>
-                                    <form action="<?php echo $catKey . '/' . $tool; ?>" class="tool-form">
-                                        <input type="submit" value="Open tool" class="btn-inferno-stretch" />
-                                    </form>
+                                    <a href="<?php echo $catKey . '/' . $tool; ?>" class="tool-link btn btn-inferno-stretch">Open tool</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -150,7 +139,7 @@ function getToolThumbnail($category, $folder) {
         <?php endforeach; ?>
 
     </div>
-    
+    <?php include 'footer.html'; ?>
     <script src="script.js"></script>
 </body>
 </html>

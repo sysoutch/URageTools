@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const a = data[idx + 3];
 
                 // Skip transparent pixels
-                if (a < 128) continue;
+                if (a < 255) continue;
 
                 const color = {
                     r: r,
