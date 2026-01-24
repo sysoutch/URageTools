@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rage Fire Button</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #0a0a0a;
+            font-family: Arial, sans-serif;
+        }
+        #canvas-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <script>
+        let particles = [];
+        let buttonX, buttonY, buttonW, buttonH;
+        let isHovered = false;
+        let isPressed = false;
+        let clickCount = 0;
+        
+        function setup() {
+            let canvas = createCanvas(800, 600);
+            canvas.parent('canvas-container');
+            
+            buttonW = 300;
+            buttonH = 100;
+            buttonX = width / 2 - buttonW / 2;
+            buttonY = height / 2 - buttonH / 2;
+            
+            // Create initial flame particles
+            for (let i = 0; i < 50; i++) {
+                particles.push(new FlameParticle(
+                    random(buttonX, buttonX + buttonW),
+                    buttonY + buttonH
+                ));
+            }
+        }
+        
+        function draw() {
+            background(10, 5, 5);
+            
+            // Add new particles
+            if (frameCount % 3 === 0) {
+                let intensity = isHovered ? 3 : 1;
+                for (let i = 0; i < intensity; i++) {
+                    particles.push(new FlameParticle(
+                        random(buttonX, buttonX + buttonW),
+                        buttonY + buttonH
+                    ));
+                }
+            }
+            
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].display();
+                
+                if (particles[i].isDead()) {
+                    particles.splice(i, 1);
+                }
+            }
+            
+            // Draw button
+            drawButton();
+            
+            // Draw click counter
+            fill(255, 100, 50);
+            textSize(20);
+            textAlign(CENTER);
+            text(`RAGE METER: ${clickCount}`, width / 2, 80);
+        }
+        
+        function drawButton() {
+            push();
+            
+            // Glow effect
+            drawingContext.shadowBlur = isHovered ? 40 : 20;
+            drawingContext.shadowColor = isPressed ? 'rgba(255, 50, 0, 0.8)' : 'rgba(255, 100, 0, 0.6)';
+            
+            // Button background
+            let c1, c2;
+            if (isPressed) {
+                c1 = color(180, 20, 0);
+                c2 = color(255, 50, 0);
+            } else if (isHovered) {
+                c1 = color(150, 30, 0);
+                c2 = color(255, 80, 0);
+            } else {
+                c1 = color(100, 20, 0);
+                c2 = color(200, 60, 0);
+            }
+            
+            // Gradient fill
+            for (let y = buttonY; y <= buttonY + buttonH; y++) {
+                let inter = map(y, buttonY, buttonY + buttonH, 0, 1);
+                let c = lerpColor(c1, c2, inter);
+                stroke(c);
+                line(buttonX, y, buttonX + buttonW, y);
+            }
+            
+            // Border
+            noFill();
+            strokeWeight(3);
+            stroke(255, 150, 0, 200);
+            rect(buttonX, buttonY, buttonW, buttonH, 15);
+            
+            // Inner glow
+            strokeWeight(1);
+            stroke(255, 200, 100, 100);
+            rect(buttonX + 5, buttonY + 5, buttonW - 10, buttonH - 10, 12);
+            
+            pop();
+            
+            // Button text
+            fill(255, 255, 200);
+            noStroke();
+            textSize(isPressed ? 38 : 40);
+            textAlign(CENTER, CENTER);
+            textStyle(BOLD);
+            text('RAGE!', width / 2, height / 2 + (isPressed ? 2 : 0));
+            
+            // Subtle fire texture on text
+            fill(255, 100, 0, 100);
+            textSize(isPressed ? 38 : 40);
+            text('RAGE!', width / 2 + random(-1, 1), height / 2 + random(-1, 1));
+        }
+        
+        function mouseMoved() {
+            checkHover();
+        }
+        
+        function mousePressed() {
+            if (isHovered) {
+                isPressed = true;
+                clickCount++;
+                
+                // Explosion of particles
+                for (let i = 0; i < 30; i++) {
+                    particles.push(new FlameParticle(
+                        mouseX,
+                        mouseY,
+                        true
+                    ));
+                }
+            }
+        }
+        
+        function mouseReleased() {
+            isPressed = false;
+        }
+        
+        function checkHover() {
+            isHovered = mouseX > buttonX && mouseX < buttonX + buttonW &&
+                       mouseY > buttonY && mouseY < buttonY + buttonH;
+        }
+        
+        class FlameParticle {
+            constructor(x, y, explosion = false) {
+                this.x = x;
+                this.y = y;
+                this.vx = explosion ? random(-3, 3) : random(-1, 1);
+                this.vy = explosion ? random(-5, -2) : random(-3, -1);
+                this.life = 255;
+                this.size = random(4, 12);
+                this.decay = random(2, 5);
+                
+                // Color variation
+                this.hueVar = random(-20, 20);
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy -= 0.05; // Rise up
+                this.vx *= 0.98; // Slight air resistance
+                this.life -= this.decay;
+                this.size *= 0.97;
+            }
+            
+            display() {
+                noStroke();
+                
+                // Color shifts from yellow to orange to red as it fades
+                let lifePct = this.life / 255;
+                let r, g, b;
+                
+                if (lifePct > 0.7) {
+                    // Yellow-white
+                    r = 255;
+                    g = 255;
+                    b = 150 + this.hueVar;
+                } else if (lifePct > 0.4) {
+                    // Orange
+                    r = 255;
+                    g = 100 + this.hueVar;
+                    b = 0;
+                } else {
+                    // Dark red
+                    r = 150 + this.hueVar;
+                    g = 0;
+                    b = 0;
+                }
+                
+                fill(r, g, b, this.life);
+                ellipse(this.x, this.y, this.size);
+                
+                // Inner bright core
+                fill(255, 255, 200, this.life * 0.5);
+                ellipse(this.x, this.y, this.size * 0.4);
+            }
+            
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rage Button</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a1a;
+            font-family: 'Arial Black', sans-serif;
+            overflow: hidden;
+        }
+        #canvas-container {
+            position: relative;
+        }
+        #resetBtn {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background: #333;
+            color: white;
+            border: 2px solid #666;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        #resetBtn:hover {
+            background: #444;
+            border-color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <button id="resetBtn">Reset</button>
+    </div>
+
+    <script>
+        let button;
+        let rageLevel = 0;
+        let maxRage = 10;
+        let hasExploded = false;
+        let particles = [];
+        let shakeIntensity = 0;
+        let flames = [];
+        let explosionScale = 1;
+        let explosionStartTime = 0;
+        let isExploding = false;
+
+        function setup() {
+            createCanvas(800, 600);
+            button = {
+                x: width / 2,
+                y: height / 2,
+                width: 200,
+                height: 80,
+                baseWidth: 200,
+                baseHeight: 80
+            };
+            
+            document.getElementById('resetBtn').addEventListener('click', resetButton);
+        }
+
+        function draw() {
+            background(20);
+            
+            if (isExploding) {
+                let elapsed = (millis() - explosionStartTime) / 1000;
+                
+                // Animation: quick shrink for 0.15s, then expand for 0.6s
+                if (elapsed < 0.15) {
+                    // Quick shrink down
+                    explosionScale = map(elapsed, 0, 0.15, 1, 0.85);
+                } else if (elapsed < 0.75) {
+                    // Expand up
+                    explosionScale = map(elapsed, 0.15, 0.75, 0.85, 2.5);
+                } else {
+                    // Explode!
+                    if (!hasExploded) {
+                        explode();
+                    }
+                }
+            }
+            
+            shakeIntensity = map(rageLevel, 0, maxRage, 0, 15);
+            if (isExploding) {
+                shakeIntensity = 25;
+            }
+            
+            // Update and draw flames
+            for (let i = flames.length - 1; i >= 0; i--) {
+                flames[i].update();
+                flames[i].display();
+                if (flames[i].isDead()) {
+                    flames.splice(i, 1);
+                }
+            }
+            
+            // Draw particles (explosion)
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].display();
+                if (particles[i].isDead()) {
+                    particles.splice(i, 1);
+                }
+            }
+            
+            // Draw button if not exploded
+            if (!hasExploded) {
+                drawButton();
+            }
+            
+            // Draw rage meter
+            drawRageMeter();
+        }
+
+        function drawButton() {
+            push();
+            
+            // Shake effect
+            let shakeX = random(-shakeIntensity, shakeIntensity);
+            let shakeY = random(-shakeIntensity, shakeIntensity);
+            translate(button.x + shakeX, button.y + shakeY);
+            
+            // Apply explosion scale
+            scale(explosionScale);
+            
+            // Pulsing effect
+            let pulse = sin(millis() * 0.01 * (1 + rageLevel)) * (3 + rageLevel * 1.5);
+            let currentWidth = button.baseWidth + pulse + rageLevel * 8;
+            let currentHeight = button.baseHeight + pulse * 0.5 + rageLevel * 4;
+            
+            // Color transitions from red to bright orange/yellow
+            let r = map(rageLevel, 0, maxRage, 180, 255);
+            let g = map(rageLevel, 0, maxRage, 50, 100);
+            let b = map(rageLevel, 0, maxRage, 50, 0);
+            
+            // Outer glow
+            for (let i = 4; i > 0; i--) {
+                let alpha = map(i, 0, 4, 0, 50 * rageLevel/maxRage);
+                fill(r, g, b, alpha);
+                noStroke();
+                rect(-currentWidth/2 - i*10, -currentHeight/2 - i*10, 
+                     currentWidth + i*20, currentHeight + i*20, 15);
+            }
+            
+            // Button shadow/depth
+            fill(r * 0.3, g * 0.3, b * 0.3);
+            rect(-currentWidth/2 + 3, -currentHeight/2 + 3, currentWidth, currentHeight, 12);
+            
+            // Button gradient effect
+            for (let i = 0; i < currentHeight; i += 2) {
+                let inter = map(i, 0, currentHeight, 0, 1);
+                let c = lerpColor(color(r, g, b), color(r * 0.5, g * 0.5, b * 0.5), inter);
+                fill(c);
+                noStroke();
+                rect(-currentWidth/2, -currentHeight/2 + i, currentWidth, 2, 12);
+            }
+            
+            // Button border
+            noFill();
+            stroke(r * 1.2, g * 1.2, b);
+            strokeWeight(3);
+            rect(-currentWidth/2, -currentHeight/2, currentWidth, currentHeight, 12);
+            
+            // Inner highlight
+            fill(255, 255, 200, 100);
+            noStroke();
+            rect(-currentWidth/2 + 10, -currentHeight/2 + 5, 
+                 currentWidth * 0.4, currentHeight * 0.3, 8);
+            
+            // Text
+            fill(255, 255, 255, 255);
+            textAlign(CENTER, CENTER);
+            textSize(20 + rageLevel * 2);
+            textStyle(BOLD);
+            
+            let buttonText = rageLevel > 0 ? "RAGING!" : "CLICK ME!";
+            if (rageLevel >= 10) {
+                buttonText = "EXPLODING!!!";
+            } else if (rageLevel > 7) {
+                buttonText = "SO ANGRY!!";
+            } else if (rageLevel > 4) {
+                buttonText = "GETTING MAD!";
+            }
+            
+            text(buttonText, 0, 0);
+            
+            // Create flame particles while raging
+            if (rageLevel > 0 && frameCount % 2 === 0) {
+                for (let i = 0; i < rageLevel; i++) {
+                    let side = floor(random(4)); // 0=top, 1=right, 2=bottom, 3=left
+                    let x, y, angle;
+                    
+                    if (side === 0) { // top
+                        x = random(-currentWidth/2, currentWidth/2);
+                        y = -currentHeight/2;
+                        angle = -PI/2 + random(-0.5, 0.5);
+                    } else if (side === 1) { // right
+                        x = currentWidth/2;
+                        y = random(-currentHeight/2, currentHeight/2);
+                        angle = 0 + random(-0.5, 0.5);
+                    } else if (side === 2) { // bottom
+                        x = random(-currentWidth/2, currentWidth/2);
+                        y = currentHeight/2;
+                        angle = PI/2 + random(-0.5, 0.5);
+                    } else { // left
+                        x = -currentWidth/2;
+                        y = random(-currentHeight/2, currentHeight/2);
+                        angle = PI + random(-0.5, 0.5);
+                    }
+                    
+                    flames.push(new Flame(x, y, angle));
+                }
+            }
+            
+            pop();
+        }
+
+        function drawRageMeter() {
+            push();
+            translate(width / 2, 50);
+            
+            // Meter background
+            fill(40);
+            noStroke();
+            rect(-200, -15, 400, 30, 15);
+            
+            // Rage fill
+            let fillWidth = map(rageLevel, 0, maxRage, 0, 400);
+            let r = map(rageLevel, 0, maxRage, 180, 255);
+            let g = map(rageLevel, 0, maxRage, 50, 100);
+            fill(r, g, 0);
+            rect(-200, -15, fillWidth, 30, 15);
+            
+            // Text
+            fill(255);
+            textAlign(CENTER, CENTER);
+            textSize(14);
+            text(`RAGE: ${rageLevel} / ${maxRage} clicks`, 0, 0);
+            
+            pop();
+        }
+
+        function explode() {
+            hasExploded = true;
+            isRaging = false;
+            
+            // Create explosion particles
+            for (let i = 0; i < 200; i++) {
+                particles.push(new Particle(button.x, button.y));
+            }
+        }
+
+        function mousePressed() {
+            let d = abs(mouseX - button.x) < button.width / 2 && 
+                    abs(mouseY - button.y) < button.height / 2;
+            if (d && !hasExploded && !isExploding) {
+                rageLevel = min(rageLevel + 1, maxRage);
+                
+                // Start explosion animation on 10th click
+                if (rageLevel >= maxRage) {
+                    isExploding = true;
+                    explosionStartTime = millis();
+                }
+            }
+        }
+
+        function resetButton() {
+            rageLevel = 0;
+            hasExploded = false;
+            particles = [];
+            flames = [];
+            shakeIntensity = 0;
+            explosionScale = 1;
+            isExploding = false;
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                let angle = random(TWO_PI);
+                let speed = random(5, 20);
+                this.vx = cos(angle) * speed;
+                this.vy = sin(angle) * speed;
+                this.life = 255;
+                this.size = random(5, 20);
+                this.color = color(random(200, 255), random(50, 150), random(0, 50));
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.3; // gravity
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                this.life -= 3;
+            }
+            
+            display() {
+                push();
+                fill(red(this.color), green(this.color), blue(this.color), this.life);
+                noStroke();
+                ellipse(this.x, this.y, this.size);
+                pop();
+            }
+            
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        class Flame {
+            constructor(x, y, angle) {
+                this.x = x;
+                this.y = y;
+                this.vx = cos(angle) * random(1, 3);
+                this.vy = sin(angle) * random(1, 3) - 2;
+                this.life = 255;
+                this.size = random(5, 15);
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy -= 0.1; // rise up
+                this.life -= 8;
+                this.size *= 0.95;
+            }
+            
+            display() {
+                push();
+                translate(button.x, button.y);
+                fill(255, random(100, 200), 0, this.life);
+                noStroke();
+                ellipse(this.x, this.y, this.size);
+                pop();
+            }
+            
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+    </script>
+</body>
+</html>

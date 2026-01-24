@@ -1,5 +1,5 @@
 <?php
-$baseDir = __DIR__;
+$baseDir = __DIR__ . '/tools';
 $categories = [
     'art'      => 'Art & Design',
     'audio'    => 'Audio & Sound Lab',
@@ -8,7 +8,7 @@ $categories = [
 ];
 
 function getToolDescription($category, $folder) {
-    $indexFile = __DIR__ . '/' . $category . '/' . $folder . '/index.html';
+    $indexFile = $baseDir . '/' . $category . '/' . $folder . '/index.html';
     if (!file_exists($indexFile)) return "";
 
     $content = file_get_contents($indexFile);
@@ -23,12 +23,12 @@ function getToolDescription($category, $folder) {
 }
 
 function getToolThumbnail($category, $folder) {
-    $thumbPath = __DIR__ . '/' . $category . '/' . $folder . '/thumbnail.png';
+    $thumbPath = $baseDir . '/' . $category . '/' . $folder . '/thumbnail.png';
     if (file_exists($thumbPath)) {
         return $category . '/' . $folder . '/thumbnail.png';
     }
 
-    $indexFile = __DIR__ . '/' . $category . '/' . $folder . '/index.html';
+    $indexFile = $baseDir . '/' . $category . '/' . $folder . '/index.html';
     if (file_exists($indexFile)) {
         $content = file_get_contents($indexFile);
         if (preg_match('/<img\s+[^>]*src=["\']([^"\']+)["\']/i', $content, $matches)) {
