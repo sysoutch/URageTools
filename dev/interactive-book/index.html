@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Refined Flip Book</title>
+    <style>
+        body { background: #1a1a1a; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        canvas { cursor: pointer; box-shadow: 0 50px 100px rgba(0,0,0,0.8); border-radius: 8px; }
+        .controls { margin-top: 30px; display: flex; gap: 15px; }
+        button, label { 
+            background: #d4af37; color: #1a1a1a; padding: 12px 24px; 
+            border-radius: 5px; cursor: pointer; border: none; 
+            font-weight: bold; transition: transform 0.2s, background 0.2s;
+        }
+        button:hover, label:hover { background: #f1cf6d; transform: translateY(-2px); }
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+
+<canvas id="bookCanvas"></canvas>
+
+<div class="controls">
+    <label for="file-upload">Add Page (Upload)</label>
+    <input type="file" id="file-upload" accept="image/*">
+    <button onclick="location.reload()">Reset Book</button>
+</div>
+
+<script>
+const canvas = document.getElementById('bookCanvas');
+const ctx = canvas.getContext('2d');
+
+const pageWidth = 450;
+const pageHeight = 550;
+const margin = 50;
+canvas.width = (pageWidth * 2) + (margin * 2);
+canvas.height = pageHeight + (margin * 2);
+
+let pagesData = [
+    { bg: "transparent", isVoid: true }, 
+    { text: "MY\nJOURNAL", bg: "#4a3728", textColor: "#d4af37", fontSize: 50 },
+    { text: "A collection of\ncaptured moments.", bg: "#fdfbf0", textColor: "#444", fontSize: 22 },
+    { image: "https://picsum.photos/id/10/450/550", text: "Nature", bg: "#fdfbf0" },
+    { image: "https://picsum.photos/id/28/450/550", text: "Forest", bg: "#fdfbf0" },
+    { text: "THE END", bg: "#4a3728", textColor: "#d4af37", fontSize: 40 }
+];
+
+let prerenderedPages = [];
+let currentPage = 0;
+let progress = 0;
+let isAnimating = false;
+let dir = 0;
+
+// Handle File Uploads
+document.getElementById('file-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        // Insert new image before the "The End" page
+        pagesData.splice(pagesData.length - 1, 0, {
+            image: event.target.result,
+            bg: "#fdfbf0"
+        });
+        init(); // Re-render the book
+    };
+    reader.readAsDataURL(file);
+});
+
+function init() {
+    prerenderedPages = [];
+    let loadedCount = 0;
+    pagesData.forEach((data, i) => {
+        const pc = document.createElement('canvas');
+        pc.width = pageWidth; pc.height = pageHeight;
+        const pctx = pc.getContext('2d');
+        
+        if (data.isVoid) {
+            pctx.clearRect(0, 0, pageWidth, pageHeight);
+            checkComplete();
+        } else {
+            pctx.fillStyle = data.bg || "#fff";
+            pctx.fillRect(0, 0, pageWidth, pageHeight);
+            
+            if (data.image) {
+                const img = new Image();
+                img.onload = () => {
+                    pctx.drawImage(img, 0, 0, pageWidth, pageHeight);
+                    if(data.text) drawText(pctx, data);
+                    checkComplete();
+                };
+                img.src = data.image;
+            } else {
+                drawText(pctx, data);
+                checkComplete();
+            }
+        }
+        prerenderedPages[i] = pc;
+    });
+
+    function checkComplete() {
+        loadedCount++;
+        if (loadedCount >= pagesData.length) render();
+    }
+}
+
+function drawText(pctx, data) {
+    pctx.fillStyle = data.textColor || "#000";
+    pctx.font = `bold ${data.fontSize || 24}px Georgia`;
+    pctx.textAlign = "center";
+    const lines = data.text.split('\n');
+    lines.forEach((line, idx) => {
+        pctx.fillText(line, pageWidth/2, 250 + (idx * 60));
+    });
+}
+
+function drawDeformedPage(img, startX, direction, foldProgress) {
+    if (!img) return;
+
+    // --- RIGID COVER CHECK ---
+    // If it's the first page (index 1) or last page, it shouldn't bend.
+    const isFirstPage = (img === prerenderedPages[1]);
+    const isLastPage = (img === prerenderedPages[pagesData.length - 1]);
+    const isRigid = isFirstPage || isLastPage;
+
+    const segments = 100;
+    const stripWidth = pageWidth / segments;
+    const scaling = Math.cos(foldProgress * Math.PI);
+    const absScaling = Math.abs(scaling);
+
+    for (let i = 0; i < segments; i++) {
+        const sectionProgress = i / segments;
+        
+        // If rigid, bend is 0. Otherwise, use the torsion bend logic.
+        const baseBend = isRigid ? 0 : Math.sin(sectionProgress * Math.PI) * (120 * Math.sin(foldProgress * Math.PI));
+        
+        const srcX = (direction === -1) ? (segments - i - 1) * stripWidth : i * stripWidth;
+        const xOffset = i * stripWidth * absScaling;
+        let x = (direction === 1) ? startX + xOffset : startX - xOffset - (stripWidth * absScaling);
+
+        const vSegments = 5; 
+        const vHeight = pageHeight / vSegments;
+        
+        for (let j = 0; j < vSegments; j++) {
+            const vProgress = j / vSegments;
+            const twistMultiplier = 1 + (vProgress * 0.5); 
+            const dynamicBend = baseBend * twistMultiplier;
+            
+            const y = margin + (j * vHeight) - (dynamicBend * 0.5);
+            
+            ctx.drawImage(
+                img, 
+                srcX, j * vHeight, stripWidth, vHeight, 
+                x, y, stripWidth * absScaling + 1, vHeight + (dynamicBend * 0.1)
+            );
+
+            // Lighting: Rigid pages get a flat darkening as they turn 
+            // Flexible pages keep the "fold" shadow
+            const shadowOpacity = isRigid 
+                ? (1 - absScaling) * 0.4 
+                : (Math.abs(dynamicBend) / 200) + (1 - absScaling) * 0.2;
+                
+            ctx.fillStyle = `rgba(0,0,0,${shadowOpacity})`;
+            ctx.fillRect(x, y, stripWidth * absScaling + 1, vHeight + (dynamicBend * 0.1));
+        }
+    }
+}
+
+function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const centerX = canvas.width / 2;
+
+    // 1. Draw Hardcover Backing (The "Case")
+    ctx.fillStyle = "#2d1e12";
+    if (!(currentPage === 0 && !isAnimating)) {
+        ctx.beginPath();
+        ctx.roundRect(margin - 15, margin - 10, (pageWidth * 2) + 30, pageHeight + 20, 10);
+        ctx.fill();
+    } else {
+        ctx.beginPath();
+        ctx.roundRect(centerX - 5, margin - 10, pageWidth + 20, pageHeight + 20, 10);
+        ctx.fill();
+    }
+
+    // 2. Static Pages
+    let leftIdx = currentPage;
+    let rightIdx = currentPage + 1;
+
+    if (isAnimating) {
+        if (dir === 1) rightIdx = currentPage + 3;
+        if (dir === -1) leftIdx = currentPage - 2;
+    }
+
+    if (prerenderedPages[leftIdx] && !pagesData[leftIdx].isVoid) {
+        ctx.drawImage(prerenderedPages[leftIdx], centerX - pageWidth, margin, pageWidth, pageHeight);
+    }
+    if (prerenderedPages[rightIdx] && !pagesData[rightIdx].isVoid) {
+        ctx.drawImage(prerenderedPages[rightIdx], centerX, margin, pageWidth, pageHeight);
+    }
+
+    // 3. Animated Flip
+    if (isAnimating) {
+        if (progress < 0.5) {
+            const img = (dir === 1) ? prerenderedPages[currentPage + 1] : prerenderedPages[currentPage];
+            drawDeformedPage(img, centerX, dir, progress);
+        } else {
+            const img = (dir === 1) ? prerenderedPages[currentPage + 2] : prerenderedPages[currentPage - 1];
+            drawDeformedPage(img, centerX, -dir, 1 - progress);
+        }
+    }
+
+    // 4. Spine Depth Shadow
+    const grad = ctx.createLinearGradient(centerX - 25, 0, centerX + 25, 0);
+    grad.addColorStop(0, "rgba(0,0,0,0)");
+    grad.addColorStop(0.4, "rgba(0,0,0,0.6)");
+    grad.addColorStop(0.5, "rgba(0,0,0,0.8)");
+    grad.addColorStop(0.6, "rgba(0,0,0,0.6)");
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(centerX - 25, margin, 50, pageHeight);
+}
+
+function animate() {
+    progress += 0.025; // Slightly faster for snappier feel
+    if (progress >= 1) {
+        currentPage += (dir * 2);
+        isAnimating = false;
+        progress = 0;
+        render();
+        return;
+    }
+    render();
+    requestAnimationFrame(animate);
+}
+
+canvas.addEventListener('mousedown', (e) => {
+    if (isAnimating) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+
+    if ((x > canvas.width / 2 || currentPage === 0) && currentPage < pagesData.length - 2) {
+        dir = 1; isAnimating = true; animate();
+    } else if (x < canvas.width / 2 && currentPage > 0) {
+        dir = -1; isAnimating = true; animate();
+    }
+});
+
+init();
+</script>
+</body>
+</html>
