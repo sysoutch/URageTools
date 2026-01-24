@@ -1,14 +1,17 @@
 <?php
-$baseDir = __DIR__ . '/tools';
+$toolsSubfolder = 'tools'; 
+$baseDir = __DIR__ . '/' . $toolsSubfolder;
+
 $categories = [
-    'art'      => 'Art & Design',
-    'audio'    => 'Audio & Sound Lab',
-    'dev'      => 'Developer Utilities',
-    'plan' => 'Planning Tools'
+    'art'   => 'Art & Design',
+    'audio' => 'Audio & Sound Lab',
+    'dev'   => 'Developer Utilities',
+    'plan'  => 'Planning Tools'
 ];
 
-function getToolDescription($category, $folder) {
-    $indexFile = $baseDir . '/' . $category . '/' . $folder . '/index.html';
+function getToolDescription($category, $folder, $sub) {
+    // Correct Path: tools/category/tool/index.html
+    $indexFile = __DIR__ . '/' . $sub . '/' . $category . '/' . $folder . '/index.html';
     if (!file_exists($indexFile)) return "";
 
     $content = file_get_contents($indexFile);
@@ -22,17 +25,18 @@ function getToolDescription($category, $folder) {
     return "";
 }
 
-function getToolThumbnail($category, $folder) {
-    $thumbPath = $baseDir . '/' . $category . '/' . $folder . '/thumbnail.png';
+function getToolThumbnail($category, $folder, $sub) {
+    // Correct Path: tools/category/tool/thumbnail.png
+    $thumbPath = __DIR__ . '/' . $sub . '/' . $category . '/' . $folder . '/thumbnail.png';
     if (file_exists($thumbPath)) {
-        return $category . '/' . $folder . '/thumbnail.png';
+        return $sub . '/' . $category . '/' . $folder . '/thumbnail.png';
     }
 
-    $indexFile = $baseDir . '/' . $category . '/' . $folder . '/index.html';
+    $indexFile = __DIR__ . '/' . $sub . '/' . $category . '/' . $folder . '/index.html';
     if (file_exists($indexFile)) {
         $content = file_get_contents($indexFile);
         if (preg_match('/<img\s+[^>]*src=["\']([^"\']+)["\']/i', $content, $matches)) {
-            return $category . '/' . $folder . '/' . $matches[1];
+            return $sub . '/' . $category . '/' . $folder . '/' . $matches[1];
         }
     }
     return null;
@@ -70,36 +74,31 @@ function getToolThumbnail($category, $folder) {
 <body>
     <?php include 'header.html'; ?>
 
-	<div class="hero-wrapper">
-		<main id="viewport" class="hero-bg">
-            <!-- <div class="animation-container">
-                <canvas id="lavaCanvas"></canvas>
-            </div> -->
+    <div class="hero-wrapper">
+        <main id="viewport" class="hero-bg">
             <canvas id="mainCanvas"></canvas>
         </main>
-		<div class="hero-content">
-			<div class="hero-badge">URage Tools</div>
-			<h1>Powerful Utilities for <span>Developers & Artists</span></h1>
-			<p>A collection of fast, free, and privacy-focused web tools for web development and 3D art. No sign-up required, all tools run directly in your browser.</p>
-			
-			<div class="hero-actions">
-				<a href="#cropper" class="cta-btn btn-filled">
-					<span>✂️</span> Image Crop & Scale
-				</a>
-				<a href="#pixel-art" class="cta-btn btn-glass">
-					<span>🎨</span> Pixel Art Studio
-				</a>
-			</div>
-		</div>
-		<div class="scroll-down">↓</div>
-	</div>
-    <header>
+        <div class="hero-content">
+            <div class="hero-badge">URage Tools</div>
+            <h1>Powerful Utilities for <span>Developers & Artists</span></h1>
+            <p>A collection of fast, free, and privacy-focused web tools for web development and 3D art. No sign-up required, all tools run directly in your browser.</p>
+            
+            <div class="hero-actions">
+                <a href="#headerdev" class="cta-btn btn-filled">
+                    <span>✂️</span> Image Crop & Scale
+                </a>
+                <a href="#headerart" class="cta-btn btn-glass">
+                    <span>🎨</span> Pixel Art Studio
+                </a>
+            </div>
+        </div>
+        <div class="scroll-down">↓</div>
+    </div>
 
-    </header>
     <div class="container">
         <?php foreach ($categories as $catKey => $catName): ?>
             <?php
-            // Scan only directories within the category folder
+            // Scan only directories within the category folder inside /tools
             $catDir = $baseDir . '/' . $catKey;
             $tools = [];
             if (is_dir($catDir)) {
@@ -111,25 +110,29 @@ function getToolThumbnail($category, $folder) {
             ?>
 
             <?php if (!empty($tools)): ?>
-				<div class="category-header" id="<?php echo "header" . $catKey; ?>">
-					<h2><?php echo $catName; ?></h2>
-				</div>
+                <div class="category-header" id="<?php echo "header" . $catKey; ?>">
+                    <h2><?php echo $catName; ?></h2>
+                </div>
                 <div class="category-wrapper">
                     <div class="tools-grid">
                         <?php foreach ($tools as $tool): 
-                            $description = getToolDescription($catKey, $tool);
+                            // Updated: Passing $toolsSubfolder to helper functions
+                            $description = getToolDescription($catKey, $tool, $toolsSubfolder);
                             if (!$description) {
                                 $description = "A useful tool for " . ucwords(str_replace('-', ' ', $tool)) . ".";
                             }
-                            $thumbnail = getToolThumbnail($catKey, $tool);
+                            $thumbnail = getToolThumbnail($catKey, $tool, $toolsSubfolder);
                             $cleanName = ucwords(str_replace('-', ' ', $tool));
+                            
+                            // Updated: Link now includes the tools subfolder
+                            $toolLink = $toolsSubfolder . '/' . $catKey . '/' . $tool;
                         ?>
                             <div class="tool-card">
                                 <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> Thumbnail" loading="lazy" />
                                 <div class="tool-card-content">
                                     <h2><?php echo $cleanName; ?></h2>
                                     <p><?php echo htmlspecialchars($description); ?></p>
-                                    <a href="<?php echo $catKey . '/' . $tool; ?>" class="tool-link btn btn-inferno-stretch">Open tool</a>
+                                    <a href="<?php echo $toolLink; ?>" class="tool-link btn btn-inferno-stretch">Open tool</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
