@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URage Pulse | 8-Bit Visualizer</title>
+    <title>URage Pulse | Multi-View Visualizer</title>
     <style>
         :root {
             --bg: #050505;
-            --accent: #00ff41; /* Matrix/Retro Green */
+            --accent: #00ff41;
             --ui-panel: #1a1a1a;
         }
 
@@ -32,21 +32,25 @@
         }
 
         canvas {
-            image-rendering: pixelated;
             max-width: 90%;
             max-height: 80%;
             border: 4px solid #333;
             box-shadow: 0 0 50px rgba(0, 255, 65, 0.1);
         }
 
+        canvas.pixelated {
+            image-rendering: pixelated;
+        }
+
         .controls {
             background: var(--ui-panel);
-            padding: 20px;
+            padding: 15px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
             justify-content: center;
             border-top: 2px solid #333;
+            flex-wrap: wrap;
         }
 
         .upload-btn {
@@ -73,6 +77,86 @@
             display: flex;
             gap: 15px;
             font-size: 12px;
+            flex-wrap: wrap;
+        }
+
+        select {
+            background: var(--ui-panel);
+            color: var(--accent);
+            border: 1px solid #333;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        option {
+            background: var(--ui-panel);
+            color: var(--accent);
+        }
+
+        .playback-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+
+        .control-btn:disabled {
+            background: #666;
+            color: #333;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .time-display {
+            font-size: 12px;
+            color: var(--accent);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .volume-control input[type="range"] {
+            width: 100px;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            border: 1px solid #555;
+            margin: 5px 0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.1s linear;
         }
     </style>
 </head>
@@ -82,20 +166,55 @@
     <canvas id="visualizerCanvas"></canvas>
 </div>
 
+<div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+</div>
+
 <div class="controls">
     <label class="upload-btn">
         Load Track
         <input type="file" id="audioUpload" accept="audio/*">
     </label>
     
+    <div class="playback-controls">
+        <button class="control-btn" id="playBtn" onclick="togglePlayPause()" disabled>▶ Play</button>
+        <button class="control-btn" id="stopBtn" onclick="stopPlayback()" disabled>⏹ Stop</button>
+        <div class="time-display">
+            <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+        </div>
+        <div class="volume-control">
+            <label>Vol:</label>
+            <input type="range" id="volumeControl" min="0" max="100" value="70" onchange="setVolume()">
+        </div>
+    </div>
+
     <div class="status-text" id="status">Ready to Rock</div>
 
     <div class="visual-settings">
+        <label>View Type:
+            <select id="viewType" onchange="changeView()">
+                <option value="bars">Bars</option>
+                <option value="circular">Circular</option>
+                <option value="waveform">Waveform</option>
+                <option value="spectrum">Spectrum</option>
+                <option value="orbs">Orbs</option>
+            </select>
+        </label>
+
         <label>Pixel Size: 
             <select id="pixelSize" onchange="initCanvas()">
                 <option value="16">16-Bit (Smooth)</option>
                 <option value="32" selected>8-Bit (Chunky)</option>
                 <option value="64">4-Bit (Extreme)</option>
+            </select>
+        </label>
+
+        <label>Color Mode:
+            <select id="colorMode" onchange="updateColorMode()">
+                <option value="spectrum">Spectrum</option>
+                <option value="mono-green">Mono Green</option>
+                <option value="mono-cyan">Mono Cyan</option>
+                <option value="gradient">Gradient</option>
             </select>
         </label>
     </div>
@@ -106,16 +225,57 @@
     const ctx = canvas.getContext('2d');
     const audioUpload = document.getElementById('audioUpload');
     const statusText = document.getElementById('status');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+    const progressBar = document.querySelector('.progress-bar');
+    const progressFill = document.getElementById('progressFill');
+    const volumeControl = document.getElementById('volumeControl');
 
-    let audioCtx, analyser, source, dataArray;
-    let peaks = []; // Store falling peaks for 8-bit effect
+    let audioCtx, analyser, source, dataArray, gainNode;
+    let peaks = [];
+    let currentView = 'bars';
+    let colorMode = 'spectrum';
+    let isPlaying = false;
+    let audioBuffer = null;
 
     function initCanvas() {
-        // We set the canvas coordinate space small to get the pixelated look
         const size = parseInt(document.getElementById('pixelSize').value);
-        canvas.width = size * 16;  // Aspect ratio
+        canvas.width = size * 16;
         canvas.height = size * 9;
         peaks = new Array(size * 16).fill(0);
+        
+        // Apply pixelated class only for 8-bit and 4-bit views
+        if (size > 16) {
+            canvas.classList.add('pixelated');
+        } else {
+            canvas.classList.remove('pixelated');
+        }
+    }
+
+    function changeView() {
+        currentView = document.getElementById('viewType').value;
+    }
+
+    function updateColorMode() {
+        colorMode = document.getElementById('colorMode').value;
+    }
+
+    function getColor(index, max, intensity) {
+        switch(colorMode) {
+            case 'mono-green':
+                return `rgb(0, ${Math.floor(255 * intensity)}, 65)`;
+            case 'mono-cyan':
+                return `rgb(0, ${Math.floor(255 * intensity)}, ${Math.floor(255 * intensity)})`;
+            case 'gradient':
+                const hue = 180 + (index / max) * 180;
+                return `hsl(${hue}, 100%, ${50 + intensity * 50}%)`;
+            case 'spectrum':
+            default:
+                const h = (index / max) * 360;
+                return `hsl(${h}, 100%, ${50 + intensity * 50}%)`;
+        }
     }
 
     audioUpload.onchange = function() {
@@ -125,65 +285,323 @@
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 256; // Smaller FFT for chunkier visual
+            gainNode = audioCtx.createGain();
+            analyser.fftSize = 256;
+            gainNode.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            setVolume();
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
             const audioData = e.target.result;
             audioCtx.decodeAudioData(audioData, (buffer) => {
-                if (source) source.stop();
-                
-                source = audioCtx.createBufferSource();
-                source.buffer = buffer;
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                source.start(0);
-                
-                statusText.innerText = "Playing: " + files[0].name;
-                draw();
+                audioBuffer = buffer;
+                durationEl.innerText = formatTime(buffer.duration);
+                statusText.innerText = "Loaded: " + files[0].name;
+                playBtn.disabled = false;
+                stopBtn.disabled = false;
+                isPlaying = false;
+                playBtn.innerText = '▶ Play';
+                resetProgress();
             });
         };
         reader.readAsArrayBuffer(files[0]);
     };
 
-    function draw() {
-        requestAnimationFrame(draw);
+    function togglePlayPause() {
+        if (!audioBuffer) return;
         
-        const bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
-        analyser.getByteFrequencyData(dataArray);
+        if (isPlaying) {
+            source.stop();
+            isPlaying = false;
+            playBtn.innerText = '▶ Play';
+            statusText.innerText = 'Paused';
+        } else {
+            source = audioCtx.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(gainNode);
+            const offset = (audioCtx.currentTime % audioBuffer.duration);
+            source.start(0, offset);
+            isPlaying = true;
+            playBtn.innerText = '⏸ Pause';
+            statusText.innerText = 'Playing';
+            draw();
+        }
+    }
 
-        // Clear canvas with a slight trail effect
+    function stopPlayback() {
+        if (source) {
+            source.stop();
+            source = null;
+        }
+        isPlaying = false;
+        playBtn.innerText = '▶ Play';
+        statusText.innerText = 'Stopped';
+        resetProgress();
+    }
+
+    function setVolume() {
+        if (gainNode) {
+            gainNode.gain.value = volumeControl.value / 100;
+        }
+    }
+
+    function formatTime(seconds) {
+        if (!isFinite(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function resetProgress() {
+        progressFill.style.width = '0%';
+        currentTimeEl.innerText = '0:00';
+    }
+
+    function updateProgress() {
+        if (!audioBuffer || !isPlaying) return;
+        const progress = (audioCtx.currentTime % audioBuffer.duration) / audioBuffer.duration;
+        progressFill.style.width = (progress * 100) + '%';
+        currentTimeEl.innerText = formatTime(audioCtx.currentTime % audioBuffer.duration);
+    }
+
+    progressBar.onclick = function(e) {
+        if (!audioBuffer) return;
+        const rect = progressBar.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        const time = percent * audioBuffer.duration;
+        if (source) source.stop();
+        source = audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(gainNode);
+        if (isPlaying) {
+            source.start(0, time);
+        }
+    };
+
+    function drawBars() {
         ctx.fillStyle = 'rgba(5, 5, 5, 0.3)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        const bufferLength = analyser.frequencyBinCount;
         const barWidth = canvas.width / (bufferLength / 2);
         let x = 0;
 
         for (let i = 0; i < bufferLength; i++) {
             const barHeight = (dataArray[i] / 255) * canvas.height;
+            const intensity = dataArray[i] / 255;
             
-            // Color logic (Retro Spectrum)
-            const hue = (i / bufferLength) * 360;
-            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+            ctx.fillStyle = getColor(i, bufferLength, intensity);
 
-            // Draw pixelated bar
-            // We round the values to keep them aligned to the "pixel grid"
             const gridY = Math.floor(canvas.height - barHeight);
             ctx.fillRect(x, gridY, barWidth - 1, barHeight);
 
-            // Draw Falling Peak
             if (barHeight > peaks[i]) {
                 peaks[i] = barHeight;
             } else {
-                peaks[i] -= 0.5; // Gravity
+                peaks[i] -= 0.5;
             }
 
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(x, canvas.height - peaks[i] - 2, barWidth - 1, 2);
 
             x += barWidth;
+        }
+    }
+
+    function drawCircular() {
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = Math.min(centerX, centerY) * 0.6;
+
+        ctx.beginPath();
+        for (let i = 0; i < bufferLength; i++) {
+            const angle = (i / bufferLength) * Math.PI * 2;
+            const barHeight = (dataArray[i] / 255) * radius * 0.5;
+            
+            const x = centerX + Math.cos(angle) * (radius + barHeight);
+            const y = centerY + Math.sin(angle) * (radius + barHeight);
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.closePath();
+        ctx.strokeStyle = getColor(0, bufferLength, 1);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw inner circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 255, 65, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Draw bars on circle
+        for (let i = 0; i < bufferLength; i++) {
+            const angle = (i / bufferLength) * Math.PI * 2;
+            const barHeight = (dataArray[i] / 255) * radius * 0.6;
+            const intensity = dataArray[i] / 255;
+
+            const x1 = centerX + Math.cos(angle) * radius;
+            const y1 = centerY + Math.sin(angle) * radius;
+            const x2 = centerX + Math.cos(angle) * (radius + barHeight);
+            const y2 = centerY + Math.sin(angle) * (radius + barHeight);
+
+            ctx.strokeStyle = getColor(i, bufferLength, intensity);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+    }
+
+    function drawWaveform() {
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.4)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const centerY = canvas.height / 2;
+        const pointSpacing = canvas.width / bufferLength;
+
+        ctx.beginPath();
+        for (let i = 0; i < bufferLength; i++) {
+            const barHeight = (dataArray[i] / 255) * centerY;
+            const x = i * pointSpacing;
+            
+            if (i === 0) {
+                ctx.moveTo(x, centerY - barHeight);
+            } else {
+                ctx.lineTo(x, centerY - barHeight);
+            }
+        }
+        ctx.strokeStyle = getColor(0, bufferLength, 0.8);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw mirror bottom
+        ctx.beginPath();
+        for (let i = bufferLength - 1; i >= 0; i--) {
+            const barHeight = (dataArray[i] / 255) * centerY;
+            const x = i * pointSpacing;
+            
+            if (i === bufferLength - 1) {
+                ctx.moveTo(x, centerY + barHeight);
+            } else {
+                ctx.lineTo(x, centerY + barHeight);
+            }
+        }
+        ctx.fillStyle = getColor(0, bufferLength, 0.4);
+        ctx.fill();
+
+        // Center line
+        ctx.strokeStyle = 'rgba(0, 255, 65, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(canvas.width, centerY);
+        ctx.stroke();
+    }
+
+    function drawSpectrum() {
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const barWidth = canvas.width / bufferLength;
+
+        for (let i = 0; i < bufferLength; i++) {
+            const barHeight = (dataArray[i] / 255) * canvas.height;
+            const intensity = dataArray[i] / 255;
+            const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
+            
+            gradient.addColorStop(0, getColor(i, bufferLength, intensity * 0.5));
+            gradient.addColorStop(1, getColor(i, bufferLength, intensity));
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+        }
+    }
+
+    function drawOrbs() {
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const numOrbs = Math.min(16, bufferLength / 4);
+        const orbSpacing = canvas.width / numOrbs;
+        const centerY = canvas.height / 2;
+
+        for (let i = 0; i < numOrbs; i++) {
+            const dataIndex = Math.floor((i / numOrbs) * bufferLength);
+            const orbSize = (dataArray[dataIndex] / 255) * 30 + 10;
+            const intensity = dataArray[dataIndex] / 255;
+
+            const x = orbSpacing * i + orbSpacing / 2;
+            const y = centerY + Math.sin(Date.now() * 0.001 + i) * 20;
+
+            // Outer glow
+            const glowGradient = ctx.createRadialGradient(x, y, 0, x, y, orbSize + 10);
+            glowGradient.addColorStop(0, getColor(i, numOrbs, intensity));
+            glowGradient.addColorStop(1, 'rgba(0, 255, 65, 0)');
+            
+            ctx.fillStyle = glowGradient;
+            ctx.beginPath();
+            ctx.arc(x, y, orbSize + 10, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Main orb
+            ctx.fillStyle = getColor(i, numOrbs, intensity);
+            ctx.beginPath();
+            ctx.arc(x, y, orbSize, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Inner highlight
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.arc(x - orbSize / 3, y - orbSize / 3, orbSize / 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function draw() {
+        requestAnimationFrame(draw);
+        
+        if (!analyser) return;
+        
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        analyser.getByteFrequencyData(dataArray);
+
+        updateProgress();
+
+        switch(currentView) {
+            case 'bars':
+                drawBars();
+                break;
+            case 'circular':
+                drawCircular();
+                break;
+            case 'waveform':
+                drawWaveform();
+                break;
+            case 'spectrum':
+                drawSpectrum();
+                break;
+            case 'orbs':
+                drawOrbs();
+                break;
+            default:
+                drawBars();
         }
     }
 
