@@ -1,62 +1,83 @@
-# 3D Model Viewer
+# URage 3D Model Viewer
 
-A powerful, web-based 3D model viewer tool built with Three.js that allows users to import, visualize, and interact with 3D models in their browser.
+A feature-rich 3D model viewer built with Three.js that supports GLB, GLTF, and OBJ formats with comprehensive controls.
 
 ## Features
 
-- **Multi-Format Support**: Import 3D models in GLB, GLTF, and OBJ formats
-- **Interactive Controls**: Orbit controls for rotating, panning, and zooming the model
-- **Advanced Rendering**: High-quality rendering with tone mapping and anti-aliasing
-- **Material Controls**: Adjust flat shading, metallic, and roughness properties
-- **Lighting Controls**: Modify light intensity and rotation
-- **Camera Settings**: Fine-tune field of view, near/far clipping planes
-- **Display Modes**: Switch between solid, material, and wireframe rendering modes
-- **Environment Controls**: Adjust environment exposure
-- **Capture Functionality**: Export high-quality screenshots of your 3D models
-- **Responsive Design**: Works on desktop and mobile devices
+- **Model Import**: Drag and drop or click to import 3D models (GLB, GLTF, OBJ)
+- **Camera Controls**: Orbit controls with damping for smooth navigation
+- **Environment Lighting**: HDRI environment lighting with adjustable exposure
+- **Material Controls**: 
+  - Flat shading toggle
+  - Metallic property adjustment
+  - Roughness property adjustment
+- **Display Modes**: Solid, material, and wireframe rendering modes
+- **Light Controls**: 
+  - Light rotation
+  - Light intensity adjustment
+- **Model Positioning**: 
+  - Position controls (X, Y, Z axes)
+  - Rotation controls (X, Y, Z axes)
+- **Camera Settings**: 
+  - Field of view adjustment
+  - Near/far clipping plane controls
+- **Render Quality**: 
+  - Antialiasing toggle
+  - Resolution scaling
 
-## How to Use
+## Controls
 
-1. **Import a Model**: Click the "Import Model" area or drag and drop a 3D model file (GLB, GLTF, or OBJ) onto the viewer
-2. **Navigate**: 
-   - Left-click and drag to rotate the model
-   - Scroll to zoom in/out
-   - Right-click and drag to pan the view
-3. **Adjust Settings**: Use the controls in the sidebar to modify:
-   - Environment exposure
-   - Lighting intensity and rotation
-   - Material properties (flat shading, metallic, roughness)
-   - Camera settings (FOV, near/far clipping)
-   - Display modes (solid, material, wireframe)
-4. **Capture Screenshots**: Click the camera icon to download a high-quality image of your model
+### Scene Toolbar
+- **Center View**: Reset camera position and target
+- **Toggle Floor**: Show/hide grid floor
+- **Capture Render**: Download current view as PNG
+
+### Model Controls
+- **Zoom In/Out**: Adjust camera distance
+- **Rotate Model**: Rotate model around Y-axis
+
+### Light Controls
+- **Rotate Light**: Rotate directional light around the scene
+- **Adjust Intensity**: Change light intensity
+
+### Material Properties
+- **Flat Shading**: Toggle flat shading
+- **Metallic**: Adjust metallic property
+- **Roughness**: Adjust roughness property
+
+### Display Modes
+- **Solid**: Solid rendering
+- **Material**: Transparent material rendering
+- **Wireframe**: Wireframe rendering
+
+### Model Positioning
+- **Move X/Y/Z**: Adjust model position along axes
+
+### Camera Settings
+- **Field of View**: Adjust camera FOV
+- **Near Clip**: Adjust near clipping plane
+- **Far Clip**: Adjust far clipping plane
 
 ## Technical Details
 
-- **Framework**: Built with Three.js (R165)
-- **Dependencies**: 
-  - OrbitControls for camera navigation
-  - GLTFLoader for GLB/GLTF models
-  - OBJLoader for OBJ models
-  - RGBELoader for environment maps
-- **Rendering**: WebGL with antialiasing and tone mapping
-- **Responsive**: Adapts to different screen sizes
-- **Performance**: Optimized for smooth interaction with 3D models
+- Built with Three.js R165
+- Uses OrbitControls for camera navigation
+- Supports HDR environment lighting
+- Responsive design with flexible layout
+- Modern CSS with gradient effects and smooth animations
 
-## Browser Compatibility
+## Usage
 
-This tool requires a modern browser with WebGL support:
+1. Open `index.html` in a modern web browser
+2. Drag and drop a 3D model file (GLB, GLTF, or OBJ) onto the upload area
+3. Use the sidebar controls to manipulate the model and scene
+4. Adjust lighting, materials, and display settings as needed
 
-- Chrome 56+
-- Firefox 51+
-- Safari 11+
-- Edge 16+
+## Requirements
+
+- Modern web browser with WebGL support
+- Internet connection (for loading Three.js and dependencies from CDN)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
-
-## Author
-
-URage Tools - A collection of web-based creative tools for developers and designers
-
-For more information about this toolset, visit [URageTools GitHub Repository](https://github.com/URageTools/URageTools)
+This project is part of the URage Tools suite.

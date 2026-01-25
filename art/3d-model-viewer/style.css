@@ -114,6 +114,52 @@ body {
     transform: translateY(-2px);
 }
 
+/* HDR Drop Zone */
+#hdr-drop-zone {
+    background: var(--card-bg);
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 32px;
+    position: relative;
+    opacity: 0.8;
+}
+
+#hdr-drop-zone:hover {
+    border-color: var(--accent);
+    background: #252529;
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+#hdr-drop-zone.drag-over {
+    border-color: #00ffcc;
+    background: #1a2a27;
+    opacity: 1;
+}
+
+.drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.drop-zone-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: var(--accent);
+}
+
+.drop-zone-subtext {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-top: 8px;
+}
+
 /* Control Groups */
 .control-group { 
     margin-bottom: 28px; 

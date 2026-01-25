@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
 
@@ -28,6 +29,12 @@
             <i data-lucide="upload-cloud" size="38" style="margin-bottom: 16px; color: var(--accent);"></i>
             <div style="font-size: 15px; font-weight: 600;">Import Model</div>
             <div style="font-size: 12px; color: var(--text-dim); margin-top: 6px;">GLB, GLTF, or OBJ</div>
+        </div>
+
+        <div class="upload-area" id="hdr-zone">
+            <i data-lucide="image" size="38" style="margin-bottom: 16px; color: var(--accent);"></i>
+            <div style="font-size: 15px; font-weight: 600;">Import HDR Background</div>
+            <div style="font-size: 12px; color: var(--text-dim); margin-top: 6px;">HDR File (.hdr)</div>
         </div>
 
         <div class="control-group">
@@ -146,6 +153,15 @@
             ENGINE: THREE.JS R165 • v1.2
         </div>
     </aside>
+</div>
+
+<!-- HDR Drop Zone -->
+<div id="hdr-drop-zone" class="upload-area">
+    <div class="drop-zone-content">
+        <i data-lucide="image" class="drop-zone-icon"></i>
+        <p>Drop HDR Environment Map Here</p>
+        <p class="drop-zone-subtext">(.hdr files only)</p>
+    </div>
 </div>
 
 <input type="file" id="file-input" style="display:none" accept=".glb,.gltf,.obj">

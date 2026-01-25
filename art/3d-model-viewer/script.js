@@ -63,9 +63,52 @@ function init() {
 function setupInterface() {
     const input = document.getElementById('file-input');
     const drop = document.getElementById('drop-zone');
+    const hdrDrop = document.getElementById('hdr-drop-zone');
+    
+    // Handle HDR drop zone
+    if (hdrDrop) {
+        hdrDrop.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            hdrDrop.classList.add('drag-over');
+        });
+
+        hdrDrop.addEventListener('dragleave', () => {
+            hdrDrop.classList.remove('drag-over');
+        });
+
+        hdrDrop.addEventListener('drop', (e) => {
+            e.preventDefault();
+            hdrDrop.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                loadHDR(files[0]);
+            }
+        });
+    }
 
     drop.onclick = () => input.click();
     input.onchange = (e) => loadModel(e.target.files[0]);
+
+    // Handle HDR drop zone
+    hdrDrop.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        hdrDrop.classList.add('drag-over');
+    });
+
+    hdrDrop.addEventListener('dragleave', () => {
+        hdrDrop.classList.remove('drag-over');
+    });
+
+    hdrDrop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        hdrDrop.classList.remove('drag-over');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            loadHDR(files[0]);
+        }
+    });
 
     document.getElementById('exposure').oninput = (e) => {
         renderer.toneMappingExposure = e.target.value;
@@ -295,6 +338,33 @@ function loadModel(file) {
     }, undefined, (err) => {
         console.error(err);
         alert("Error loading 3D model.");
+        document.getElementById('loading').style.display = 'none';
+    });
+}
+
+function loadHDR(file) {
+    if (!file) return;
+    if (file.name.split('.').pop().toLowerCase() !== 'hdr') {
+        alert("Please select an HDR file (.hdr)");
+        return;
+    }
+    
+    document.getElementById('loading').style.display = 'flex';
+    
+    const url = URL.createObjectURL(file);
+    
+    // Load HDR environment map
+    const loader = new RGBELoader();
+    loader.load(url, (texture) => {
+        // Set the environment map
+        scene.environment = texture;
+        scene.background = texture;
+        
+        document.getElementById('loading').style.display = 'none';
+        URL.revokeObjectURL(url);
+    }, undefined, (err) => {
+        console.error(err);
+        alert("Error loading HDR environment map.");
         document.getElementById('loading').style.display = 'none';
     });
 }
