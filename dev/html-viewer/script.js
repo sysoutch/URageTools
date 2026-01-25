@@ -20,7 +20,44 @@ function update() {
     document.getElementById('status').innerText = "Ready";
 }
 
-// 1. Share Functionality with Base64 encoding
+// Helper: Compress string to Base64
+async function compressData(str) {
+    const stream = new Blob([str]).stream();
+    const compressedStream = stream.pipeThrough(new CompressionStream('gzip'));
+    const chunks = [];
+    const reader = compressedStream.getReader();
+    
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+    }
+    
+    const blob = new Blob(chunks);
+    const arrayBuffer = await blob.arrayBuffer();
+    return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); // URL Safe
+}
+
+// Helper: Decompress Base64 to string
+async function decompressData(base64) {
+    // Restore Base64 padding and characters
+    const basicBase64 = base64.replace(/-/g, '+').replace(/_/g, '/');
+    const str = atob(basicBase64);
+    const bytes = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i);
+    
+    const stream = new DecompressionStream('gzip');
+    const writer = stream.writable.getWriter();
+    writer.write(bytes);
+    writer.close();
+    
+    const response = new Response(stream.readable);
+    const blob = await response.blob();
+    return await blob.text();
+}
+
+// 1. Updated Share Function
 async function shareProject() {
     const codeState = {
         h: document.getElementById("html-code").value,
@@ -28,46 +65,34 @@ async function shareProject() {
         j: document.getElementById("js-code").value
     };
 
-    // Encode to Base64, then make it URL safe
     const jsonStr = JSON.stringify(codeState);
-    const base64Code = btoa(unescape(encodeURIComponent(jsonStr)));
-
-    // Use encodeURIComponent on the base64 string itself to protect '+' and '=' characters
-    const shareUrl = window.location.origin + window.location.pathname + "?code=" + encodeURIComponent(base64Code);
+    const compressed = await compressData(jsonStr);
+    const shareUrl = `${window.location.origin}${window.location.pathname}?code=${compressed}`;
 
     try {
         if (navigator.share) {
-            await navigator.share({
-                title: 'Modern Web Playground',
-                text: 'Check out my code!',
-                url: shareUrl
-            });
+            await navigator.share({ title: 'Web Playground', url: shareUrl });
         } else {
             await navigator.clipboard.writeText(shareUrl);
-            alert('Shareable link copied to clipboard!');
+            alert('Compressed link copied!');
         }
-    } catch (err) {
-        console.error('Error sharing:', err);
-    }
+    } catch (err) { console.error('Share failed', err); }
 }
 
-// 2. Hydration logic to load code from URL on startup
-function loadFromUrl() {
+// 2. Updated Load Function
+async function loadFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     const codeParam = urlParams.get('code');
 
     if (codeParam) {
         try {
-            // decodeURIComponent is handled by urlParams.get, 
-            // but we use atob on the raw string
-            const decodedData = JSON.parse(decodeURIComponent(escape(atob(codeParam))));
-
-            document.getElementById("html-code").value = decodedData.h || '';
-            document.getElementById("css-code").value = decodedData.c || '';
-            document.getElementById("js-code").value = decodedData.j || '';
+            const decoded = await decompressData(codeParam);
+            const data = JSON.parse(decoded);
+            document.getElementById("html-code").value = data.h || '';
+            document.getElementById("css-code").value = data.c || '';
+            document.getElementById("js-code").value = data.j || '';
         } catch (e) {
-            console.error("Failed to decode URL parameters", e);
-            // Optional: Alert the user that the link was malformed
+            console.error("Decompression failed", e);
         }
     }
     update();
