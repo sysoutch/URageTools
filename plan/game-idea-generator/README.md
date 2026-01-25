@@ -1,5 +1,7 @@
 # Game Idea Generator
 
+![Thumbnail](thumbnail.png)
+
 This tool helps generate creative game ideas and concepts. It's perfect for game developers, designers, or anyone looking for inspiration for their next project.
 
 ## Features

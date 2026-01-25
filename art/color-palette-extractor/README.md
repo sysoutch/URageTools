@@ -1,5 +1,7 @@
 # Color Palette Extractor
 
+![Thumbnail](thumbnail.png)
+
 A powerful tool for extracting color palettes from images with accessibility analysis and WCAG compliance checking.
 
 ## Description

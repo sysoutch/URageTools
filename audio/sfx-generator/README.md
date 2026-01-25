@@ -1,5 +1,7 @@
 # URage Pulse - SFX Generator
 
+![Thumbnail](thumbnail.png)
+
 A powerful Web Audio API-based sound effects generator that allows you to create custom audio samples with various waveforms, parameters, and presets.
 
 ## Features

@@ -1,5 +1,7 @@
 # Color Swapper Tool
 
+![Thumbnail](thumbnail.png)
+
 A powerful web-based tool for swapping and modifying colors in images. This tool allows you to select colors from an image and swap them with new colors, as well as apply hardware-style color palettes to your images.
 
 ## Features

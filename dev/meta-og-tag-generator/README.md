@@ -1,5 +1,7 @@
 # Meta OG Tag Generator
 
+![Thumbnail](thumbnail.png)
+
 This tool generates Open Graph (OG) tags for web pages to improve social media sharing. It helps create rich previews when links are shared on platforms like Facebook, Twitter, and LinkedIn.
 
 ## Features

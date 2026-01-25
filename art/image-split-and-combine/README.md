@@ -1,5 +1,7 @@
 # Image Split and Combine Tool
 
+![Thumbnail](thumbnail.png)
+
 This tool allows you to split images into smaller pieces and combine them back together. It's useful for creating image puzzles, tile-based graphics, or preparing images for specific applications.
 
 ## Features

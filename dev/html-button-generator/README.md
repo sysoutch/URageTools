@@ -1,5 +1,7 @@
 # HTML Button Generator
 
+![Thumbnail](thumbnail.png)
+
 A tool that generates customizable HTML buttons with CSS styles and animations.
 
 ## Features

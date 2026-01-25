@@ -1,5 +1,7 @@
 # URage Pulse - Multi-View Music Visualizer
 
+![Thumbnail](thumbnail.png)
+
 A retro-inspired, interactive music visualizer with multiple visualization modes and customizable display options. Built with vanilla JavaScript and the Web Audio API.
 
 ## Features

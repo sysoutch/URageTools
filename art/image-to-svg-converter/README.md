@@ -1,5 +1,7 @@
 # Image to SVG Converter
 
+![Thumbnail](thumbnail.png)
+
 A powerful, client-side tool for converting raster images to scalable vector graphics (SVG) directly in your browser. This tool uses the ImageTracer.js library to transform pixel-based images into clean, editable SVG vector graphics without any server processing.
 
 ## Features

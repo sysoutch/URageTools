@@ -1,5 +1,7 @@
 # URageTools
 
+![Thumbnail](thumbnail.png)
+
 A collection of fast, free, and privacy-focused web tools for developers and creators. All tools run directly in your browser with no server dependencies.
 
 ## Tools Overview

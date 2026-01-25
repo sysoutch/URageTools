@@ -1,5 +1,7 @@
 # Pixel Art Converter
 
+![Thumbnail](thumbnail.png)
+
 A web-based tool for converting images into pixel art with customizable settings and high-quality output.
 
 ## Features

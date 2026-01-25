@@ -1,5 +1,7 @@
 # README File Viewer
 
+![Thumbnail](thumbnail.png)
+
 This tool allows you to view and preview README files in various formats. It's useful for quickly checking documentation or previewing markdown content.
 
 ## Features

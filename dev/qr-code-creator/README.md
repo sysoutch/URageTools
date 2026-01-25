@@ -1,5 +1,7 @@
 # QR Code Creator
 
+![Thumbnail](thumbnail.png)
+
 This tool generates QR codes from text, URLs, or other data. It's useful for creating shareable links, contact information, or any data that can be encoded in a QR code.
 
 ## Features

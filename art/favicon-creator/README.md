@@ -1,5 +1,7 @@
 # 🎯 URage Favicon Creator
 
+![Thumbnail](thumbnail.png)
+
 A powerful, easy-to-use tool for generating production-ready favicon bundles from any image. This tool creates all necessary favicon formats including 16x16, 32x32, 180x180, 192x192, and 512x512 pixel icons, along with a Web App Manifest file for modern web applications.
 
 ## 🌟 Features

@@ -1,5 +1,7 @@
 # Website Builder
 
+![Thumbnail](thumbnail.png)
+
 This tool provides a simple interface for building basic websites. It allows you to create and customize web pages without needing to write code.
 
 ## Features

@@ -1,5 +1,7 @@
 # URage 3D Model Viewer
 
+![Thumbnail](thumbnail.png)
+
 A feature-rich 3D model viewer built with Three.js that supports GLB, GLTF, and OBJ formats with comprehensive controls.
 
 ## Features

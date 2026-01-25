@@ -1,5 +1,7 @@
 # Roadmap Builder
 
+![Thumbnail](thumbnail.png)
+
 This tool helps you create and visualize project roadmaps. It's useful for planning software development, game projects, or any multi-phase initiative.
 
 ## Features

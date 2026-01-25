@@ -1,5 +1,7 @@
 # Dialogue Tree Visualizer
 
+![Thumbnail](thumbnail.png)
+
 This tool helps visualize dialogue trees for games, interactive stories, or any application that requires branching narrative structures. It allows you to create, edit, and visualize complex dialogue systems.
 
 ## Features

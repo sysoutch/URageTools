@@ -1,5 +1,7 @@
 # Image Crop & Scale
 
+![Thumbnail](thumbnail.png)
+
 A powerful image cropping and scaling tool designed for game developers and digital artists. Automatically calculates platform-specific dimensions and provides precise control over image processing for multiple platforms and custom requirements.
 
 ## Features
