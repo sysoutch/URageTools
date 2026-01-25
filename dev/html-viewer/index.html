@@ -2,58 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Live Code Editor</title>
-    <style>
-        body { margin: 0; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; }
-        .header { background: #333; color: white; padding: 10px; text-align: center; }
-        
-        /* Layout container */
-        .container { display: flex; flex: 1; overflow: hidden; }
-
-        /* Editor Side */
-        .editors { width: 50%; display: flex; flex-direction: column; background: #1e1e1e; padding: 10px; gap: 10px; }
-        textarea { flex: 1; background: #2d2d2d; color: #87d487; border: 1px solid #444; padding: 10px; font-family: monospace; resize: none; border-radius: 4px; }
-        label { color: #aaa; font-size: 0.8rem; margin-bottom: -5px; text-transform: uppercase; }
-
-        /* Preview Side */
-        .preview-side { width: 50%; background: white; border-left: 2px solid #444; }
-        iframe { width: 100%; height: 100%; border: none; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Web Playground</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="header">HTML/CSS/JS Live Preview</div>
-
-<div class="container">
-    <div class="editors">
-        <label>HTML</label>
-        <textarea id="html-code" placeholder="<h1>Hello World</h1>" oninput="update()"></textarea>
-        
-        <label>CSS</label>
-        <textarea id="css-code" placeholder="h1 { color: red; }" oninput="update()"></textarea>
-        
-        <label>JavaScript</label>
-        <textarea id="js-code" placeholder="console.log('Running...');" oninput="update()"></textarea>
+    <div class="header">
+        <h1>LIVE PREVIEW</h1>
+        <div class="header-actions">
+            <small id="status" style="color: #888;">Ready</small>
+            <button class="share-btn" onclick="shareProject()">SHARE</button>
+        </div>
     </div>
 
-    <div class="preview-side">
-        <iframe id="output"></iframe>
+    <div class="container">
+        <div class="editors">
+            <div class="editor-group">
+                <label>HTML</label>
+                <textarea id="html-code" spellcheck="false" oninput="debouncedUpdate()"></textarea>
+            </div>
+            
+            <div class="editor-group">
+                <label>CSS</label>
+                <textarea id="css-code" spellcheck="false" oninput="debouncedUpdate()"></textarea>
+            </div>
+            
+            <div class="editor-group">
+                <label>JavaScript</label>
+                <textarea id="js-code" spellcheck="false" oninput="debouncedUpdate()"></textarea>
+            </div>
+        </div>
+
+        <div class="preview-side">
+            <iframe id="output"></iframe>
+        </div>
     </div>
-</div>
 
-<script>
-    function update() {
-        const html = document.getElementById("html-code").value;
-        const css = "<style>" + document.getElementById("css-code").value + "</style>";
-        const js = "<script>" + document.getElementById("js-code").value + "<\/script>";
-        
-        const output = document.getElementById("output").contentWindow.document;
-
-        output.open();
-        output.write(html + css + js);
-        output.close();
-    }
-</script>
+    <script src="script.js"></script>
 
 </body>
 </html>
