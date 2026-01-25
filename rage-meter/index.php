@@ -1,6 +1,6 @@
 <?php
 // Include the header
-include "../header.html";
+include "../../header.html";
 ?>
 
 <main class="main-content">
@@ -13,6 +13,6 @@ include "../header.html";
 
 <?php
 // Include the footer
-include "../footer.html";
+include "../../footer.html";
 ?>
 
