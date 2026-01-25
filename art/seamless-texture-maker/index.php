@@ -5,8 +5,8 @@ $htmlContent = file_get_contents("index.html");
 
 <?php
 // Include the footer before the </body> tag of the $htmlContent content where data-theme can be any value and is optional
-$headerCss = "<link rel=\"stylesheet\" href=\"header.css\">";
-$footerCss = "<link rel=\"stylesheet\" href=\"footer.css\">";
+$headerCss = "<link rel=\"stylesheet\" href=\"../../header.css\">";
+$footerCss = "<link rel=\"stylesheet\" href=\"../../footer.css\">";
 $htmlContent = str_replace("</head>", $headerCss . $footerCss . "</head>", $htmlContent);
 ?>
 
