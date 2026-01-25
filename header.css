@@ -1,0 +1,95 @@
+.header {
+    justify-content: space-between;
+    align-items: center;
+    top: 0;
+    background: linear-gradient(135deg, #282626 0%, #1a1818 100%);
+    backdrop-filter: blur(10px);
+    color: #c4393996;
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+    height: 54px;
+    align-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header-container {
+    max-width: 1140px;
+    margin: 0 auto;      /* Centers the container */
+    padding: 0 20px;     /* Prevents content from touching edges on mobile */
+    
+    /* This keeps branding and socials on the same line */
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.header-socials {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.header-socials a {
+    color: #ddd;
+}
+
+.header-socials a:visited {
+    color: #ddd;
+}
+
+.social-icon {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+/* The "Inferno" Hover State */
+.social-icon:hover {
+    background: linear-gradient(135deg, #ff8a00 0%, #ff5a00 100%);
+    border-color: #ffb35a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 138, 0, 0.4);
+    backdrop-filter: blur(5px);
+}
+
+/* Changing icon color or grayscale filter on hover */
+.social-icon:hover span {
+    filter: brightness(0) saturate(100%); /* Turns emojis/icons black on orange bg */
+}
+
+/* Tooltip Label */
+.social-icon::after {
+    content: attr(data-label);
+    position: absolute;
+    top: 48px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #000000;
+    color: #ffffff;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    border: 1px solid #ff8a00;
+}
+
+.social-icon:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

@@ -65,6 +65,8 @@ function getToolThumbnail($category, $folder) {
     <meta name="twitter:image" content="https://tools.urage.net/thumbnail.png">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="footer.css">
     <link href="_shared/fontawesome/css/all.min.css" rel="stylesheet">
 </head>
 <body>
