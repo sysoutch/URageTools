@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unity C# Class Extractor Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #252526; color: #d4d4d4; line-height: 1.5; }
+        .container { max-width: 1000px; margin: auto; }
+        textarea { width: 100%; height: 350px; background: #1e1e1e; color: #dcdcdc; border: 1px solid #3e3e42; border-radius: 4px; padding: 12px; font-family: 'Consolas', monospace; font-size: 14px; resize: vertical; }
+        .controls { margin: 20px 0; display: flex; gap: 10px; }
+        button { background: #0e639c; color: white; border: none; padding: 10px 20px; border-radius: 2px; cursor: pointer; font-size: 14px; }
+        button:hover { background: #1177bb; }
+        button.secondary { background: #3e3e42; }
+        button.secondary:hover { background: #4d4d52; }
+        .output-item { background: #2d2d2d; margin-top: 15px; border: 1px solid #454545; border-radius: 4px; }
+        .filename { background: #37373d; padding: 8px 12px; font-weight: bold; color: #4ec9b0; display: flex; justify-content: space-between; }
+        pre { padding: 15px; overflow-x: auto; margin: 0; font-size: 13px; color: #9cdcfe; }
+        .status { color: #ce9178; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Unity C# Script Splitter</h2>
+    <p>This tool extracts classes, structs, and enums (including those without modifiers) into separate files.</p>
+    
+    <textarea id="inputCode" placeholder="Paste your Unity C# script here..."></textarea>
+    
+    <div class="controls">
+        <button onclick="extractClasses()">Extract & Preview</button>
+        <button class="secondary" onclick="downloadZip()">Download All as .ZIP</button>
+        <span id="status" class="status"></span>
+    </div>
+
+    <div id="output"></div>
+</div>
+
+<script>
+    let extractedFiles = [];
+
+    function extractClasses() {
+        const code = document.getElementById('inputCode').value;
+        const output = document.getElementById('output');
+        const status = document.getElementById('status');
+        output.innerHTML = '';
+        extractedFiles = [];
+
+        if (!code.trim()) {
+            status.innerText = "Please paste some code first.";
+            return;
+        }
+
+        // 1. Capture "using" statements
+        const usingRegex = /using\s+[\w.]+;/g;
+        const usings = (code.match(usingRegex) || []).join('\n');
+
+        // 2. Capture Namespace if it exists
+        const namespaceMatch = code.match(/namespace\s+([\w.]+)/);
+        const namespaceHeader = namespaceMatch ? `namespace ${namespaceMatch[1]}\n{\n` : "";
+        const namespaceFooter = namespaceMatch ? `\n}` : "";
+
+        // 3. Updated Regex: Matches optional modifiers + class/struct/enum + Name
+        // The (?:...) groups are non-capturing. 
+        const classStartRegex = /(?:(?:public|internal|private|protected|static|partial|abstract)\s+)*(class|struct|enum)\s+(\w+)/g;
+        
+        let match;
+        while ((match = classStartRegex.exec(code)) !== null) {
+            const type = match[1]; // class, struct, or enum
+            const name = match[2]; // The identifier name
+            const startIndex = match.index;
+            
+            const body = getScope(code, startIndex);
+            
+            if (body) {
+                const fullFileContent = usings + "\n\n" + namespaceHeader + body + namespaceFooter;
+                extractedFiles.push({ name: name + ".cs", content: fullFileContent });
+                displayFile(name + ".cs", fullFileContent);
+            }
+        }
+        status.innerText = `Found ${extractedFiles.length} items.`;
+    }
+
+    function getScope(text, startIdx) {
+        let firstBrace = text.indexOf('{', startIdx);
+        if (firstBrace === -1) return null;
+
+        let count = 1;
+        let i = firstBrace + 1;
+        while (count > 0 && i < text.length) {
+            if (text[i] === '{') count++;
+            else if (text[i] === '}') count--;
+            i++;
+        }
+        return text.substring(startIdx, i);
+    }
+
+    function displayFile(filename, content) {
+        const container = document.createElement('div');
+        container.className = 'output-item';
+        container.innerHTML = `
+            <div class="filename"><span>${filename}</span></div>
+            <pre>${content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+        `;
+        document.getElementById('output').appendChild(container);
+    }
+
+    function downloadZip() {
+        if (extractedFiles.length === 0) {
+            alert("Nothing to download. Click 'Extract' first.");
+            return;
+        }
+        const zip = new JSZip();
+        extractedFiles.forEach(file => {
+            zip.file(file.name, file.content);
+        });
+
+        zip.generateAsync({type:"blob"}).then(function(content) {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = "UnityScripts.zip";
+            link.click();
+        });
+    }
+</script>
+</body>
+</html>
