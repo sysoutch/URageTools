@@ -32,7 +32,8 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
         
-        body { background-color: var(--bg-app); height: 100vh; display: flex; color: var(--text-main); overflow: hidden; }
+        body { background-color: var(--bg-app); height: 100vh; display: flex; flex-direction: column; color: var(--text-main); overflow: hidden; }
+        .app-wrapper { display: flex; flex-grow: 1; overflow: hidden; width: 100%; }
 
         /* --- SIDEBAR --- */
         nav { width: 260px; background-color: var(--bg-sidebar); display: flex; flex-direction: column; flex-shrink: 0; z-index: 20; }
@@ -135,6 +136,7 @@
 </head>
 <body data-theme="light">
 
+    <div class="app-wrapper">
     <nav>
         <div class="nav-logo">FlowState Pro</div>
         <div class="nav-section">
@@ -160,6 +162,7 @@
 
         <div class="board-canvas" id="canvas" ondragover="handleCanvasDragOver(event)"></div>
     </main>
+    </div>
 
     <div id="modal-overlay" onclick="closeModal()">
         <div class="modal" onclick="event.stopPropagation()">

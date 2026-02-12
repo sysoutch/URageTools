@@ -7,7 +7,8 @@
     --text-dim: #94a3b8;
 }
 
-body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.5; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; line-height: 1.5; }
+.app-wrapper { padding: 20px; }
 .container { max-width: 1400px; margin: auto; }
 
 header { text-align: center; margin-bottom: 30px; }

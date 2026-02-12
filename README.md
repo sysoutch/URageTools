@@ -23,12 +23,18 @@ A collection of fast, free, and privacy-focused web tools for developers and cre
 - **Image Split & Combine** - Split images into grids or combine multiple images
 - **Favicon Creator** - Create favicons from images
 - **Pixel Art Converter** - Convert images to pixel art style
-- **Image Transparency Tool** - Remove or add transparency to images
 
 ### Developer Utilities
+- **C# Class Extractor** - Extract C# classes from scripts
 - **CSS Background Generator** - Generate CSS background patterns and gradients
+- **Dialogue Tree Visualizer** - Visualize dialogue trees
+- **Electron App Icon Generator** - Generate icons for Electron apps
+- **HTML Button Generator** - Create HTML/CSS buttons
 - **HTML Separator and Combiner** - Split and combine HTML files
+- **HTML Viewer** - View HTML files
+- **Interactive Book** - Create interactive books
 - **Markdown Multi-Tool** - Convert between markdown formats and other text formats
+- **Meta OG Tag Generator** - Generate Open Graph tags
 - **QR Code Creator** - Generate QR codes from text
 - **Website Builder** - Build simple websites with drag-and-drop interface
 - **Wave Animation** - Create animated wave effects for web pages
@@ -36,7 +42,13 @@ A collection of fast, free, and privacy-focused web tools for developers and cre
 
 ### Planning Tools
 - **Game Idea Generator** - Generate creative game ideas and concepts
+- **Kanban Board** - Simple Kanban board for task management
+- **Poker Blind Level Manager** - Manage blinds for poker games
 - **Roadmap Builder** - Create project roadmaps and timelines
+
+### Games & Others
+- **Demo Game** - A demonstration game
+- **Rage Meter** - Measure your rage
 
 ## Features
 

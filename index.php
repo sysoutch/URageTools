@@ -68,9 +68,11 @@ function getToolThumbnail($category, $folder) {
     <link rel="stylesheet" href="header.css">
     <link rel="stylesheet" href="footer.css">
     <link href="_shared/fontawesome/css/all.min.css" rel="stylesheet">
+<script src="art/3d-model-viewer/lib/three.min.js"></script>
+<script src="art/3d-model-viewer/lib/examples/jsm/controls/OrbitControls.js"></script>
 </head>
 <body>
-    <?php include 'header.html'; ?>
+    <?php include 'header-home.html'; ?>
 
 	<div class="hero-wrapper">
 		<main id="viewport" class="hero-bg">
@@ -113,35 +115,40 @@ function getToolThumbnail($category, $folder) {
             ?>
 
             <?php if (!empty($tools)): ?>
-				<div class="category-header" id="<?php echo "header" . $catKey; ?>">
-					<h2><?php echo $catName; ?></h2>
-				</div>
-                <div class="category-wrapper">
-                    <div class="tools-grid">
-                        <?php foreach ($tools as $tool): 
-                            $description = getToolDescription($catKey, $tool);
-                            if (!$description) {
-                                $description = "A useful tool for " . ucwords(str_replace('-', ' ', $tool)) . ".";
-                            }
-                            $thumbnail = getToolThumbnail($catKey, $tool);
-                            $cleanName = ucwords(str_replace('-', ' ', $tool));
-                        ?>
-                            <div class="tool-card">
-                                <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> Thumbnail" loading="lazy" />
-                                <div class="tool-card-content">
-                                    <h2><?php echo $cleanName; ?></h2>
-                                    <p><?php echo htmlspecialchars($description); ?></p>
-                                    <a href="<?php echo $catKey . '/' . $tool; ?>" class="tool-link btn btn-inferno-stretch">Open tool</a>
-                                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" id="accordion-<?php echo $catKey; ?>">
+                        <h2><?php echo $catName; ?></h2>
+                        <span class="accordion-toggle"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="category-wrapper">
+                            <div class="tools-grid">
+                                <?php foreach ($tools as $tool): 
+                                    $description = getToolDescription($catKey, $tool);
+                                    if (!$description) {
+                                        $description = "A useful tool for " . ucwords(str_replace('-', ' ', $tool)) . ".";
+                                    }
+                                    $thumbnail = getToolThumbnail($catKey, $tool);
+                                    $cleanName = ucwords(str_replace('-', ' ', $tool));
+                                ?>
+                                    <div class="tool-card">
+                                        <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> Thumbnail" loading="lazy" />
+                                        <div class="tool-card-content">
+                                            <h2><?php echo $cleanName; ?></h2>
+                                            <p><?php echo htmlspecialchars($description); ?></p>
+                                            <a href="<?php echo $catKey . '/' . $tool; ?>" class="tool-link btn btn-inferno-stretch">Open tool</a>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
         <?php endforeach; ?>
 
     </div>
-    <?php include 'footer.html'; ?>
-    <script src="script.js"></script>
+    <?php include 'footer-big.html'; ?>
+    <script src="script.js" type="module"></script>
 </body>
 </html>

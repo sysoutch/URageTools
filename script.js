@@ -160,225 +160,43 @@ window.dispatchEvent(new Event('resize'));
 animate(0);
 
 
-// function resizeCanvas() {
-//     lavaCanvas.width = lavaCanvas.parentElement.clientWidth;
-//     lavaCanvas.height = lavaCanvas.parentElement.clientHeight;
-// }
-
-// // Initial resize
-// resizeCanvas();
-// window.addEventListener('resize', resizeCanvas);
-
-// // Lava properties
-// const lava = {
-//     waves: [],
-//     particles: [],
-//     color: '#ff3300',
-//     baseHeight: 0.7,
-//     waveHeight: 0.1,
-//     waveSpeed: 0.01,
-//     waveFrequency: 0.02,
-//     particleCount: 100
-// };
-
-// // Initialize waves
-// function initWaves() {
-//     lava.waves = [];
-//     for (let i = 0; i < 5; i++) {
-//         lava.waves.push({
-//             amplitude: 10 + Math.random() * 20,
-//             frequency: 0.01 + Math.random() * 0.03,
-//             phase: Math.random() * Math.PI * 2,
-//             speed: 0.005 + Math.random() * 0.01,
-//             color: `rgba(255, ${50 + Math.random() * 100}, 0, ${0.7 + Math.random() * 0.3})`
-//         });
-//     }
+// Accordion functionality - moved to end to avoid conflicts with other code
+function initAccordion() {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
     
-//     // Initialize particles
-//     lava.particles = [];
-//     for (let i = 0; i < lava.particleCount; i++) {
-//         lava.particles.push({
-//             x: Math.random() * lavaCanvas.width,
-//             y: lavaCanvas.height * lava.baseHeight + Math.random() * 50,
-//             size: 2 + Math.random() * 5,
-//             speed: 0.5 + Math.random() * 2,
-//             angle: Math.random() * Math.PI * 2,
-//             opacity: 0.5 + Math.random() * 0.5,
-//             color: `rgba(255, ${100 + Math.random() * 155}, 0, ${0.5 + Math.random() * 0.5})`
-//         });
-//     }
-// }
-
-// // Create ripple effect
-// function createRipple(x, y) {
-//     const ripple = document.createElement('div');
-//     ripple.className = 'ripple';
-//     ripple.style.left = `${x - 20}px`;
-//     ripple.style.top = `${y - 20}px`;
-//     ripple.style.width = '40px';
-//     ripple.style.height = '40px';
-//     ripple.style.backgroundColor = 'rgba(255, 100, 0, 0.5)';
-//     document.querySelector('.animation-container').appendChild(ripple);
-    
-//     // Remove ripple after animation completes
-//     setTimeout(() => {
-//         ripple.remove();
-//     }, 1500);
-// }
-
-// // Create explosion effect
-// function createExplosion(x, y) {
-//     // Create multiple ripples
-//     for (let i = 0; i < 5; i++) {
-//         setTimeout(() => {
-//             createRipple(x, y);
-//         }, i * 200);
-//     }
-    
-//     // Create particle explosion
-//     for (let i = 0; i < 30; i++) {
-//         const angle = Math.random() * Math.PI * 2;
-//         const speed = 2 + Math.random() * 5;
-//         const size = 3 + Math.random() * 7;
-//         const opacity = 0.7 + Math.random() * 0.3;
-        
-//         lava.particles.push({
-//             x: x,
-//             y: y,
-//             size: size,
-//             speed: speed,
-//             angle: angle,
-//             opacity: opacity,
-//             color: `rgba(255, ${100 + Math.random() * 155}, 0, ${opacity})`,
-//             life: 100
-//         });
-//     }
-// }
-
-// // Draw lava waves
-// function drawLava() {
-//     // Clear canvas
-//     ctx.clearRect(0, 0, lavaCanvas.width, lavaCanvas.height);
-    
-//     // Draw background
-//     const gradient = ctx.createLinearGradient(0, 0, 0, lavaCanvas.height);
-//     gradient.addColorStop(0, '#0a0a1a');
-//     gradient.addColorStop(1, '#1a1a2e');
-//     ctx.fillStyle = gradient;
-//     ctx.fillRect(0, 0, lavaCanvas.width, lavaCanvas.height);
-    
-//     // Draw lava waves
-//     const baseY = lavaCanvas.height * lava.baseHeight;
-//     const waveHeight = lavaCanvas.height * lava.waveHeight;
-    
-//     // Draw multiple waves
-//     for (let i = 0; i < lava.waves.length; i++) {
-//         const wave = lava.waves[i];
-//         ctx.beginPath();
-        
-//         // Start from the left edge
-//         ctx.moveTo(0, baseY);
-        
-//         // Draw wave
-//         for (let x = 0; x < lavaCanvas.width; x += 5) {
-//             const y = baseY + 
-//                       Math.sin(x * wave.frequency + wave.phase) * wave.amplitude +
-//                       Math.sin(x * wave.frequency * 1.5 + wave.phase * 1.2) * wave.amplitude * 0.5;
+    accordionHeaders.forEach(header => {
+        header.addEventListener('click', function(e) {
+            // Prevent the click from propagating to other elements
+            e.stopPropagation();
             
-//             ctx.lineTo(x, y);
-//         }
-        
-//         // Complete the wave shape
-//         ctx.lineTo(lavaCanvas.width, lavaCanvas.height);
-//         ctx.lineTo(0, lavaCanvas.height);
-//         ctx.closePath();
-        
-//         // Apply gradient to wave
-//         const waveGradient = ctx.createLinearGradient(0, baseY, 0, lavaCanvas.height);
-//         waveGradient.addColorStop(0, wave.color);
-//         waveGradient.addColorStop(1, '#800000');
-        
-//         ctx.fillStyle = waveGradient;
-//         ctx.fill();
-        
-//         // Add glow effect
-//         ctx.shadowColor = wave.color;
-//         ctx.shadowBlur = 15;
-//         ctx.fill();
-//         ctx.shadowBlur = 0;
-//     }
-    
-//     // Draw particles
-//     lava.particles.forEach((particle, index) => {
-//         if (particle.life !== undefined) {
-//             particle.life--;
-//             if (particle.life <= 0) {
-//                 lava.particles.splice(index, 1);
-//                 return;
-//             }
-//         }
-        
-//         ctx.beginPath();
-//         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-//         ctx.fillStyle = particle.color;
-//         ctx.fill();
-        
-//         // Update particle position
-//         particle.x += Math.cos(particle.angle) * particle.speed;
-//         particle.y += Math.sin(particle.angle) * particle.speed;
-        
-//         // Apply gravity
-//         particle.y += 0.2;
-        
-//         // Apply friction
-//         particle.speed *= 0.98;
-//     });
-    
-//     // Draw lava glow
-//     const glowGradient = ctx.createRadialGradient(
-//         lavaCanvas.width/2, lavaCanvas.height * 0.8, 0,
-//         lavaCanvas.width/2, lavaCanvas.height * 0.8, lavaCanvas.width/2
-//     );
-//     glowGradient.addColorStop(0, 'rgba(255, 85, 0, 0.8)');
-//     glowGradient.addColorStop(1, 'rgba(255, 85, 0, 0)');
-    
-//     ctx.fillStyle = glowGradient;
-//     ctx.fillRect(0, lavaCanvas.height * 0.7, lavaCanvas.width, lavaCanvas.height * 0.3);
-// }
+            const accordionItem = this.parentElement;
+            const accordionContent = this.nextElementSibling;
+            
+            // Toggle the active class on the header
+            this.classList.toggle('active');
+            
+            // Toggle the open class on the content
+            accordionContent.classList.toggle('open');
+            
+            // Close other accordions when this one opens
+            const allAccordionItems = document.querySelectorAll('.accordion-item');
+            allAccordionItems.forEach(item => {
+                if (item !== accordionItem) {
+                    const otherContent = item.querySelector('.accordion-content');
+                    const otherHeader = item.querySelector('.accordion-header');
+                    if (otherContent.classList.contains('open')) {
+                        otherContent.classList.remove('open');
+                        otherHeader.classList.remove('active');
+                    }
+                }
+            });
+        });
+    });
+}
 
-// // Animation loop
-// function animate() {
-//     // Update wave phases
-//     lava.waves.forEach(wave => {
-//         wave.phase += wave.speed;
-//     });
-    
-//     // Draw everything
-//     drawLava();
-    
-//     // Continue animation
-//     requestAnimationFrame(animate);
-// }
-
-// // Event listeners
-// lavaCanvas.addEventListener('mousemove', (e) => {
-//     const rect = lavaCanvas.getBoundingClientRect();
-//     const x = e.clientX - rect.left;
-//     const y = e.clientY - rect.top;
-    
-//     // Create ripple effect on mouse move
-//     if (Math.random() > 0.7) {
-//         createRipple(x, y);
-//     }
-// });
-
-// lavaCanvas.addEventListener('click', (e) => {
-//     const rect = lavaCanvas.getBoundingClientRect();
-//     const x = e.clientX - rect.left;
-//     const y = e.clientY - rect.top;
-    
-//     createExplosion(x, y);
-// });
-
-// initWaves();
-// animate();
+// Initialize accordion after DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAccordion);
+} else {
+    initAccordion();
+}

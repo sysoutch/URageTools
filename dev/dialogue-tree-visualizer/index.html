@@ -20,7 +20,15 @@
             margin: 0;
             overflow: hidden;
             display: flex;
+            flex-direction: column; /* Changed to column for footer support */
             height: 100vh;
+        }
+
+        .app-wrapper {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+            width: 100%;
         }
 
         /* --- Sidebar --- */
@@ -138,30 +146,32 @@
 </head>
 <body>
 
-<aside id="sidebar">
-    <div class="sidebar-header">VARIABLE MANAGER</div>
-    <div class="var-list" id="varList">
+<div class="app-wrapper">
+    <aside id="sidebar">
+        <div class="sidebar-header">VARIABLE MANAGER</div>
+        <div class="var-list" id="varList">
+            </div>
+        <div style="padding:15px; border-top: 1px solid #333;">
+            <button onclick="addVariable()" style="width:100%">+ Add Variable</button>
         </div>
-    <div style="padding:15px; border-top: 1px solid #333;">
-        <button onclick="addVariable()" style="width:100%">+ Add Variable</button>
-    </div>
-</aside>
+    </aside>
 
-<main id="main">
-    <header>
-        <div><strong>URAGE</strong> ENGINE <span id="zoomDisplay" style="margin-left:15px; color:#666; font-size:12px;">100%</span></div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-add" onclick="addNode()">+ NEW NODE</button>
-            <button class="btn-export" onclick="exportData()">EXPORT ENGINE DATA</button>
-        </div>
-    </header>
+    <main id="main">
+        <header>
+            <div><strong>URAGE</strong> ENGINE <span id="zoomDisplay" style="margin-left:15px; color:#666; font-size:12px;">100%</span></div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-add" onclick="addNode()">+ NEW NODE</button>
+                <button class="btn-export" onclick="exportData()">EXPORT ENGINE DATA</button>
+            </div>
+        </header>
 
-    <div id="viewport">
-        <div id="canvas-content">
-            <svg id="svg-layer"></svg>
+        <div id="viewport">
+            <div id="canvas-content">
+                <svg id="svg-layer"></svg>
+            </div>
         </div>
-    </div>
-</main>
+    </main>
+</div>
 
 <script>
     const characters = [

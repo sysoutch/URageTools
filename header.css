@@ -5,12 +5,16 @@
     background: linear-gradient(135deg, #282626 0%, #1a1818 100%);
     backdrop-filter: blur(10px);
     color: #c4393996;
-    position: absolute;
+    position: relative;
     z-index: 99;
     width: 100%;
     height: 54px;
     align-content: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header-overlay {
+    position: absolute;
 }
 
 .header-container {

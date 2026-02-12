@@ -1,0 +1,60 @@
+// _variables.scss
+
+// Colors
+$primary-color: #ff6b35;       // More vibrant orange
+$secondary-color: #8a0303;
+$background-dark: #0a0a0f;     // Slightly lighter for better text contrast
+$background-light: #bebeec;     // Lighter
+$background-accent: #ff8a00;     // Vibr
+$background-secondary-dark: #2c2c36;
+$text-light: #ffffff;
+$header-bg-start: #282626;
+$header-bg-end: #1a1818;
+$tool-card-bg: #fffaf0;
+$tool-card-shadow: rgba(0,0,0,0.05);
+$tool-card-hover-shadow: rgba(0,0,0,0.1);
+$category-header-bg-start: #313131;
+$category-header-bg-mid: #ff6b35;  // Now matches primary color
+$category-header-bg-end: #ff8a00;   // More vibrant golden
+$category-header-border: #ff8a00;
+$button-border: #604242;
+$button-shadow: #514848;
+$button-gradient-start: #ff9d2d;
+$button-gradient-end: #f55353;
+$button-hover-bg: #b18658;
+$inferno-btn-gradient-start: #ff6b35;  // Updated to match primary
+$inferno-btn-gradient-end: #f55353;
+$inferno-btn-border: #f56f6ff5;
+$inferno-btn-shadow: rgba(255, 0, 0, 0.2);
+$inferno-btn-hover-gradient-start: #ff7d2d;
+$inferno-btn-hover-gradient-end: #f15d5d;
+$inferno-btn-hover-shadow: rgba(255, 0, 0, 0.3);
+
+// Fonts
+$font-family-base: 'Segoe UI', system-ui, -apple-system, sans-serif;
+$font-family-monospace: monospace;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 30px;
+$spacing-xxl: 40px;
+
+// Border Radii
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 10px;
+$border-radius-xl: 12px;
+$border-radius-pill: 20px;
+
+// Z-index
+$z-index-low: 1;
+$z-index-mid: 10;
+$z-index-high: 99;
+$z-index-header: 1000;
+
+// Transitions
+$transition-speed: 0.3s ease;
+$transition-speed-fast: 0.2s ease;

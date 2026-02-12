@@ -1,5 +1,6 @@
 .site-footer {
     margin-top: auto;
+    width: 100%;
     background: linear-gradient(135deg, #282626 0%, #1a1818 100%);
     color: #ffffff;
     padding: 20px 0 20px;
@@ -95,4 +96,25 @@
     text-align: center;
     color: #888;
     font-size: 0.9rem;
+}
+
+/* Mini Footer Styles */
+.mini-footer .footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 20px;
+    /* Reset grid styles if inherited */
+    grid-template-columns: none;
+}
+
+.mini-footer p {
+    margin: 0;
+}
+
+.mini-footer a {
+    color: #ff8a00;
+    text-decoration: none;
+    font-weight: bold;
 }

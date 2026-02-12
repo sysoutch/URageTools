@@ -19,13 +19,11 @@ $contentWithHeader = preg_replace('/<body( data-theme="[^"]*")?>/', '<body$1>' .
 <?php
 // Include the footer before the </body> tag of the $htmlContent content where data-theme can be any value and is optional
 $footer = file_get_contents("../../footer.html");
-echo str_replace("</body>", $footer . "</body>", $contentWithHeader);
-?>
+$output = str_replace("</body>", $footer . "</body>", $contentWithHeader);
 
-<style>
-/* Extra padding for app-wrapper to accommodate header and footer */
-.app-wrapper {
-    padding-top: 54px; /* Height of the header */
-    padding-bottom: 50px; /* Height of the mini-footer */
-}
-</style>
+// Add styles for the app-wrapper to provide necessary padding for header and footer
+$output .= 
+    '<style>\n.app-wrapper {\n    padding-top: 54px; /* Height of the header */\n    padding-bottom: 50px; /* Height of the mini-footer */\n}\n</style>';
+
+echo $output;
+?>

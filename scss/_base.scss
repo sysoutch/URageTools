@@ -1,0 +1,38 @@
+// 1. Universal Reset
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+// 2. The Animation
+// Shifting the position across both X and Y axes for a more fluid feel
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+// 3. Body Styling
+body {
+    // Adding a mid-tone color variable makes the transition significantly smoother
+    // Replace $background-accent with a color between your dark and secondary dark
+    
+    background: linear-gradient(135deg, #e6dfc3 0%, #e8c2c1 25%, #d8b4a0 50%, #e8c2c1 75%, #e6dfc3 100%);
+    background-size: 400% 400%;
+    animation: moveGradient 18s ease-in-out infinite;
+
+    min-height: 100vh;
+    font-family: $font-family-base;
+    color: #ffffff; // Switched to white/light for better contrast on dark gradients
+    
+    /* Improvement: Standard line-height is usually 1.5 - 1.6 for readability */
+    line-height: 1.6; 
+    
+    display: flex;
+    flex-direction: column;
+    
+    /* Smooths out the font rendering on modern browsers */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

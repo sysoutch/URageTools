@@ -1,16 +1,23 @@
 /* Body: Full screen centering and a dark gaming-themed background */
 body {
     margin: 0;
-    padding: 0;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
     color: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+}
+
+.app-wrapper {
+    padding: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
+    width: 100%;
 }
 
 /* Container: Limits width and provides spacing for the content */
