@@ -1,18 +1,20 @@
 <?php
-// Include the header
-include "../../header.html";
-?>
+// Read and include the content from index.html
+$htmlContent = file_get_contents("index.html");
 
-<main class="main-content">
-    <?php
-    // Read and include the content from index.html
-    $htmlContent = file_get_contents("index.html");
-    echo $htmlContent;
-    ?>
-</main>
+// Inject shared header/footer styles and shared overrides.
+$headerCss = "<link rel=\"stylesheet\" href=\"../header.css\">";
+$footerCss = "<link rel=\"stylesheet\" href=\"../footer.css\">";
+$toolShellCss = "<link rel=\"stylesheet\" href=\"../tool-shell.css\">";
+$faCss = "<link href=\"../_shared/fontawesome/css/all.min.css\" rel=\"stylesheet\">";
+$htmlContent = str_replace("</head>", $headerCss . $footerCss . $toolShellCss . $faCss . "</head>", $htmlContent);
 
-<?php
-// Include the footer
-include "../../footer.html";
+// Inject the shared header right after <body ...>
+$header = file_get_contents("../header.html");
+$contentWithHeader = preg_replace('/<body( data-theme="[^"]*")?>/', '<body$1>' . $header . '<div class="app-shell">', $htmlContent);
+
+// Inject the shared footer right before </body>
+$footer = file_get_contents("../footer.html");
+echo str_replace("</body>", "</div>" . $footer . "</body>", $contentWithHeader);
 ?>
 

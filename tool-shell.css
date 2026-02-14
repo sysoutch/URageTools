@@ -1,0 +1,29 @@
+:root {
+    --urage-header-height: 54px;
+}
+
+/*
+  Tool pages include their own CSS and often set `body { height: 100vh; overflow: hidden; }`,
+  which prevents scrolling to the injected footer. This file is injected by each tool's
+  `index.php` wrapper after `header.css`/`footer.css` so it can safely override those cases.
+*/
+html,
+body {
+    height: auto !important;
+    min-height: 100% !important;
+}
+
+body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    min-height: 100vh !important;
+}
+
+.app-shell {
+    flex: 1 0 auto;
+    min-height: 0;
+}

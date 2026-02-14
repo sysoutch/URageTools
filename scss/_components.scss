@@ -1,61 +1,170 @@
 // _components.scss
 
-.category-header {
-    position: sticky;
-    top: 0;
-    font-size: 0.8rem;
-    color: $text-light;
-    margin: $spacing-xxl 0 $spacing-lg - 5 0;
-    padding: $spacing-md $spacing-lg;
-    background: linear-gradient(90deg, $primary-color 0%, $secondary-color 100%);
-    border-left: 6px solid $category-header-border;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    gap: $spacing-md - 1;
-    box-shadow: 0 $spacing-xs 15px rgba(0, 0, 0, 0.5);
-    z-index: $z-index-high;
-    border-radius: $border-radius-md;
-    transition: all $transition-speed;
-
-    span {
-        background: $category-header-border;
-        color: #000000;
-        padding: $spacing-xs $spacing-md - 4;
-        font-size: 0.9rem;
-        font-family: $font-family-monospace;
-        font-weight: 800;
-        border-radius: $border-radius-sm;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
+/* Accordion (Home) */
+.accordion-item {
+    margin-bottom: 18px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 }
 
+.accordion-header {
+    width: 100%;
+    appearance: none;
+    border: 0;
+    background: linear-gradient(90deg, $primary-color 0%, $secondary-color 100%);
+    color: $text-light;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    text-align: left;
+    font: inherit;
+    transition: filter $transition-speed-fast, transform $transition-speed-fast;
+}
+
+.accordion-header:hover {
+    filter: brightness(1.05);
+}
+
+.accordion-header:active {
+    transform: translateY(1px);
+}
+
+.accordion-header:focus-visible {
+    outline: 3px solid rgba(255, 138, 0, 0.7);
+    outline-offset: 2px;
+}
+
+.accordion-title {
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.accordion-meta {
+    margin-left: auto;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 800;
+}
+
+.accordion-toggle {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    opacity: 0.95;
+}
+
+.accordion-toggle::before,
+.accordion-toggle::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: $text-light;
+    border-radius: 1px;
+    transform-origin: center;
+    transition: transform $transition-speed;
+}
+
+.accordion-toggle::before {
+    width: 18px;
+    height: 2px;
+    transform: translate(-50%, -50%);
+}
+
+.accordion-toggle::after {
+    width: 2px;
+    height: 18px;
+    transform: translate(-50%, -50%);
+}
+
+.accordion-header[aria-expanded="true"] .accordion-toggle::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 420ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 200ms ease;
+}
+
+.accordion-content.open {
+    opacity: 1;
+}
+
+.accordion-inner {
+    padding: 18px 18px 22px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.55));
+}
+
+/* Tool Cards */
 .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: $spacing-xl;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
 }
 
 .tool-card {
     display: flex;
     flex-direction: column;
-    background: $tool-card-bg;
-    border-radius: $border-radius-lg;
-    transition: all $transition-speed cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 $border-radius-lg $border-radius-pill rgba(0,0,0,0.05);
-
-    &:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px $tool-card-hover-shadow;
-    }
-
-    &-content {
-        padding: $spacing-lg;
-    }
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 250, 240, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #0b1220;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    transition: transform $transition-speed-fast, box-shadow $transition-speed-fast;
+    content-visibility: auto;
+    contain-intrinsic-size: 380px;
 }
 
+.tool-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.35);
+}
+
+.tool-card img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.15);
+    display: block;
+}
+
+.tool-card-content {
+    padding: 16px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.tool-card-content h3 {
+    font-size: 1.1rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.tool-card-content p {
+    color: rgba(15, 23, 42, 0.85);
+    font-size: 0.95rem;
+    line-height: 1.45;
+    flex: 1;
+}
+
+.tool-link {
+    margin-top: 6px;
+}
+
+/* Buttons */
 .btn {
     @include button-styles($button-gradient-start, $button-gradient-end, #fffaea, $button-border, 0 $spacing-xs 0px 0px $button-shadow);
 }
@@ -73,7 +182,7 @@
     color: $text-light;
 
     &:hover {
-        background: rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.1);
         border-color: $primary-color;
     }
 }
@@ -130,137 +239,5 @@
     &:active::before {
         width: 150px;
         height: 150px;
-    }
-}
-
-.category {
-    display: inline-block;
-    background: #e1f5fe;
-    color: #039be5;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: $spacing-xs $spacing-md - 4;
-    border-radius: $border-radius-pill;
-    margin-bottom: $spacing-lg - 6;
-    align-self: center;
-}
-
-/* Page Header */
-.page-header {
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.page-header h1 {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-bottom: 10px;
-}
-
-.page-header p {
-    color: #636e72;
-    font-size: 1.1rem;
-}
-
-/* Category Wrapper */
-.category-wrapper {
-    margin-bottom: 50px;
-    width: 100%;
-}
-
-/* Accordion Styles */
-.accordion-item {
-    margin-bottom: $spacing-xl;
-    border-radius: $border-radius-lg;
-    overflow: hidden;
-    box-shadow: 0 $spacing-xs 15px rgba(0, 0, 0, 0.1);
-    background: $background-light;
-    transition: all $transition-speed;
-}
-
-.accordion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $spacing-lg $spacing-xl;
-    background: linear-gradient(90deg, $primary-color 0%, $secondary-color 100%);
-    color: $text-light;
-    cursor: pointer;
-    position: relative;
-    transition: all $transition-speed;
-    
-    h2 {
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
-    .accordion-toggle {
-        display: block;
-        width: 24px;
-        height: 24px;
-        position: relative;
-        transition: transform $transition-speed;
-        
-        &::before,
-        &::after {
-            content: '';
-            position: absolute;
-            background: $text-light;
-            transition: transform $transition-speed;
-        }
-        
-        &::before {
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            transform: translateY(-50%);
-        }
-        
-        &::after {
-            top: 50%;
-            left: 50%;
-            width: 2px;
-            height: 100%;
-            transform: translate(-50%, -50%);
-        }
-    }
-    
-    &.active .accordion-toggle::after {
-        transform: translate(-50%, -50%) rotate(90deg);
-    }
-}
-
-.accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height $transition-speed ease;
-}
-
-.accordion-content.open {
-    max-height: 1000px; /* Adjust this value based on your content */
-}
-
-/* Tool Card Styles (updated for accordion) */
-.tool-card {
-    display: flex;
-    flex-direction: column;
-    background: $tool-card-bg;
-    border-radius: $border-radius-lg;
-    transition: all $transition-speed cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 $border-radius-lg $border-radius-pill rgba(0,0,0,0.05);
-    margin-bottom: $spacing-md;
-    
-    &:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px $tool-card-hover-shadow;
-    }
-
-    &-content {
-        padding: $spacing-lg;
     }
 }

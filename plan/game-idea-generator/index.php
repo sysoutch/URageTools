@@ -7,19 +7,21 @@ $htmlContent = file_get_contents("index.html");
 // Include the footer before the </body> tag of the $htmlContent content where data-theme can be any value and is optional
 $headerCss = "<link rel=\"stylesheet\" href=\"../../header.css\">";
 $footerCss = "<link rel=\"stylesheet\" href=\"../../footer.css\">";
-$htmlContent = str_replace("</head>", $headerCss . $footerCss . "</head>", $htmlContent);
+$toolShellCss = "<link rel=\"stylesheet\" href=\"../../tool-shell.css\">";
+$faCss = "<link href=\"../../_shared/fontawesome/css/all.min.css\" rel=\"stylesheet\">";
+$htmlContent = str_replace("</head>", $headerCss . $footerCss . $toolShellCss . $faCss . "</head>", $htmlContent);
 ?>
 
 <?php
 // Include the header after the <body data-theme="dark"> tag of the $htmlContent content where data-theme can be any value and is optional
 $header = file_get_contents("../../header.html");
-$contentWithHeader = preg_replace('/<body( data-theme="[^"]*")?>/', '<body$1>' . $header, $htmlContent);
+$contentWithHeader = preg_replace('/<body( data-theme="[^"]*")?>/', '<body$1>' . $header . '<div class="app-shell">', $htmlContent);
 ?>
 
 <?php
 // Include the footer before the </body> tag of the $htmlContent content where data-theme can be any value and is optional
 $footer = file_get_contents("../../footer.html");
-echo str_replace("</body>", $footer . "</body>", $contentWithHeader);
+echo str_replace("</body>", "</div>" . $footer . "</body>", $contentWithHeader);
 ?>
 
 <style>

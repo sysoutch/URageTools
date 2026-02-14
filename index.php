@@ -13,8 +13,21 @@ function getToolDescription($category, $folder) {
 
     $content = file_get_contents($indexFile);
 
-    if (preg_match("/<title>(.*?)<\/title>/is", $content, $matches)) {
+    // Prefer a real meta description when available.
+    if (preg_match('/<meta\\s+name=[\"\\\']description[\"\\\']\\s+content=[\"\\\'](.*?)[\"\\\']\\s*\\/?>/is', $content, $matches)) {
         return trim($matches[1]);
+    }
+    if (preg_match('/<meta\\s+content=[\"\\\'](.*?)[\"\\\']\\s+name=[\"\\\']description[\"\\\']\\s*\\/?>/is', $content, $matches)) {
+        return trim($matches[1]);
+    }
+
+    if (preg_match("/<title>(.*?)<\/title>/is", $content, $matches)) {
+        $title = trim($matches[1]);
+        // Strip common suffixes like " | URage Tools".
+        if (strpos($title, '|') !== false) {
+            $title = trim(explode('|', $title, 2)[0]);
+        }
+        return $title;
     }
     if (preg_match("/<h1>(.*?)<\/h1>/is", $content, $matches)) {
         return trim($matches[1]);
@@ -68,38 +81,35 @@ function getToolThumbnail($category, $folder) {
     <link rel="stylesheet" href="header.css">
     <link rel="stylesheet" href="footer.css">
     <link href="_shared/fontawesome/css/all.min.css" rel="stylesheet">
-<script src="art/3d-model-viewer/lib/three.min.js"></script>
-<script src="art/3d-model-viewer/lib/examples/jsm/controls/OrbitControls.js"></script>
 </head>
 <body>
     <?php include 'header-home.html'; ?>
 
 	<div class="hero-wrapper">
-		<main id="viewport" class="hero-bg">
+		<div id="viewport" class="hero-bg" aria-hidden="true">
             <!-- <div class="animation-container">
                 <canvas id="lavaCanvas"></canvas>
             </div> -->
             <canvas id="mainCanvas"></canvas>
-        </main>
+        </div>
 		<div class="hero-content">
 			<div class="hero-badge">URage Tools</div>
 			<h1>Powerful Utilities for <span>Developers & Artists</span></h1>
 			<p>A collection of fast, free, and privacy-focused web tools for web development and 3D art. No sign-up required, all tools run directly in your browser.</p>
 			
 			<div class="hero-actions">
-				<a href="#cropper" class="cta-btn btn-filled">
-					<span>✂️</span> Image Crop & Scale
+				<a href="art/image-crop-and-scale" class="cta-btn btn-filled">
+					<span aria-hidden="true"><i class="fa-solid fa-scissors"></i></span>
+					<span>Image Crop & Scale</span>
 				</a>
-				<a href="#pixel-art" class="cta-btn btn-glass">
-					<span>🎨</span> Pixel Art Studio
+				<a href="art/pixel-art-converter" class="cta-btn btn-glass">
+					<span aria-hidden="true"><i class="fa-solid fa-palette"></i></span>
+					<span>Pixel Art Converter</span>
 				</a>
 			</div>
 		</div>
-		<div class="scroll-down">↓</div>
+		<div class="scroll-down" aria-hidden="true"><i class="fa-solid fa-arrow-down"></i></div>
 	</div>
-    <header>
-
-    </header>
     <div class="container">
         <?php foreach ($categories as $catKey => $catName): ?>
             <?php
@@ -116,12 +126,25 @@ function getToolThumbnail($category, $folder) {
 
             <?php if (!empty($tools)): ?>
                 <div class="accordion-item">
-                    <div class="accordion-header" id="accordion-<?php echo $catKey; ?>">
-                        <h2><?php echo $catName; ?></h2>
-                        <span class="accordion-toggle"></span>
-                    </div>
-                    <div class="accordion-content">
-                        <div class="category-wrapper">
+                    <button
+                        class="accordion-header"
+                        id="accordion-<?php echo $catKey; ?>"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="accordion-panel-<?php echo $catKey; ?>"
+                    >
+                        <span class="accordion-title"><?php echo $catName; ?></span>
+                        <span class="accordion-meta"><?php echo count($tools); ?> tools</span>
+                        <span class="accordion-toggle" aria-hidden="true"></span>
+                    </button>
+                    <div
+                        class="accordion-content"
+                        id="accordion-panel-<?php echo $catKey; ?>"
+                        role="region"
+                        aria-labelledby="accordion-<?php echo $catKey; ?>"
+                        hidden
+                    >
+                        <div class="accordion-inner">
                             <div class="tools-grid">
                                 <?php foreach ($tools as $tool): 
                                     $description = getToolDescription($catKey, $tool);
@@ -129,16 +152,19 @@ function getToolThumbnail($category, $folder) {
                                         $description = "A useful tool for " . ucwords(str_replace('-', ' ', $tool)) . ".";
                                     }
                                     $thumbnail = getToolThumbnail($catKey, $tool);
+                                    if (!$thumbnail) {
+                                        $thumbnail = "thumbnail.png";
+                                    }
                                     $cleanName = ucwords(str_replace('-', ' ', $tool));
                                 ?>
-                                    <div class="tool-card">
-                                        <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> Thumbnail" loading="lazy" />
+                                    <article class="tool-card">
+                                        <img src="<?php echo $thumbnail; ?>" alt="<?php echo $cleanName; ?> thumbnail" loading="lazy" decoding="async" />
                                         <div class="tool-card-content">
-                                            <h2><?php echo $cleanName; ?></h2>
+                                            <h3><?php echo $cleanName; ?></h3>
                                             <p><?php echo htmlspecialchars($description); ?></p>
                                             <a href="<?php echo $catKey . '/' . $tool; ?>" class="tool-link btn btn-inferno-stretch">Open tool</a>
                                         </div>
-                                    </div>
+                                    </article>
                                 <?php endforeach; ?>
                             </div>
                         </div>
