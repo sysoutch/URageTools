@@ -1,16 +1,59 @@
 :root {
-    --primary: #ff8a00;
-    --secondary: #e52e71;
-    --bg: #0f0f1a;
-    --glass: rgba(255, 255, 255, 0.05);
-    --glass-heavy: rgba(15, 15, 26, 0.85);
+    --primary: #ff8a4d;
+    --secondary: #ff6136;
+    --bg: #120d0d;
+    --glass: rgba(24, 14, 14, 0.92);
+    --glass-heavy: rgba(18, 11, 11, 0.98);
+    --line: rgba(255, 180, 128, 0.18);
+    --line-strong: rgba(255, 180, 128, 0.34);
+    --text: #f6f1ee;
+    --muted: #c8b6ae;
+}
+
+body[data-dashboard-theme="water"] {
+    --primary: #59b6ff;
+    --secondary: #2f8cf0;
+    --bg: #0d1522;
+    --glass: rgba(12, 21, 37, 0.94);
+    --glass-heavy: rgba(10, 17, 29, 0.98);
+    --line: rgba(114, 190, 255, 0.18);
+    --line-strong: rgba(114, 190, 255, 0.34);
+    --text: #eef5ff;
+    --muted: #a9bfd8;
+}
+
+body[data-dashboard-theme="nature"] {
+    --primary: #82cd5f;
+    --secondary: #58a23c;
+    --bg: #11170f;
+    --glass: rgba(18, 24, 16, 0.94);
+    --glass-heavy: rgba(13, 19, 11, 0.98);
+    --line: rgba(146, 213, 120, 0.18);
+    --line-strong: rgba(146, 213, 120, 0.34);
+    --text: #f2f8ee;
+    --muted: #bccfaf;
+}
+
+body[data-dashboard-theme="rock"] {
+    --primary: #c4ae8a;
+    --secondary: #9b8563;
+    --bg: #151515;
+    --glass: rgba(24, 24, 24, 0.95);
+    --glass-heavy: rgba(16, 16, 16, 0.98);
+    --line: rgba(196, 190, 176, 0.18);
+    --line-strong: rgba(196, 190, 176, 0.34);
+    --text: #f2efea;
+    --muted: #b7aea2;
 }
 
 /* Base Styles & Centering */
 body { 
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-    background: radial-gradient(circle at center, #1a1a2e 0%, var(--bg) 100%);
-    color: white; 
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 38%),
+        radial-gradient(circle at center, color-mix(in srgb, var(--secondary) 14%, transparent) 0%, transparent 42%),
+        var(--bg);
+    color: var(--text); 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
@@ -26,7 +69,7 @@ body {
     background: var(--glass); 
     padding: 30px; 
     border-radius: 24px; 
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--line);
     backdrop-filter: blur(12px);
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     text-align: center; 
@@ -49,7 +92,7 @@ h1 {
     display: block;
     margin: 20px 0 10px;
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.5);
+    color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 1.5px;
     font-weight: bold;
@@ -76,9 +119,9 @@ h1 {
 button { 
     padding: 10px; 
     border-radius: 10px; 
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--line);
     background: rgba(255,255,255,0.07);
-    color: white; 
+    color: var(--text); 
     cursor: pointer; 
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 0.9rem;
@@ -130,7 +173,7 @@ input[type=range] {
     gap: 15px;
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid var(--line);
 }
 
 .adsr-grid .control-group {
@@ -168,7 +211,7 @@ input[type=range] {
     background: #000;
     border-radius: 12px;
     margin-bottom: 15px;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid var(--line);
 }
 
 canvas {
@@ -180,7 +223,7 @@ canvas {
 .lock-btn {
     background: none;
     border: none;
-    color: rgba(255,255,255,0.3);
+    color: var(--muted);
     font-size: 1rem;
     padding: 4px;
 }
@@ -197,7 +240,7 @@ canvas {
     background: var(--glass-heavy);
     border-radius: 20px;
     padding: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--line-strong);
     backdrop-filter: blur(20px);
     box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     z-index: 1000;
@@ -208,7 +251,7 @@ canvas {
     margin-top: 0;
     font-size: 1rem;
     color: var(--primary);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid var(--line);
     padding-bottom: 10px;
     margin-bottom: 12px;
 }
@@ -226,7 +269,7 @@ canvas {
 .btn-load-preset {
     background: none;
     border: none;
-    color: #eee;
+    color: var(--text);
     font-size: 0.85rem;
     text-align: left;
     padding: 0;
@@ -241,7 +284,7 @@ canvas {
 
 /* Scrollbar Style */
 .presets-sidebar::-webkit-scrollbar { width: 5px; }
-.presets-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+.presets-sidebar::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--primary) 30%, transparent); border-radius: 10px; }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {

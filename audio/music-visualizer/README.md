@@ -1,4 +1,4 @@
-# URage Pulse - Multi-View Music Visualizer
+# Music Visualizer
 
 ![Thumbnail](thumbnail.png)
 

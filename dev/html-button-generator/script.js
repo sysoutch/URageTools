@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    window.registerDashboardThemeSync();
     // DOM Elements
     const generateBtn = document.getElementById('generateBtn');
     const randomizeBtn = document.getElementById('randomizeBtn');
@@ -236,4 +237,37 @@ ${buttonAnimation !== 'none' ? `
             setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
         });
     }
+
+    function describeCurrentAssets() {
+        const css = generatedCode.textContent || '';
+        const previewLight = document.getElementById('buttonPreviewLight');
+        const html = previewLight && previewLight.innerHTML ? previewLight.innerHTML : buttonPreview && buttonPreview.innerHTML || '';
+        return [
+            {
+                kind: 'text',
+                title: 'Generated Button CSS',
+                fileName: 'generated-button.css',
+                mimeType: 'text/css',
+                textContent: css,
+                previewKind: 'text',
+                previewText: css,
+                sourceDetail: 'Generated button CSS.',
+                metadata: { sourceTool: 'html-button-generator', resourceFormat: 'css' }
+            },
+            {
+                kind: 'text',
+                title: 'Generated Button HTML',
+                fileName: 'generated-button.html',
+                mimeType: 'text/html',
+                textContent: html,
+                previewKind: 'text',
+                previewText: html,
+                sourceDetail: 'Generated button HTML snippet.',
+                metadata: { sourceTool: 'html-button-generator', resourceFormat: 'html' }
+            }
+        ];
+    }
+
+    window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+    window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
 });

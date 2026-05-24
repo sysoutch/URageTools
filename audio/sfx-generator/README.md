@@ -1,4 +1,4 @@
-# URage Pulse - SFX Generator
+# SFX Generator
 
 ![Thumbnail](thumbnail.png)
 

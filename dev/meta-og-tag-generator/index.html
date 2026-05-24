@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meta Tag & OG Generator | URage Tools</title>
+    <script src="../../shared/dashboard-theme.js"></script>
     <style>
         :root {
             --bg-dark: #0f0f0f;
@@ -15,9 +16,17 @@
             --link-color: #00a8fc;
         }
 
+        body[data-dashboard-theme="fire"] { --bg-dark: #120d0d; --card-bg: rgba(24, 14, 14, 0.92); --accent: #ff8a4d; --text-main: #f6f1ee; --text-dim: #c8b6ae; --code-bg: rgba(18, 11, 11, 0.98); --link-color: #59b6ff; }
+        body[data-dashboard-theme="water"] { --bg-dark: #0d1522; --card-bg: rgba(12, 21, 37, 0.94); --accent: #59b6ff; --text-main: #eef5ff; --text-dim: #a9bfd8; --code-bg: rgba(10, 17, 29, 0.98); --link-color: #7bd0ff; }
+        body[data-dashboard-theme="nature"] { --bg-dark: #11170f; --card-bg: rgba(18, 24, 16, 0.94); --accent: #82cd5f; --text-main: #f2f8ee; --text-dim: #bccfaf; --code-bg: rgba(13, 19, 11, 0.98); --link-color: #9ae27b; }
+        body[data-dashboard-theme="rock"] { --bg-dark: #151515; --card-bg: rgba(24, 24, 24, 0.95); --accent: #c4ae8a; --text-main: #f2efea; --text-dim: #b7aea2; --code-bg: rgba(16, 16, 16, 0.98); --link-color: #d8c29f; }
+
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
+            background:
+                radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 38%),
+                linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%),
+                var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
@@ -27,7 +36,6 @@
 
         .container {
             width: 100%;
-            max-width: 1000px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
@@ -132,7 +140,7 @@
         }
     </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
 <div class="container">
     <div class="input-section">
@@ -222,9 +230,31 @@
         });
     }
 
+    if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
+
+    function describeCurrentAssets() {
+        const text = document.getElementById('metaOutput').textContent || '';
+        return [{
+            kind: 'text',
+            title: 'Meta OG Tags',
+            fileName: 'meta-og-tags.html',
+            mimeType: 'text/html',
+            textContent: text,
+            previewKind: 'text',
+            previewText: text,
+            sourceDetail: 'Generated Open Graph and Twitter card meta tags.',
+            metadata: { sourceTool: 'meta-og-tag-generator', resourceFormat: 'html-meta' }
+        }];
+    }
+
+    window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+    window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
+
     // Initialize on load
     updateMeta();
 </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 
 </body>
 </html>

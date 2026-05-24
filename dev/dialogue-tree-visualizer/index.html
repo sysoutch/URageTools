@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URage Dialogue Engine</title>
+    <script src="../../shared/dashboard-theme.js"></script>
     <style>
         :root {
-            --bg: #0b0b0b;
-            --node-bg: #1e1f22;
-            --accent: #ff4d4d;
-            --logic-accent: #e6db74;
-            --text: #e0e0e0;
+            --bg: #120d0d;
+            --panel: rgba(24, 14, 14, 0.92);
+            --panel-strong: rgba(18, 11, 11, 0.98);
+            --line: rgba(255, 180, 128, 0.18);
+            --accent: #ff8a4d;
+            --logic-accent: #ffd47c;
+            --text: #f6f1ee;
+            --muted: #c8b6ae;
         }
+        body[data-dashboard-theme="water"] { --bg: #0d1522; --panel: rgba(12, 21, 37, 0.94); --panel-strong: rgba(10, 17, 29, 0.98); --line: rgba(114, 190, 255, 0.18); --accent: #59b6ff; --logic-accent: #a8e4ff; --text: #eef5ff; --muted: #a9bfd8; }
+        body[data-dashboard-theme="nature"] { --bg: #11170f; --panel: rgba(18, 24, 16, 0.94); --panel-strong: rgba(13, 19, 11, 0.98); --line: rgba(146, 213, 120, 0.18); --accent: #82cd5f; --logic-accent: #dced94; --text: #f2f8ee; --muted: #bccfaf; }
+        body[data-dashboard-theme="rock"] { --bg: #151515; --panel: rgba(24, 24, 24, 0.95); --panel-strong: rgba(16, 16, 16, 0.98); --line: rgba(196, 190, 176, 0.18); --accent: #c4ae8a; --logic-accent: #e5d5b8; --text: #f2efea; --muted: #b7aea2; }
 
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -34,8 +41,8 @@
         /* --- Sidebar --- */
         #sidebar {
             width: 260px;
-            background: #161719;
-            border-right: 1px solid #333;
+            background: var(--panel);
+            border-right: 1px solid var(--line);
             display: flex;
             flex-direction: column;
             z-index: 100;
@@ -45,8 +52,8 @@
             padding: 15px;
             font-size: 14px;
             font-weight: 800;
-            border-bottom: 1px solid #333;
-            background: #111;
+            border-bottom: 1px solid var(--line);
+            background: var(--panel-strong);
         }
 
         .var-list { padding: 15px; flex-grow: 1; overflow-y: auto; }
@@ -67,11 +74,11 @@
 
         header {
             padding: 12px 20px;
-            background: #161719;
+            background: var(--panel);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--line);
         }
 
         #viewport {
@@ -79,7 +86,7 @@
             overflow: hidden;
             position: relative;
             cursor: grab;
-            background-image: radial-gradient(#252525 1px, transparent 1px);
+            background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
             background-size: 40px 40px;
         }
 
@@ -101,7 +108,7 @@
         /* --- Nodes --- */
         .node {
             position: absolute; width: 240px;
-            background: var(--node-bg); border: 2px solid #333;
+            background: var(--panel); border: 2px solid var(--line);
             border-radius: 6px; z-index: 10;
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             pointer-events: auto;
@@ -112,14 +119,14 @@
         .node-header {
             background: rgba(255,255,255,0.03); padding: 6px 10px;
             font-size: 10px; display: flex; justify-content: space-between;
-            align-items: center; border-bottom: 1px solid #333; color: #888;
+            align-items: center; border-bottom: 1px solid var(--line); color: var(--muted);
         }
 
         .node-content { padding: 10px; }
-        label { font-size: 9px; color: #666; font-weight: bold; display: block; margin-top: 5px; }
+        label { font-size: 9px; color: var(--muted); font-weight: bold; display: block; margin-top: 5px; }
 
         select, textarea, input {
-            width: 100%; background: #0d0e10; border: 1px solid #333;
+            width: 100%; background: var(--panel-strong); border: 1px solid var(--line);
             color: #fff; padding: 6px; border-radius: 4px;
             font-size: 11px; margin-bottom: 4px; box-sizing: border-box;
         }
@@ -137,14 +144,14 @@
         .in-dot { left: -9px; }
 
         button {
-            background: #2b2d31; color: white; border: 1px solid #3f4147;
+            background: var(--panel-strong); color: white; border: 1px solid var(--line);
             padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;
         }
-        .btn-add { background: #43b581; border: none; font-weight: bold; }
-        .btn-export { background: var(--accent); border: none; font-weight: bold; }
+        .btn-add { background: var(--accent); border: none; font-weight: bold; }
+        .btn-export { background: var(--logic-accent); color: #151515; border: none; font-weight: bold; }
     </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
 <div class="app-wrapper">
     <aside id="sidebar">
@@ -174,6 +181,7 @@
 </div>
 
 <script>
+    window.registerDashboardThemeSync();
     const characters = [
         { name: "Protagonist", color: "#00e5ff" },
         { name: "Antagonist", color: "#ff4d4d" },
@@ -433,7 +441,27 @@
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'urage_engine_data.json'; a.click();
     }
 
+    function describeCurrentAssets() {
+        const text = JSON.stringify({ variables, nodes, connections }, null, 2);
+        return [{
+            kind: 'text',
+            title: 'Dialogue Tree Engine Data',
+            fileName: 'urage_engine_data.json',
+            mimeType: 'application/json',
+            textContent: text,
+            previewKind: 'text',
+            previewText: text,
+            sourceDetail: 'Dialogue tree graph data for engine import.',
+            metadata: { sourceTool: 'dialogue-tree-visualizer', resourceFormat: 'dialogue-tree-json' }
+        }];
+    }
+
+    window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+    window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
+
     init();
 </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

@@ -1,5 +1,7 @@
 let timeout;
 
+if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
+
 function debouncedUpdate() {
     document.getElementById('status').innerText = "Typing...";
     clearTimeout(timeout);
@@ -18,6 +20,28 @@ function update() {
     output.close();
 
     document.getElementById('status').innerText = "Ready";
+}
+
+function buildProjectHtml() {
+    const html = document.getElementById("html-code").value;
+    const css = document.getElementById("css-code").value;
+    const js = document.getElementById("js-code").value;
+    return `${html}\n<style>\n${css}\n</style>\n<script>\n${js}\n<\/script>`;
+}
+
+function describeCurrentAssets() {
+    const text = buildProjectHtml();
+    return [{
+        kind: 'text',
+        title: 'HTML Viewer Project',
+        fileName: 'html-viewer-project.html',
+        mimeType: 'text/html',
+        textContent: text,
+        previewKind: 'text',
+        previewText: text,
+        sourceDetail: 'Combined HTML/CSS/JS project from HTML Viewer.',
+        metadata: { sourceTool: 'html-viewer', resourceFormat: 'html' }
+    }];
 }
 
 // Helper: Compress string to Base64
@@ -99,3 +123,5 @@ async function loadFromUrl() {
 }
 
 window.onload = loadFromUrl;
+window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;

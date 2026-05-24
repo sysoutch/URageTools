@@ -1,13 +1,63 @@
-/* Body: Full screen centering and a dark gaming-themed background */
+body[data-dashboard-theme="fire"] {
+    --tool-bg: #120d0d;
+    --tool-surface: rgba(24, 14, 14, 0.92);
+    --tool-surface-alt: rgba(18, 11, 11, 0.98);
+    --tool-line: rgba(255, 180, 128, 0.18);
+    --tool-line-strong: rgba(255, 180, 128, 0.34);
+    --tool-text: #f6f1ee;
+    --tool-muted: #c8b6ae;
+    --tool-accent: #ff8a4d;
+    --tool-accent-strong: #ff6136;
+}
+
+body[data-dashboard-theme="water"] {
+    --tool-bg: #0d1522;
+    --tool-surface: rgba(12, 21, 37, 0.94);
+    --tool-surface-alt: rgba(10, 17, 29, 0.98);
+    --tool-line: rgba(114, 190, 255, 0.18);
+    --tool-line-strong: rgba(114, 190, 255, 0.34);
+    --tool-text: #eef5ff;
+    --tool-muted: #a9bfd8;
+    --tool-accent: #59b6ff;
+    --tool-accent-strong: #2f8cf0;
+}
+
+body[data-dashboard-theme="nature"] {
+    --tool-bg: #11170f;
+    --tool-surface: rgba(18, 24, 16, 0.94);
+    --tool-surface-alt: rgba(13, 19, 11, 0.98);
+    --tool-line: rgba(146, 213, 120, 0.18);
+    --tool-line-strong: rgba(146, 213, 120, 0.34);
+    --tool-text: #f2f8ee;
+    --tool-muted: #bccfaf;
+    --tool-accent: #82cd5f;
+    --tool-accent-strong: #58a23c;
+}
+
+body[data-dashboard-theme="rock"] {
+    --tool-bg: #151515;
+    --tool-surface: rgba(24, 24, 24, 0.95);
+    --tool-surface-alt: rgba(16, 16, 16, 0.98);
+    --tool-line: rgba(196, 190, 176, 0.18);
+    --tool-line-strong: rgba(196, 190, 176, 0.34);
+    --tool-text: #f2efea;
+    --tool-muted: #b7aea2;
+    --tool-accent: #c4ae8a;
+    --tool-accent-strong: #9b8563;
+}
+
 body {
     margin: 0;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
-    color: #ffffff;
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--tool-accent) 16%, transparent) 0%, transparent 38%),
+        radial-gradient(circle at center, color-mix(in srgb, var(--tool-accent-strong) 14%, transparent) 0%, transparent 42%),
+        var(--tool-bg);
+    color: var(--tool-text);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
+    overflow: auto;
 }
 
 .app-wrapper {
@@ -20,26 +70,29 @@ body {
     width: 100%;
 }
 
-/* Container: Limits width and provides spacing for the content */
 .container {
-    width: 90%;
-    max-width: 800px;
-    padding: 40px;
+    width: min(100% - 32px, 820px);
+    padding: 24px;
     box-sizing: border-box;
     position: relative;
     z-index: 1;
+    border-radius: 18px;
+    border: 1px solid var(--tool-line);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%),
+        var(--tool-surface);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.24);
 }
 
-/* Header: Styles for the title of your page */
 h1 {
     text-align: center;
-    font-size: 3rem;
-    margin-bottom: 10px;
-    background: linear-gradient(to right, #ff8a00, #e52e71);
+    font-size: clamp(1.8rem, 5vw, 2.7rem);
+    margin: 0 0 10px;
+    background: linear-gradient(95deg, var(--tool-accent), var(--tool-accent-strong));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0.08em;
     font-weight: 800;
 }
 
@@ -52,17 +105,17 @@ h1 {
 }
 
 .game-idea {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    padding: 30px;
-    margin: 25px 0;
+    background: var(--tool-surface);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 18px 0;
     text-align: center;
-    min-height: 200px;
+    min-height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--tool-line);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -83,15 +136,15 @@ h1 {
 .game-idea:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--tool-surface-alt);
 }
 
 .idea-text {
-    font-size: 1.8rem;
+    font-size: clamp(1.25rem, 3.4vw, 1.75rem);
     font-weight: 600;
     margin: 20px 0;
     line-height: 1.4;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    text-shadow: none;
     position: relative;
     z-index: 2;
 }
@@ -100,27 +153,28 @@ h1 {
     font-size: 1.1rem;
     opacity: 0.8;
     margin-bottom: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 5px 15px;
-    border-radius: 20px;
+    background: color-mix(in srgb, var(--tool-accent) 14%, var(--tool-surface-alt));
+    padding: 6px 12px;
+    border: 1px solid var(--tool-line);
+    border-radius: 999px;
     position: relative;
     z-index: 2;
 }
 
 .generate-btn {
-    background: linear-gradient(to right, #ff8a00, #e52e71);
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--tool-accent) 74%, rgba(255,255,255,0.08)) 0%, color-mix(in srgb, var(--tool-accent-strong) 84%, rgba(0,0,0,0.08)) 100%);
     color: white;
     border: none;
-    padding: 18px 40px;
-    font-size: 1.3rem;
-    border-radius: 50px;
+    padding: 13px 22px;
+    font-size: 1rem;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: block;
-    margin: 30px auto;
-    width: 80%;
-    max-width: 300px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    margin: 18px auto;
+    width: min(100%, 260px);
+    box-shadow: 0 10px 20px color-mix(in srgb, var(--tool-accent-strong) 18%, transparent);
     font-weight: bold;
     letter-spacing: 1px;
     position: relative;
@@ -184,7 +238,7 @@ h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
     display: block;
-    color: #ff8a00;
+    color: var(--tool-accent);
 }
 
 .feature h3 {
@@ -245,7 +299,8 @@ footer {
 .idea-details {
     margin-top: 20px;
     padding: 15px;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--tool-surface-alt);
+    border: 1px solid var(--tool-line);
     border-radius: 10px;
     font-size: 0.9rem;
     opacity: 0.9;
@@ -255,7 +310,7 @@ footer {
 
 .idea-details h3 {
     margin-bottom: 10px;
-    color: #ff8a00;
+    color: var(--tool-accent);
 }
 
 .idea-details ul {
@@ -268,7 +323,8 @@ footer {
 
 @media (max-width: 600px) {
     .container {
-        padding: 20px;
+        width: calc(100% - 20px);
+        padding: 16px;
     }
     
     h1 {
@@ -280,9 +336,9 @@ footer {
     }
     
     .generate-btn {
-        padding: 15px 30px;
-        font-size: 1.1rem;
-        width: 90%;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+        width: 100%;
     }
     
     .feature {

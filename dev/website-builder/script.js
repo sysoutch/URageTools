@@ -5,6 +5,8 @@ let siteConfig = {
     darkMode: false
 };
 
+if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
+
 const editor = grapesjs.init({
     container: '#gjs',
     height: '100%',
@@ -421,37 +423,51 @@ window.saveAllSettings = () => {
 editor.Commands.add('publish-site', {
     run: (ed) => {
         const zip = new JSZip();
-        const darkStyle = siteConfig.darkMode ? 'body{background:#121212; color:#fff;}' : '';
-        
-        let gaPart = '';
-        if(siteConfig.gaId) {
-            gaPart = `<script async src="https://www.googletagmanager.com/gtag/js?id=${siteConfig.gaId}"><\/script>
-                      <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${siteConfig.gaId}');<\/script>`;
-        }
-
-        // Extract JavaScript from elements
-        let jsContent = '';
-        const components = ed.getComponents();
-        components.forEach(component => {
-            const js = component.getAttributes()['data-js'];
-            if (js) {
-                jsContent += js + '\n';
-            }
-        });
-
-        const finalOutput = `<!DOCTYPE html><html lang="en"><head>
-            <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${siteConfig.title}</title>
-            <meta name="description" content="${siteConfig.desc}">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-            ${gaPart}<style>${ed.getCss()}${darkStyle}</style>
-        </head><body>${ed.getHtml()}<script>${jsContent}</script></body></html>`;
-        
-        zip.file("index.html", finalOutput);
+        zip.file("index.html", buildExportHtml(ed));
         zip.generateAsync({type:"blob"}).then(content => saveAs(content, "project.zip"));
     }
 });
+
+function buildExportHtml(ed = editor) {
+    const darkStyle = siteConfig.darkMode ? 'body{background:#121212; color:#fff;}' : '';
+    let gaPart = '';
+    if(siteConfig.gaId) {
+        gaPart = `<script async src="https://www.googletagmanager.com/gtag/js?id=${siteConfig.gaId}"><\/script>
+                  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${siteConfig.gaId}');<\/script>`;
+    }
+    let jsContent = '';
+    const components = ed.getComponents();
+    components.forEach(component => {
+        const js = component.getAttributes()['data-js'];
+        if (js) jsContent += js + '\n';
+    });
+    return `<!DOCTYPE html><html lang="en"><head>
+        <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${siteConfig.title}</title>
+        <meta name="description" content="${siteConfig.desc}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+        ${gaPart}<style>${ed.getCss()}${darkStyle}</style>
+    </head><body>${ed.getHtml()}<script>${jsContent}</script></body></html>`;
+}
+
+function describeCurrentAssets() {
+    const text = buildExportHtml(editor);
+    return [{
+        kind: 'text',
+        title: 'Website Builder Export',
+        fileName: 'index.html',
+        mimeType: 'text/html',
+        textContent: text,
+        previewKind: 'text',
+        previewText: text,
+        sourceDetail: 'Published website HTML from Website Builder.',
+        metadata: { sourceTool: 'website-builder', resourceFormat: 'html' }
+    }];
+}
+
+window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
 
 editor.on('run:preview', () => {
     editor.select(); 

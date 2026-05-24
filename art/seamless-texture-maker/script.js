@@ -2,8 +2,16 @@ const canvas = document.getElementById('main-canvas');
 const ctx = canvas.getContext('2d');
 let fullResImg = null;
 let scene, camera, renderer, mesh, material, texture;
+let threeReady = false;
+
+if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
 
 function init3D() {
+    if (typeof THREE === 'undefined') {
+        const container = document.getElementById('three-container');
+        if (container) container.setAttribute('data-preview-state', '2d-only');
+        return;
+    }
     const container = document.getElementById('three-container');
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -26,9 +34,28 @@ function init3D() {
         renderer.render(scene, camera);
     }
     animate();
+    threeReady = true;
+    updatePreviewTexture();
+}
+
+function loadOptionalThreePreview() {
+    if (typeof THREE !== 'undefined') {
+        init3D();
+        return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    script.async = true;
+    script.onload = init3D;
+    script.onerror = init3D;
+    document.head.appendChild(script);
 }
 
 function setShape(type) {
+    if (!threeReady || !scene || !material || typeof THREE === 'undefined') {
+        document.querySelectorAll('.shape-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === type));
+        return;
+    }
     if (mesh) scene.remove(mesh);
     let geo;
     if (type === 'sphere') geo = new THREE.SphereGeometry(1, 64, 64);
@@ -39,9 +66,10 @@ function setShape(type) {
     document.querySelectorAll('.shape-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === type));
 }
 
-document.getElementById('img-upload').onchange = (e) => {
-    const file = e.target.files[0];
-    if(!file) return;
+document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', update));
+
+function loadImageFile(file) {
+    if (!file || !String(file.type || '').startsWith('image/')) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
         const img = new Image();
@@ -49,9 +77,18 @@ document.getElementById('img-upload').onchange = (e) => {
         img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
-};
+}
 
-document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', update));
+function updatePreviewTexture() {
+    if (!threeReady || !material || typeof THREE === 'undefined') return;
+    const scale = parseInt(document.getElementById('tile-scale').value) || 2;
+    if(texture) texture.dispose();
+    texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(scale, scale);
+    material.map = texture;
+    material.needsUpdate = true;
+}
 
 function update() {
     if (!fullResImg) return;
@@ -125,12 +162,7 @@ function update() {
         ctx.drawImage(temp, 0, 0);
     }
 
-    if(texture) texture.dispose();
-    texture = new THREE.CanvasTexture(canvas);
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(scale, scale);
-    material.map = texture;
-    material.needsUpdate = true;
+    updatePreviewTexture();
 }
 
 function download() {
@@ -141,4 +173,43 @@ function download() {
     link.click();
 }
 
-window.onload = init3D;
+function describeCurrentAsset() {
+    if (!fullResImg || !canvas.width || !canvas.height) return null;
+    const dataUrl = canvas.toDataURL('image/png');
+    return {
+        kind: 'image',
+        title: 'Seamless Texture',
+        fileName: 'seamless-texture.png',
+        mimeType: 'image/png',
+        dataUrl,
+        width: canvas.width,
+        height: canvas.height,
+        previewKind: 'image',
+        previewUrl: dataUrl,
+        sourceDetail: 'Processed seamless texture tile.',
+        metadata: { sourceTool: 'seamless-texture-maker' }
+    };
+}
+
+window.__urageToolDescribeCurrentAsset = describeCurrentAsset;
+window.__urageToolDescribeCurrentAssets = () => {
+    const descriptor = describeCurrentAsset();
+    return descriptor ? [descriptor] : [];
+};
+
+window.addEventListener('message', event => {
+    const message = event && event.data ? event.data : null;
+    if (!message || message.source !== 'urage-dashboard') return;
+    if (message.type === 'tool:theme' && window.registerDashboardThemeSync) return;
+    if (message.type !== 'tool:load-asset') return;
+    const payload = message.payload || {};
+    const source = String(payload.dataUrl || payload.imageUrl || payload.previewImageUrl || '').trim();
+    if (!source) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => { fullResImg = img; update(); };
+    img.src = source;
+});
+
+document.getElementById('img-upload').onchange = (e) => loadImageFile(e.target.files[0]);
+window.addEventListener('load', loadOptionalThreePreview);

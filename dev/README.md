@@ -6,6 +6,8 @@ A collection of web development tools for creating, editing, and managing web co
 
 - **CSS Background Generator**: Create beautiful CSS background styles with gradients, patterns, and effects
 - **Dialogue Tree Visualizer**: Visualize dialogue trees for games and interactive stories
+- **2D Map Generator**: Generate topdown and side-scroller 2D maps with sprite placement and mirroring controls
+- **3D Map Generator**: Generate 3D-style topdown and side-scroller blockouts with orthographic or perspective previews
 - **HTML Button Generator**: Create custom HTML buttons with various styles and effects
 - **HTML Separator and Combiner**: Split HTML elements into individual files and combine them back
 - **HTML Viewer**: View and preview HTML documents
@@ -13,7 +15,8 @@ A collection of web development tools for creating, editing, and managing web co
 - **Markdown Multi Tool**: Multi-purpose tool for working with Markdown files
 - **Meta OG Tag Generator**: Generate Open Graph tags for social media sharing
 - **QR Code Creator**: Generate QR codes for various purposes
-- **README File Viewer**: View and preview README files
+- **Markdown Viewer**: View and preview README files
+- **Tilemap Creator**: Paint layered 2D tilemaps from spritesheets with floating helper panels and JSON export
 - **Website Builder**: Build complete websites with drag-and-drop functionality
 - **Wave Animation**: Create wave animations for web pages
 

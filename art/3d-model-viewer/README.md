@@ -1,4 +1,4 @@
-# URage 3D Model Viewer
+# 3D Model Viewer
 
 ![Thumbnail](thumbnail.png)
 

@@ -1,5 +1,7 @@
 let currentData = { html: '', css: '', js: '', combined: '' };
 
+if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
+
 function switchTab(mode) {
     document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -220,3 +222,24 @@ function download(type) {
     a.download = names[type];
     a.click();
 }
+
+function describeCurrentAssets() {
+    const names = { html: 'index.html', css: 'style.css', js: 'script.js', combined: 'project-single.html' };
+    const mimeTypes = { html: 'text/html', css: 'text/css', js: 'text/javascript', combined: 'text/html' };
+    return Object.entries(currentData)
+        .filter(([, content]) => String(content || '').trim())
+        .map(([type, content]) => ({
+            kind: 'text',
+            title: type === 'combined' ? 'Combined HTML' : type.toUpperCase() + ' Output',
+            fileName: names[type] || `${type}.txt`,
+            mimeType: mimeTypes[type] || 'text/plain',
+            textContent: content,
+            previewKind: 'text',
+            previewText: content,
+            sourceDetail: 'HTML separator/combiner output.',
+            metadata: { sourceTool: 'html-separator-and-combiner', resourceFormat: type }
+        }));
+}
+
+window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;

@@ -8,14 +8,14 @@ $htmlContent = file_get_contents("index.html");
 $headerCss = "<link rel=\"stylesheet\" href=\"../../header.css\">";
 $footerCss = "<link rel=\"stylesheet\" href=\"../../footer.css\">";
 $toolShellCss = "<link rel=\"stylesheet\" href=\"../../tool-shell.css\">";
-$faCss = "<link href=\"../../_shared/fontawesome/css/all.min.css\" rel=\"stylesheet\">";
+$faCss = "<link href=\"../../shared/libs/fontawesome/css/all.min.css\" rel=\"stylesheet\">";
 $htmlContent = str_replace("</head>", $headerCss . $footerCss . $toolShellCss . $faCss . "</head>", $htmlContent);
 ?>
 
 <?php
-// Include the header after the <body data-theme="dark"> tag of the $htmlContent content where data-theme can be any value and is optional
+// Include the header after the opening <body ...> tag while preserving any existing body attributes.
 $header = file_get_contents("../../header.html");
-$contentWithHeader = preg_replace('/<body( data-theme="[^"]*")?>/', '<body$1>' . $header . '<div class="app-shell">', $htmlContent);
+$contentWithHeader = preg_replace('/<body([^>]*)>/', '<body$1>' . $header . '<div class="app-shell">', $htmlContent, 1);
 ?>
 
 <?php

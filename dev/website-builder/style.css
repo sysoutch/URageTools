@@ -1,19 +1,27 @@
 :root { 
-    --bg-dark: #0f172a; 
-    --panel-bg: #1e293b;
-    --accent: #6366f1; 
-    --border: rgba(255, 255, 255, 0.08); 
-    --text-main: #f1f5f9;
-    --text-dim: #94a3b8;
+    --bg-dark: #120d0d; 
+    --panel-bg: rgba(24, 14, 14, 0.92);
+    --panel-strong: rgba(18, 11, 11, 0.98);
+    --accent: #ff8a4d; 
+    --border: rgba(255, 180, 128, 0.18); 
+    --text-main: #f6f1ee;
+    --text-dim: #c8b6ae;
     --success: #22c55e;
     --danger: #ef4444;
 }
+
+body[data-dashboard-theme="water"] { --bg-dark: #0d1522; --panel-bg: rgba(12, 21, 37, 0.94); --panel-strong: rgba(10, 17, 29, 0.98); --accent: #59b6ff; --border: rgba(114, 190, 255, 0.18); --text-main: #eef5ff; --text-dim: #a9bfd8; }
+body[data-dashboard-theme="nature"] { --bg-dark: #11170f; --panel-bg: rgba(18, 24, 16, 0.94); --panel-strong: rgba(13, 19, 11, 0.98); --accent: #82cd5f; --border: rgba(146, 213, 120, 0.18); --text-main: #f2f8ee; --text-dim: #bccfaf; }
+body[data-dashboard-theme="rock"] { --bg-dark: #151515; --panel-bg: rgba(24, 24, 24, 0.95); --panel-strong: rgba(16, 16, 16, 0.98); --accent: #c4ae8a; --border: rgba(196, 190, 176, 0.18); --text-main: #f2efea; --text-dim: #b7aea2; }
 
 body, html { 
     height: 100%; 
     margin: 0; 
     overflow: hidden; 
-    background: var(--bg-dark); 
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 38%),
+        linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%),
+        var(--bg-dark); 
     font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; 
     color: var(--text-main); 
 }
@@ -85,7 +93,7 @@ body, html {
 .gjs-two-color { color: var(--text-dim) !important; }
 .gjs-three-bg { background-color: var(--accent) !important; }
 .gjs-four-color, .gjs-four-color-h:hover { color: var(--accent) !important; }
-.gjs-cv-canvas { grid-area: canvas; background: #0b0f1a; }
+.gjs-cv-canvas { grid-area: canvas; background: color-mix(in srgb, var(--bg-dark) 88%, black 12%); }
 
 /* --- 6. BUTTON STYLES --- */
 .btn-group { display: flex; gap: 8px; }
@@ -121,7 +129,7 @@ body, html {
     width: 100%; 
     margin-top: 8px; 
     padding: 12px; 
-    background: #0f172a; 
+    background: var(--panel-strong); 
     border: 1px solid var(--border); 
     color: #fff; 
     border-radius: 6px; 
@@ -160,7 +168,7 @@ body, html {
     padding: 10px 5px;
 }
 .tpl-card { 
-    background: #1e293b; 
+    background: var(--panel-bg); 
     border: 1px solid var(--border); 
     border-radius: 12px; 
     overflow: hidden; 

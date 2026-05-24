@@ -6,19 +6,56 @@
     <title>Roadmap Builder</title>
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
+            --primary: #ff8a4d;
+            --primary-hover: #ff6136;
             --danger: #f87171;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --bg: #120d0d;
+            --card-bg: rgba(24, 14, 14, 0.92);
+            --surface: rgba(18, 11, 11, 0.98);
+            --text-main: #f6f1ee;
+            --text-muted: #c8b6ae;
+            --border: rgba(255, 180, 128, 0.18);
+        }
+
+        body[data-dashboard-theme="water"] {
+            --primary: #59b6ff;
+            --primary-hover: #2f8cf0;
+            --bg: #0d1522;
+            --card-bg: rgba(12, 21, 37, 0.94);
+            --surface: rgba(10, 17, 29, 0.98);
+            --text-main: #eef5ff;
+            --text-muted: #a9bfd8;
+            --border: rgba(114, 190, 255, 0.18);
+        }
+
+        body[data-dashboard-theme="nature"] {
+            --primary: #82cd5f;
+            --primary-hover: #58a23c;
+            --bg: #11170f;
+            --card-bg: rgba(18, 24, 16, 0.94);
+            --surface: rgba(13, 19, 11, 0.98);
+            --text-main: #f2f8ee;
+            --text-muted: #bccfaf;
+            --border: rgba(146, 213, 120, 0.18);
+        }
+
+        body[data-dashboard-theme="rock"] {
+            --primary: #c4ae8a;
+            --primary-hover: #9b8563;
+            --bg: #151515;
+            --card-bg: rgba(24, 24, 24, 0.95);
+            --surface: rgba(16, 16, 16, 0.98);
+            --text-main: #f2efea;
+            --text-muted: #b7aea2;
+            --border: rgba(196, 190, 176, 0.18);
         }
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg);
+            background:
+                radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 38%),
+                linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%),
+                var(--bg);
             color: var(--text-main);
             margin: 0;
             padding: 0;
@@ -27,7 +64,7 @@
 
         /* Toolbar / Header */
         .header {
-            background: white;
+            background: var(--surface);
             padding: 1rem 2rem;
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -36,7 +73,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
         }
 
         .btn-group { display: flex; gap: 8px; }
@@ -47,7 +84,7 @@
             padding: 0.5rem 1rem;
             border-radius: 6px;
             border: 1px solid var(--border);
-            background: white;
+            background: rgba(255,255,255,0.04);
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -55,7 +92,7 @@
             gap: 5px;
         }
 
-        button:hover { background: #f8fafc; border-color: #cbd5e1; }
+        button:hover { background: rgba(255,255,255,0.08); border-color: color-mix(in srgb, var(--primary) 28%, var(--border)); }
         button.primary { background: var(--primary); color: white; border: none; }
         button.primary:hover { background: var(--primary-hover); }
 
@@ -112,7 +149,7 @@
             padding: 1.5rem;
             border-radius: 12px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.24);
             position: relative;
             transition: transform 0.2s;
         }
@@ -150,7 +187,7 @@
         .btn-icon:hover { color: var(--danger); }
     </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
     <header class="header">
         <div style="display: flex; align-items: center; gap: 15px;">
             <h2 style="margin:0; color: var(--primary)">Roadmap Studio</h2>
@@ -244,7 +281,37 @@
             }
         }
 
+        function applyDashboardTheme(nextTheme) {
+            document.body.setAttribute('data-dashboard-theme', nextTheme || 'fire');
+        }
+
+        function describeCurrentAssets() {
+            const text = JSON.stringify({ milestones }, null, 2);
+            return [{
+                kind: 'text',
+                title: 'Roadmap JSON',
+                fileName: 'roadmap.json',
+                mimeType: 'application/json',
+                textContent: text,
+                previewKind: 'text',
+                previewText: text,
+                sourceDetail: 'Roadmap Builder milestone data.',
+                metadata: { sourceTool: 'roadmap-builder', resourceFormat: 'roadmap-json' }
+            }];
+        }
+
+        window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+        window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
+
+        window.addEventListener('message', (event) => {
+            const message = event && event.data;
+            if (message && message.type === 'tool:theme') applyDashboardTheme(message.payload?.theme);
+        });
+
+        applyDashboardTheme(document.body.getAttribute('data-dashboard-theme') || 'fire');
         render();
     </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

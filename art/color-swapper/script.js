@@ -8,6 +8,32 @@ const paletteGrid = document.getElementById('paletteGrid');
 let originalBuffer = null; 
 let selectedRGB = null;
 
+function loadImageSource(source) {
+    return new Promise((resolve, reject) => {
+        const normalizedSource = String(source || '').trim();
+        if (!normalizedSource) {
+            reject(new Error('No image source was provided.'));
+            return;
+        }
+        const img = new Image();
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            originalBuffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            refreshPalette();
+            resolve();
+        };
+        img.onerror = () => reject(new Error('Failed to load image.'));
+        img.src = normalizedSource;
+    });
+}
+
+function applyDashboardTheme(nextTheme) {
+    document.body.setAttribute('data-dashboard-theme', nextTheme || 'fire');
+}
+
 const presets = {
     dmg_classic: [[15, 56, 15], [48, 98, 48], [139, 172, 15], [155, 188, 15]],
     pocket_silver: [[0, 0, 0], [82, 82, 82], [173, 173, 173], [255, 255, 255]],
@@ -18,15 +44,9 @@ const presets = {
 slider.oninput = () => sliderVal.innerText = slider.value + " Colors";
 
 document.getElementById('upload').onchange = (e) => {
-    const img = new Image();
-    img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-        originalBuffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        refreshPalette();
-    };
-    img.src = URL.createObjectURL(e.target.files[0]);
+    const file = e.target.files[0];
+    if (!file) return;
+    loadImageSource(URL.createObjectURL(file)).catch(error => console.error(error));
 };
 
 // NEW: EYEDROPPER LOGIC (Click on Image)
@@ -142,9 +162,43 @@ document.getElementById('applySwap').onclick = () => {
     refreshPalette();
 };
 
+function buildCurrentAssetDescriptor() {
+    if (!canvas.width || !canvas.height) throw new Error('Load an image first.');
+    const dataUrl = canvas.toDataURL('image/png');
+    return {
+        kind: 'image',
+        title: 'Color Swapped Image',
+        fileName: 'arcade-asset.png',
+        mimeType: 'image/png',
+        dataUrl,
+        width: canvas.width,
+        height: canvas.height,
+        previewKind: 'image',
+        previewUrl: dataUrl,
+        sourceDetail: 'Processed image from Color Swapper.',
+        metadata: { sourceTool: 'color-swapper' }
+    };
+}
+
 function download() {
     const a = document.createElement('a');
     a.download = 'arcade-asset.png';
-    a.href = canvas.toDataURL();
+    a.href = buildCurrentAssetDescriptor().dataUrl;
     a.click();
 }
+
+window.addEventListener('message', (event) => {
+    const message = event && event.data;
+    if (message && message.type === 'tool:theme') applyDashboardTheme(message.payload && message.payload.theme);
+});
+
+if (typeof window.registerDashboardToolBridge === 'function') {
+    window.registerDashboardToolBridge({
+        onTheme: applyDashboardTheme,
+        onLoadAsset: payload => loadImageSource(payload && (payload.dataUrl || payload.imageUrl || payload.previewImageUrl || payload.url)),
+        onExportImage: buildCurrentAssetDescriptor,
+        onDescribeCurrentAsset: buildCurrentAssetDescriptor
+    });
+}
+
+applyDashboardTheme(document.body.getAttribute('data-dashboard-theme') || 'fire');

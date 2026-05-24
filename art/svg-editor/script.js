@@ -3,6 +3,8 @@ const render = document.getElementById('svg-render');
 const canvasSide = document.getElementById('canvas-side');
 const handles = { tl: document.getElementById('h-tl'), tr: document.getElementById('h-tr'), bl: document.getElementById('h-bl'), br: document.getElementById('h-br') };
 
+if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
+
 let selectedEls = [], clipboard = [], currentTool = 'select';
 let undoStack = [], redoStack = [], isDragging = false, activeHandle = null, dragTargets = [];
 const GRID = 10;
@@ -64,12 +66,33 @@ function updatePreview(save = true) {
     render.style.width = (svg.getAttribute('width') || 500) + 'px';
     render.style.height = (svg.getAttribute('height') || 500) + 'px';
     svg.querySelectorAll('*').forEach(el => {
-        if (["rect", "circle", "path", "ellipse", "text"].includes(el.tagName)) {
+        if (["rect", "circle", "path", "ellipse", "text", "image"].includes(el.tagName)) {
             attachElementListeners(el);
         }
     });
     updateHandlePositions();
 }
+
+function loadDashboardImagePayload(payload) {
+    const dataUrl = String(payload && (payload.dataUrl || payload.imageUrl || payload.previewImageUrl) || '').trim();
+    if (!dataUrl) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+        const width = img.naturalWidth || img.width || 512;
+        const height = img.naturalHeight || img.height || 512;
+        saveState();
+        input.value = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg"><image href="${dataUrl.replace(/"/g, '&quot;')}" x="0" y="0" width="${width}" height="${height}" preserveAspectRatio="xMidYMid meet"/></svg>`;
+        updatePreview(false);
+    };
+    img.src = dataUrl;
+}
+
+window.addEventListener('message', event => {
+    const message = event && event.data ? event.data : null;
+    if (!message || message.source !== 'urage-dashboard' || message.type !== 'tool:load-asset') return;
+    loadDashboardImagePayload(message.payload || {});
+});
 
 // --- RESIZE LOGIC (WITH GRID) ---
 Object.keys(handles).forEach(key => {
@@ -567,6 +590,24 @@ document.getElementById('strokeWidth').oninput = (e) => {
     selectedEls.forEach(el => el.setAttribute('stroke-width', e.target.value)); 
     syncCode(); 
 };
+
+function describeCurrentAssets() {
+    const svgText = input.value || '';
+    return [{
+        kind: 'text',
+        title: 'Edited SVG',
+        fileName: 'edited-vector.svg',
+        mimeType: 'image/svg+xml',
+        textContent: svgText,
+        previewKind: 'text',
+        previewText: svgText,
+        sourceDetail: 'Current SVG document from SVG Editor.',
+        metadata: { sourceTool: 'svg-editor', resourceFormat: 'svg' }
+    }];
+}
+
+window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
 
 updatePreview();
 setInterval(updateHandlePositions, 50);

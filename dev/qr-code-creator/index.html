@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Creator</title>
+  <script src="../../shared/dashboard-tool-bridge.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .app-container {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header { text-align: center; margin-bottom: 4px; }
+    h1 { font-size: 1.75rem; color: var(--primary); margin-bottom: 8px; }
+    p.subtitle { color: #64748b; font-size: 0.95rem; }
+
+    label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus { border-color: var(--primary); }
+
+    .settings-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 4px; }
+    .setting-item { flex: 1 1 130px; display: flex; flex-direction: column; gap: 8px; }
+    
+    input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--primary); }
+    input[type="color"] {
+      width: 100%; height: 42px; padding: 4px; border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer; background: none;
+    }
+
+    .preview-section {
+      text-align: center;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #qr-preview {
+      min-height: 200px; width: 100%; max-width: 300px;
+      display: flex; justify-content: center; align-items: center;
+      border: 2px dashed var(--border); border-radius: 12px; padding: 20px;
+      background: #fafafa; position: relative;
+    }
+
+    canvas { max-width: 100% !important; height: auto !important; image-rendering: pixelated; }
+    
+    button {
+      background: var(--primary); color: white; border: none; padding: 12px 24px;
+      border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s; width: 100%;
+    }
+    button:hover { opacity: 0.95; }
+    button:active { transform: scale(0.98); }
+    button:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+    .placeholder-text { color: #94a3b8; font-size: 0.95rem; pointer-events: none; }
+
+    @media (max-width: 480px) {
+      body { padding: 16px; align-items: flex-start; }
+      .app-container { margin-top: 20px; }
+      h1 { font-size: 1.5rem; }
+      .setting-item { flex: 1 1 45%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <h1>QR Code Creator</h1>
+      <p class="subtitle">Generate, customize, and download QR codes instantly.</p>
+    </header>
+
+    <main class="controls-panel">
+      <label for="qr-input">Content to Encode:</label>
+      <input type="text" id="qr-input" placeholder="https://example.com or any text..." autocomplete="off">
+
+      <div class="settings-row">
+        <div class="setting-item">
+          <label for="size-slider">Size: <span id="size-display">250</span>px</label>
+          <input type="range" id="size-slider" min="100" max="600" value="250" step="10">
+        </div>
+
+        <div class="setting-item">
+          <label for="fg-color">Foreground Color</label>
+          <input type="color" id="fg-color" value="#0f172a">
+        </div>
+
+        <div class="setting-item">
+          <label for="bg-color">Background Color</label>
+          <input type="color" id="bg-color" value="#ffffff">
+        </div>
+      </div>
+
+      <button id="generate-btn">Generate QR Code</button>
+    </main>
+
+    <section class="preview-section">
+      <h3 style="font-size: 1rem; color:#475569;">Live Preview</h3>
+      <div id="qr-preview"><span class="placeholder-text">Enter text & click Generate</span></div>
+      <button id="download-btn" disabled>Download PNG Image</button>
+    </section>
+  </div>
+
+  <!-- Client-side QR generation library (no server required) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('qr-input');
+      const sizeSlider = document.getElementById('size-slider');
+      const sizeDisplay = document.getElementById('size-display');
+      const fgColor = document.getElementById('fg-color');
+      const bgColor = document.getElementById('bg-color');
+      const preview = document.getElementById('qr-preview');
+      const downloadBtn = document.getElementById('download-btn');
+
+      let qrInstance = null;
+      const buildCurrentQrDescriptor = () => {
+        const canvas = preview.querySelector('canvas');
+        const encodedText = input.value.trim();
+        if (!canvas || !encodedText) return null;
+        const dataUrl = canvas.toDataURL('image/png');
+        return {
+          kind: 'image',
+          title: 'QR Code',
+          fileName: 'qr-code.png',
+          mimeType: 'image/png',
+          dataUrl,
+          width: canvas.width,
+          height: canvas.height,
+          previewKind: 'image',
+          previewUrl: dataUrl,
+          metadata: {
+            inferenceSource: 'qr-code-creator',
+            encodedText,
+            size: parseInt(sizeSlider.value, 10) || canvas.width
+          }
+        };
+      };
+
+      // Debounce helper to avoid excessive generation during typing
+      const debounce = (fn, delay) => {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn(...args), delay);
+        };
+      };
+
+      const generateQR = () => {
+        const text = input.value.trim();
+        if (!text) {
+          preview.innerHTML = '<span class="placeholder-text">Enter content to generate QR code</span>';
+          downloadBtn.disabled = true;
+          qrInstance = null;
+          return;
+        }
+
+        // Clear previous output
+        preview.innerHTML = ''; 
+
+        const size = parseInt(sizeSlider.value);
+        const fg = fgColor.value;
+        const bg = bgColor.value;
+
+        qrInstance = new QRCode(preview, {
+          text: text,
+          width: size,
+          height: size,
+          colorDark: fg,
+          colorLight: bg,
+          correctLevel: QRCode.CorrectLevel.H // High error correction for better scan reliability
+        });
+
+        downloadBtn.disabled = false;
+      };
+
+      // Event Listeners
+      input.addEventListener('input', debounce(generateQR, 300));
+      sizeSlider.addEventListener('input', (e) => {
+        sizeDisplay.textContent = e.target.value;
+        generateQR();
+      });
+      fgColor.addEventListener('input', generateQR);
+      bgColor.addEventListener('input', generateQR);
+
+      document.getElementById('generate-btn').addEventListener('click', () => {
+        input.focus();
+        if(input.value.trim()) generateQR();
+        else alert('Please enter some text or a URL first.');
+      });
+
+      // Download Handler
+      downloadBtn.addEventListener('click', () => {
+        const canvas = preview.querySelector('canvas');
+        if (!canvas) return;
+
+        const link = document.createElement('a');
+        link.download = `qrcode_${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+
+      if (typeof window.registerDashboardToolBridge === 'function') {
+        window.registerDashboardToolBridge({
+          onDescribeCurrentAsset: buildCurrentQrDescriptor
+        });
+      } else {
+        window.__urageToolDescribeCurrentAsset = buildCurrentQrDescriptor;
+      }
+    });
+  </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
+</body>
+</html>

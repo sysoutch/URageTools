@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>SVG Editor - Final Stable</title>
+    <script src="../../shared/dashboard-theme.js"></script>
+    <script src="../../shared/dashboard-tool-bridge.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
 <div id="toolbar">
     <button class="tool-btn active" id="tool-select" onclick="setTool('select')">↖</button>
@@ -48,5 +50,7 @@
 </div>
 
 <script src="script.js"></script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

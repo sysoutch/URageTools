@@ -4,20 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro SVG Vectorizer (Local)</title>
+    <script src="../../shared/dashboard-theme.js"></script>
+    <script src="../../shared/dashboard-tool-bridge.js"></script>
+    <link rel="stylesheet" href="/tools/shared/css/upload-btn.css">
     <script src="imagetracer_v1.2.6.js"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f5f7fa; color: #333; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        body[data-dashboard-theme="fire"] { --tool-bg: #120d0d; --tool-surface: rgba(24, 14, 14, 0.92); --tool-surface-alt: rgba(18, 11, 11, 0.98); --tool-line: rgba(255, 180, 128, 0.18); --tool-line-strong: rgba(255, 180, 128, 0.34); --tool-text: #f6f1ee; --tool-muted: #c8b6ae; --tool-accent: #ff8a4d; }
+        body[data-dashboard-theme="water"] { --tool-bg: #0d1522; --tool-surface: rgba(12, 21, 37, 0.94); --tool-surface-alt: rgba(10, 17, 29, 0.98); --tool-line: rgba(114, 190, 255, 0.18); --tool-line-strong: rgba(114, 190, 255, 0.34); --tool-text: #eef5ff; --tool-muted: #a9bfd8; --tool-accent: #59b6ff; }
+        body[data-dashboard-theme="nature"] { --tool-bg: #11170f; --tool-surface: rgba(18, 24, 16, 0.94); --tool-surface-alt: rgba(13, 19, 11, 0.98); --tool-line: rgba(146, 213, 120, 0.18); --tool-line-strong: rgba(146, 213, 120, 0.34); --tool-text: #f2f8ee; --tool-muted: #bccfaf; --tool-accent: #82cd5f; }
+        body[data-dashboard-theme="rock"] { --tool-bg: #151515; --tool-surface: rgba(24, 24, 24, 0.95); --tool-surface-alt: rgba(16, 16, 16, 0.98); --tool-line: rgba(196, 190, 176, 0.18); --tool-line-strong: rgba(196, 190, 176, 0.34); --tool-text: #f2efea; --tool-muted: #b7aea2; --tool-accent: #c4ae8a; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: radial-gradient(circle at top right, color-mix(in srgb, var(--tool-accent) 16%, transparent) 0%, transparent 38%), linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%), var(--tool-bg); color: var(--tool-text); margin: 0; display: flex; flex-direction: column; align-items: center; }
         .app-wrapper { width: 100%; padding: 40px; display: flex; justify-content: center; box-sizing: border-box; }
-        .container { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); max-width: 1000px; width: 100%; }
-        h1 { margin-top: 0; color: #1a202c; font-size: 1.5rem; }
-        .drop-zone { border: 2px dashed #e2e8f0; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: 0.2s; background: #fdfdfd; margin-bottom: 20px; position: relative; }
-        .drop-zone:hover { border-color: #4299e1; background: #ebf8ff; }
-        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #edf2f7; }
+        .container { background: var(--tool-surface); padding: 2rem; border-radius: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 40px rgba(0,0,0,0.22); width: 100%; border: 1px solid var(--tool-line); }
+        h1 { margin-top: 0; color: var(--tool-text); font-size: 1.5rem; }
+        .drop-zone { border: 2px dashed var(--tool-line-strong); border-radius: 14px; padding: 40px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.03); margin-bottom: 20px; position: relative; }
+        .drop-zone:hover { border-color: var(--tool-accent); background: color-mix(in srgb, var(--tool-accent) 10%, transparent); }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: var(--tool-surface-alt); padding: 15px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--tool-line); }
         .control-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 0.8rem; font-weight: bold; color: #64748b; }
-        .val-display { font-weight: normal; color: #3182ce; float: right; }
+        label { font-size: 0.8rem; font-weight: bold; color: var(--tool-muted); }
+        .val-display { font-weight: normal; color: var(--tool-accent); float: right; }
         .preview-area { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .box { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden; background: #fff; position: relative; }
+        .box { border: 1px solid var(--tool-line); border-radius: 12px; padding: 10px; min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden; background: var(--tool-surface-alt); position: relative; }
         
         /* THE FIX: Force SVG to be visible */
         #svgContainer { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
@@ -26,15 +33,15 @@
         img { max-width: 100%; max-height: 320px; height: auto; object-fit: contain; }
         
         /* Spinner */
-        #spinner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; z-index: 10; }
+        #spinner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid rgba(255,255,255,0.15); border-top: 4px solid var(--tool-accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; z-index: 10; }
         @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
-        button#dlBtn { background: #3182ce; color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 1rem; font-weight: 600; margin-top: 20px; transition: 0.2s; }
-        button#dlBtn:hover { background: #2b6cb0; }
-        button#dlBtn:disabled { background: #cbd5e0; cursor: not-allowed; }
+        button#dlBtn { background: var(--tool-accent); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-size: 1rem; font-weight: 600; margin-top: 20px; transition: 0.2s; }
+        button#dlBtn:hover { filter: brightness(1.08); }
+        button#dlBtn:disabled { background: rgba(255,255,255,0.16); cursor: not-allowed; }
     </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
 <div class="app-wrapper">
 <div class="container">
@@ -59,10 +66,11 @@
         </div>
     </div>
 
-    <div class="drop-zone" id="dropZone">
-        <strong>Drag an image here</strong> or click to select
-        <input type="file" id="fileInput" accept="image/png, image/jpeg" style="display: none;">
-    </div>
+     <label class="upload-btn" id="dropZone" for="fileInput">
+         <span class="upload-btn-icon">+</span>
+         <span class="upload-btn-text">Drag an image here or click to select</span>
+         <input type="file" id="fileInput" accept="image/png, image/jpeg" hidden>
+     </label>
 
     <div class="preview-area">
         <div class="box">
@@ -93,6 +101,24 @@
 
     let currentSvgString = "";
 
+    function loadImageSource(source) {
+        return new Promise((resolve, reject) => {
+            const normalizedSource = String(source || '').trim();
+            if (!normalizedSource) {
+                reject(new Error('No image source was provided.'));
+                return;
+            }
+            imgPreview.onload = () => {
+                runConversion();
+                resolve();
+            };
+            imgPreview.onerror = () => reject(new Error('Failed to load image.'));
+            imgPreview.src = normalizedSource;
+        });
+    }
+
+    if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
+
     dropZone.onclick = () => fileInput.click();
 
     fileInput.onchange = (e) => {
@@ -100,8 +126,7 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                imgPreview.src = event.target.result;
-                imgPreview.onload = () => runConversion();
+                loadImageSource(event.target.result).catch(error => console.error(error));
             };
             reader.readAsDataURL(file);
         }
@@ -177,7 +202,70 @@
         a.download = 'vector.svg';
         a.click();
     };
+
+    function describeCurrentAssets() {
+        if (!currentSvgString) return [];
+        const encodedSvg = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(currentSvgString)}`;
+        const rasterPreview = imgPreview && imgPreview.src ? String(imgPreview.src) : "";
+        return [
+            {
+                kind: 'file',
+                title: 'vector.svg',
+                fileName: 'vector.svg',
+                mimeType: 'image/svg+xml',
+                sourceUrl: encodedSvg,
+                previewKind: 'image',
+                previewUrl: rasterPreview || encodedSvg,
+                metadata: {
+                    inferenceSource: 'image-to-svg-converter',
+                    outputType: 'svg'
+                }
+            },
+            rasterPreview ? {
+                kind: 'image',
+                title: 'vectorized-preview.png',
+                fileName: 'vectorized-preview.png',
+                mimeType: 'image/png',
+                sourceUrl: rasterPreview,
+                previewKind: 'image',
+                previewUrl: rasterPreview,
+                metadata: {
+                    inferenceSource: 'image-to-svg-converter',
+                    outputType: 'preview'
+                }
+            } : null
+        ].filter(Boolean);
+    }
+
+    if (window.registerDashboardToolBridge) {
+        window.registerDashboardToolBridge({
+            onLoadAsset: payload => loadImageSource(payload && (payload.dataUrl || payload.imageUrl || payload.previewImageUrl || payload.url)),
+            onDescribeCurrentAssets: describeCurrentAssets,
+            onExportImage: async () => {
+                if (!currentSvgString) throw new Error('Convert an image first.');
+                const encodedSvg = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(currentSvgString)}`;
+                const image = await new Promise((resolve, reject) => {
+                    const node = new Image();
+                    node.onload = () => resolve(node);
+                    node.onerror = () => reject(new Error('Failed to rasterize SVG preview.'));
+                    node.src = encodedSvg;
+                });
+                const canvas = document.createElement('canvas');
+                canvas.width = image.naturalWidth || image.width || imgPreview.naturalWidth || imgPreview.width || 1;
+                canvas.height = image.naturalHeight || image.height || imgPreview.naturalHeight || imgPreview.height || 1;
+                canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+                return {
+                    dataUrl: canvas.toDataURL('image/png'),
+                    fileName: 'vectorized-preview.png',
+                    width: canvas.width,
+                    height: canvas.height
+                };
+            }
+        });
+    }
 </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 
 </body>
 </html>

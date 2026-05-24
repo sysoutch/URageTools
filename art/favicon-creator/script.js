@@ -1,28 +1,102 @@
 const fileInput = document.getElementById('fileInput');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const zip = new JSZip();
+let zip = null;
+let generatedIconBlobs = [];
+
+if (window.registerDashboardThemeSync) window.registerDashboardThemeSync();
 
 // Set canvas to high resolution for better quality
 ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
 
+function loadImageSource(source) {
+    return new Promise((resolve, reject) => {
+        const normalizedSource = String(source || '').trim();
+        if (!normalizedSource) {
+            reject(new Error('No image source was provided.'));
+            return;
+        }
+        const img = new Image();
+        img.onload = async function() {
+            if(img.width !== img.height) {
+                document.getElementById('status').innerText = "Warning: non-square image loaded. Results may crop.";
+            }
+            await processImages(img);
+            resolve();
+        };
+        img.onerror = () => reject(new Error('Failed to load image.'));
+        img.src = normalizedSource;
+    });
+}
+
+function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.onerror = () => reject(new Error('Failed to read generated file.'));
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function describeCurrentAssets() {
+    if (!generatedIconBlobs.length) return [];
+    const descriptors = [];
+    for (const item of generatedIconBlobs) {
+        if (!item || !item.blob) continue;
+        const dataUrl = await blobToDataUrl(item.blob);
+        descriptors.push({
+            kind: 'image',
+            title: item.name,
+            fileName: item.name,
+            mimeType: 'image/png',
+            dataUrl,
+            sourceUrl: dataUrl,
+            previewKind: 'image',
+            previewUrl: dataUrl,
+            metadata: {
+                inferenceSource: 'favicon-creator',
+                outputType: 'icon'
+            }
+        });
+    }
+    if (zip) {
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const zipDataUrl = await blobToDataUrl(zipBlob);
+        descriptors.unshift({
+            kind: 'file',
+            title: 'urage-favicon-bundle.zip',
+            fileName: 'urage-favicon-bundle.zip',
+            mimeType: 'application/zip',
+            dataUrl: zipDataUrl,
+            sourceUrl: zipDataUrl,
+            previewKind: descriptors[0]?.previewKind || 'file',
+            previewUrl: descriptors[0]?.previewUrl || '',
+            metadata: {
+                inferenceSource: 'favicon-creator',
+                outputType: 'bundle',
+                iconCount: generatedIconBlobs.length
+            }
+        });
+    }
+    return descriptors;
+}
+
 fileInput.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file || !String(file.type || '').startsWith('image/')) return;
     const reader = new FileReader();
     reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-            if(img.width !== img.height) {
-                alert("Warning: For best results, use a square image!");
-            }
-            processImages(img);
-        }
-        img.src = event.target.result;
+        loadImageSource(event.target.result).catch(error => {
+            document.getElementById('status').innerText = error.message || 'Failed to load image.';
+        });
     }
-    reader.readAsDataURL(e.target.files[0]);
+    reader.readAsDataURL(file);
 };
 
 async function processImages(img) {
+    zip = typeof JSZip !== 'undefined' ? new JSZip() : null;
+    generatedIconBlobs = [];
     const sizes = [
         { n: 'favicon-16x16.png', s: 16, id: 'p16' },
         { n: 'favicon-32x32.png', s: 32, id: 'p32' },
@@ -31,7 +105,7 @@ async function processImages(img) {
         { n: 'android-chrome-512x512.png', s: 512 }
     ];
 
-    const imgFolder = zip.folder("icons");
+    const imgFolder = zip ? zip.folder("icons") : null;
 
     for (const item of sizes) {
         canvas.width = item.s;
@@ -72,7 +146,8 @@ async function processImages(img) {
 
         // Convert canvas to blob
         const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 1.0));
-        zip.file(item.n, blob);
+        generatedIconBlobs.push({ name: item.n, blob });
+        if (imgFolder) imgFolder.file(item.n, blob);
 
         // Update preview UI if ID exists
         if (item.id) {
@@ -92,19 +167,55 @@ async function processImages(img) {
         "background_color": "#121212",
         "display": "standalone"
     };
-    zip.file("site.webmanifest", JSON.stringify(manifest, null, 2));
+    if (zip) zip.file("site.webmanifest", JSON.stringify(manifest, null, 2));
 
-    document.getElementById('previewGrid').style.display = 'grid';
+    const previewGrid = document.getElementById('previewGrid');
+    previewGrid.classList.add('visible');
+    previewGrid.style.display = 'grid';
+
+    document.getElementById('dlBtn').classList.add('visible');
     document.getElementById('dlBtn').style.display = 'block';
+
+    document.getElementById('codeSnippet').classList.add('visible');
     document.getElementById('codeSnippet').style.display = 'block';
+
+    document.getElementById('dropZone').style.display = 'none';
+
     document.getElementById('status').innerText = "Bundle ready for export!";
 }
 
 function downloadBundle() {
+    if (!zip) {
+        generatedIconBlobs.forEach(item => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(item.blob);
+            link.download = item.name;
+            link.click();
+        });
+        return;
+    }
     zip.generateAsync({type:"blob"}).then(function(content) {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(content);
         link.download = "urage-favicon-bundle.zip";
         link.click();
+    });
+}
+
+if (typeof window.registerDashboardToolBridge === 'function') {
+    window.registerDashboardToolBridge({
+        onLoadAsset: payload => loadImageSource(payload && (payload.dataUrl || payload.imageUrl || payload.previewImageUrl || payload.url)),
+        onDescribeCurrentAssets: describeCurrentAssets,
+        onExportImage: async () => {
+            const first = generatedIconBlobs[0];
+            if (!first || !first.blob) throw new Error('Generate icons first.');
+            const dataUrl = await blobToDataUrl(first.blob);
+            return {
+                dataUrl,
+                fileName: first.name,
+                width: 16,
+                height: 16
+            };
+        }
     });
 }

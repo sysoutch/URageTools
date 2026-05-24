@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liquid Studio - Glow Edition</title>
+    <script src="../../shared/dashboard-theme.js"></script>
     <style>
-        :root { --primary: #ff4e50; --bg: #050505; --panel: #111111; }
+        :root { --primary: #ff8a4d; --bg: #120d0d; --panel: rgba(24, 14, 14, 0.92); --panel-strong: rgba(18, 11, 11, 0.98); --line: rgba(255, 180, 128, 0.18); --text: #f6f1ee; --muted: #c8b6ae; }
+        body[data-dashboard-theme="water"] { --primary: #59b6ff; --bg: #0d1522; --panel: rgba(12, 21, 37, 0.94); --panel-strong: rgba(10, 17, 29, 0.98); --line: rgba(114, 190, 255, 0.18); --text: #eef5ff; --muted: #a9bfd8; }
+        body[data-dashboard-theme="nature"] { --primary: #82cd5f; --bg: #11170f; --panel: rgba(18, 24, 16, 0.94); --panel-strong: rgba(13, 19, 11, 0.98); --line: rgba(146, 213, 120, 0.18); --text: #f2f8ee; --muted: #bccfaf; }
+        body[data-dashboard-theme="rock"] { --primary: #c4ae8a; --bg: #151515; --panel: rgba(24, 24, 24, 0.95); --panel-strong: rgba(16, 16, 16, 0.98); --line: rgba(196, 190, 176, 0.18); --text: #f2efea; --muted: #b7aea2; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -24,27 +28,27 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            border-right: 1px solid #222;
+            border-right: 1px solid var(--line);
             overflow-y: auto;
             z-index: 100;
         }
 
-        h2 { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; padding-bottom: 5px; margin-top: 10px; }
+        h2 { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--line); padding-bottom: 5px; margin-top: 10px; }
         .control-group { display: flex; flex-direction: column; gap: 4px; }
-        label { font-size: 11px; color: #555; display: flex; justify-content: space-between; font-weight: bold; }
+        label { font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; font-weight: bold; }
         
         select, input[type="range"] {
-            width: 100%; background: #1a1a1a; border: 1px solid #333; color: white; padding: 6px; border-radius: 4px;
+            width: 100%; background: var(--panel-strong); border: 1px solid var(--line); color: white; padding: 6px; border-radius: 8px;
         }
 
         /* Color Management */
         #color-stack { display: flex; flex-direction: column; gap: 6px; margin-top: 5px; }
-        .color-item { display: flex; gap: 6px; align-items: center; background: #000; padding: 4px; border-radius: 4px; border: 1px solid #222; }
+        .color-item { display: flex; gap: 6px; align-items: center; background: var(--panel-strong); padding: 4px; border-radius: 8px; border: 1px solid var(--line); }
         input[type="color"] { border: none; width: 30px; height: 24px; background: none; cursor: pointer; }
-        .btn-remove { background: #331111; color: #ff5555; border: none; padding: 2px 6px; cursor: pointer; border-radius: 3px; font-size: 9px; }
-        .btn-add { background: #113311; color: #55ff55; border: 1px solid #224422; padding: 8px; cursor: pointer; border-radius: 4px; font-size: 11px; margin-top: 5px; font-weight: bold; }
+        .btn-remove { background: rgba(255, 138, 77, 0.14); color: var(--primary); border: 1px solid var(--line); padding: 2px 6px; cursor: pointer; border-radius: 6px; font-size: 9px; }
+        .btn-add { background: var(--panel-strong); color: var(--primary); border: 1px solid var(--line); padding: 8px; cursor: pointer; border-radius: 8px; font-size: 11px; margin-top: 5px; font-weight: bold; }
 
-        #viewport { flex-grow: 1; position: relative; background: #000; overflow: hidden; }
+        #viewport { flex-grow: 1; position: relative; background: var(--bg); overflow: hidden; }
         @keyframes lavaFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
 
@@ -56,12 +60,12 @@
         @keyframes rippleEffect { 0% { transform: scale(0); opacity: 0.8; } 100% { transform: scale(4); opacity: 0; } }
 
         #code-output {
-            background: #080808; padding: 10px; font-size: 10px; color: #44ff44;
-            border-radius: 6px; border: 1px solid #222; white-space: pre-wrap; margin-top: 10px; font-family: monospace;
+            background: var(--panel-strong); padding: 10px; font-size: 10px; color: var(--text);
+            border-radius: 10px; border: 1px solid var(--line); white-space: pre-wrap; margin-top: 10px; font-family: monospace;
         }
     </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
     <aside class="controls">
         <h1 style="font-size: 1rem; color: var(--primary);">STUDIO GLOW</h1>
@@ -112,6 +116,7 @@
     </main>
 
     <script>
+        window.registerDashboardThemeSync();
         const canvas = document.getElementById('mainCanvas');
         const viewport = document.getElementById('viewport');
         const ctx = canvas.getContext('2d');
@@ -313,6 +318,42 @@
         renderColorStack();
         window.dispatchEvent(new Event('resize'));
         animate(0);
+
+        function describeCurrentAssets() {
+            const dataUrl = canvas.toDataURL('image/png');
+            const configText = JSON.stringify(config, null, 2);
+            return [
+                {
+                    kind: 'image',
+                    title: 'Wave Animation Frame',
+                    fileName: 'wave-animation-frame.png',
+                    mimeType: 'image/png',
+                    dataUrl,
+                    width: canvas.width,
+                    height: canvas.height,
+                    previewKind: 'image',
+                    previewUrl: dataUrl,
+                    sourceDetail: 'Current rendered wave animation frame.',
+                    metadata: { sourceTool: 'wave-animation', mode: config.mode }
+                },
+                {
+                    kind: 'text',
+                    title: 'Wave Animation Config',
+                    fileName: 'wave-animation-config.json',
+                    mimeType: 'application/json',
+                    textContent: configText,
+                    previewKind: 'text',
+                    previewText: configText,
+                    sourceDetail: 'Wave animation configuration.',
+                    metadata: { sourceTool: 'wave-animation', resourceFormat: 'config-json' }
+                }
+            ];
+        }
+
+        window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+        window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
     </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

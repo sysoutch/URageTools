@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSS Background Generator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../shared/dashboard-theme.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,9 +14,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
+        :root { --tool-bg: #120d0d; --tool-bg-strong: rgba(18, 11, 11, 0.98); --tool-surface: rgba(24, 14, 14, 0.84); --tool-line: rgba(255, 180, 128, 0.18); --tool-line-strong: rgba(255, 180, 128, 0.34); --tool-text: #f6f1ee; --tool-muted: #c8b6ae; --tool-accent: #ff8a4d; --tool-accent-strong: #ff6136; }
+        body[data-dashboard-theme="water"] { --tool-bg: #0d1522; --tool-bg-strong: rgba(10, 17, 29, 0.98); --tool-surface: rgba(12, 21, 37, 0.84); --tool-line: rgba(114, 190, 255, 0.18); --tool-line-strong: rgba(114, 190, 255, 0.34); --tool-text: #eef5ff; --tool-muted: #a9bfd8; --tool-accent: #59b6ff; --tool-accent-strong: #2f8cf0; }
+        body[data-dashboard-theme="nature"] { --tool-bg: #11170f; --tool-bg-strong: rgba(13, 19, 11, 0.98); --tool-surface: rgba(18, 24, 16, 0.84); --tool-line: rgba(146, 213, 120, 0.18); --tool-line-strong: rgba(146, 213, 120, 0.34); --tool-text: #f2f8ee; --tool-muted: #bccfaf; --tool-accent: #82cd5f; --tool-accent-strong: #58a23c; }
+        body[data-dashboard-theme="rock"] { --tool-bg: #151515; --tool-bg-strong: rgba(16, 16, 16, 0.98); --tool-surface: rgba(24, 24, 24, 0.84); --tool-line: rgba(196, 190, 176, 0.18); --tool-line-strong: rgba(196, 190, 176, 0.34); --tool-text: #f2efea; --tool-muted: #b7aea2; --tool-accent: #c4ae8a; --tool-accent-strong: #9b8563; }
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-            color: #fff;
+            background: linear-gradient(135deg, var(--tool-bg), var(--tool-accent-strong), var(--tool-bg));
+            color: var(--tool-text);
             min-height: 100vh;
             padding: 20px;
         }
@@ -52,12 +57,12 @@
         }
         
         .tool-panel {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--tool-surface);
             backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid var(--tool-line);
             flex: 1;
             min-width: 300px;
         }
@@ -71,7 +76,7 @@
         }
         
         .panel-title i {
-            color: #ff7eb3;
+            color: var(--tool-accent);
         }
         
         .control-group {
@@ -88,9 +93,9 @@
             width: 100%;
             padding: 10px;
             border-radius: 8px;
-            border: none;
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
+            border: 1px solid var(--tool-line);
+            background: rgba(0, 0, 0, 0.18);
+            color: var(--tool-text);
             font-size: 1rem;
         }
         
@@ -124,6 +129,7 @@
         
         .preview-container {
             background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--tool-line);
             border-radius: 10px;
             padding: 20px;
             min-height: 300px;
@@ -170,8 +176,8 @@
         }
         
         .copy-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--tool-line);
             color: white;
             padding: 8px 15px;
             border-radius: 5px;
@@ -219,11 +225,11 @@
         }
         
         .btn-primary {
-            background: linear-gradient(45deg, #ff7eb3, #ff758c);
+            background: linear-gradient(45deg, var(--tool-accent), var(--tool-accent-strong));
         }
         
         .btn-primary:hover {
-            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            background: linear-gradient(45deg, var(--tool-accent-strong), var(--tool-accent));
         }
         
         .glass-controls {
@@ -255,7 +261,7 @@
         }
     </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
     <div class="container">
         <header>
             <h1><i class="fas fa-paint-brush"></i> CSS Background Generator</h1>
@@ -421,6 +427,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            window.registerDashboardThemeSync();
             // Get DOM elements
             const previewBox = document.getElementById('preview-box');
             const color1 = document.getElementById('color1');
@@ -628,7 +635,27 @@
                     alert('CSS copied to clipboard!');
                 });
             }
+
+            function describeCurrentAssets() {
+                const css = cssOutput.textContent || '';
+                return [{
+                    kind: 'text',
+                    title: 'Generated CSS Background',
+                    fileName: 'generated-background.css',
+                    mimeType: 'text/css',
+                    textContent: css,
+                    previewKind: 'text',
+                    previewText: css,
+                    sourceDetail: 'Generated CSS background style.',
+                    metadata: { sourceTool: 'css-background-generator', resourceFormat: 'css' }
+                }];
+            }
+
+            window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+            window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
         });
     </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

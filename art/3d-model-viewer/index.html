@@ -6,9 +6,10 @@
     <title>URage Toolset | 3D Viewer Pro</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/tools/shared/css/upload-btn.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
 <div id="app-container">
     <div id="viewport">
@@ -21,7 +22,7 @@
     <aside id="sidebar">
         <div class="header">
             <div class="logo"><i data-lucide="box" color="white" size="22"></i></div>
-            <div class="logo-text">URAGE 3D</div>
+            <div class="logo-text">3D Model Viewer</div>
         </div>
 
         <div class="upload-area" id="drop-zone">
@@ -173,5 +174,7 @@
 }
 </script>
 <script type="module" src="script.js"></script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

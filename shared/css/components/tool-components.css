@@ -1,0 +1,173 @@
+:root {
+  --tool-accent: var(--accent, #ff8a4d);
+  --tool-accent-strong: var(--accentStrong, #ff6136);
+  --tool-bg: var(--bg, #120d0d);
+  --tool-surface: var(--surface, rgba(24, 14, 14, 0.92));
+  --tool-surface-strong: var(--surfaceStrong, rgba(18, 11, 11, 0.98));
+  --tool-line: var(--line, rgba(255, 180, 128, 0.18));
+  --tool-line-strong: var(--lineStrong, rgba(255, 180, 128, 0.34));
+  --tool-text: var(--text, #f6f1ee);
+  --tool-muted: var(--muted, #c8b6ae);
+  --tool-radius: 13px;
+  --tool-radius-sm: 10px;
+}
+
+body[data-dashboard-theme] {
+  color: var(--tool-text);
+  background: var(--tool-bg);
+}
+
+body[data-dashboard-theme] :where(button, .btn, .button, a.button, a.download, input, textarea, select) {
+  font: inherit;
+  border-radius: var(--tool-radius);
+}
+
+body[data-dashboard-theme] :where(input, textarea, select) {
+  min-height: 38px;
+  border: 1px solid var(--tool-line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
+    color-mix(in srgb, var(--tool-surface-strong) 88%, black 12%);
+  color: var(--tool-text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+body[data-dashboard-theme] :where(textarea) {
+  min-height: 96px;
+  resize: vertical;
+}
+
+body[data-dashboard-theme] :where(select) {
+  appearance: none;
+  padding-right: 34px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--tool-muted) 50%),
+    linear-gradient(135deg, var(--tool-muted) 50%, transparent 50%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  background-position:
+    calc(100% - 18px) 50%,
+    calc(100% - 12px) 50%,
+    0 0;
+  background-size:
+    6px 6px,
+    6px 6px,
+    100% 100%;
+  background-repeat: no-repeat;
+}
+
+body[data-dashboard-theme] :where(input, textarea, select):focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--tool-accent) 72%, white 8%);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--tool-accent) 22%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+body[data-dashboard-theme] :where(button, .btn, .button, a.button, a.download) {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--tool-line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
+    color-mix(in srgb, var(--tool-surface) 88%, black 12%);
+  color: var(--tool-text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  cursor: pointer;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+body[data-dashboard-theme] :where(button, .btn, .button, a.button, a.download):where(:hover, .active, .is-active, [aria-pressed="true"]) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--tool-accent) 62%, white 8%);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--tool-accent) 34%, transparent), color-mix(in srgb, var(--tool-accent-strong) 26%, var(--tool-surface) 74%)),
+    color-mix(in srgb, var(--tool-surface) 82%, black 18%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 14px 28px color-mix(in srgb, var(--tool-accent) 20%, transparent);
+}
+
+body[data-dashboard-theme] :where(button, .btn, .button, a.button, a.download):disabled,
+body[data-dashboard-theme] :where(button.disabled, .btn.disabled, .button.disabled, a.download.disabled) {
+  opacity: 0.48;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+body[data-dashboard-theme] :where(.primary, .btn-primary, button.primary) {
+  border-color: color-mix(in srgb, var(--tool-accent) 68%, white 8%);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--tool-accent) 56%, white 8%), color-mix(in srgb, var(--tool-accent-strong) 72%, black 8%));
+  color: #fff;
+}
+
+body[data-dashboard-theme] :where(.danger, .btn-danger, button.danger) {
+  border-color: rgba(255, 110, 110, 0.48);
+  background:
+    linear-gradient(180deg, rgba(255, 84, 84, 0.34), rgba(120, 18, 18, 0.42)),
+    color-mix(in srgb, var(--tool-surface) 84%, black 16%);
+}
+
+body[data-dashboard-theme] :where(details, .control-group, .sidebar-panel, .tool-panel, .panel, .card) {
+  border-color: var(--tool-line);
+}
+
+body[data-dashboard-theme] :where(details.sidebar-panel, details.control-group, .tool-foldout) {
+  overflow: hidden;
+  border: 1px solid var(--tool-line);
+  border-radius: var(--tool-radius);
+  background:
+    radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--tool-accent) 13%, transparent), transparent 38%),
+    color-mix(in srgb, var(--tool-surface) 92%, black 8%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+body[data-dashboard-theme] :where(details.sidebar-panel, details.control-group, .tool-foldout) > summary {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  color: var(--tool-text);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  list-style: none;
+}
+
+body[data-dashboard-theme] :where(details.sidebar-panel, details.control-group, .tool-foldout) > summary::-webkit-details-marker {
+  display: none;
+}
+
+body[data-dashboard-theme] :where(details.sidebar-panel, details.control-group, .tool-foldout) > summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--tool-muted);
+  font-size: 15px;
+}
+
+body[data-dashboard-theme] :where(details.sidebar-panel[open], details.control-group[open], .tool-foldout[open]) > summary {
+  border-bottom: 1px solid var(--tool-line);
+  background: color-mix(in srgb, var(--tool-accent) 9%, transparent);
+}
+
+body[data-dashboard-theme] :where(details.sidebar-panel[open], details.control-group[open], .tool-foldout[open]) > summary::after {
+  content: "-";
+}
+
+body[data-dashboard-theme] :where(.button-row, .buttons, .actions, .tool-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body[data-dashboard-theme] :where(.hidden) {
+  display: none !important;
+}

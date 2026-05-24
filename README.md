@@ -1,105 +1,63 @@
-# URageTools
+User can put more categories for tools here.
 
-![Thumbnail](thumbnail.png)
+## Categories
 
-A collection of fast, free, and privacy-focused web tools for developers and creators. All tools run directly in your browser with no server dependencies.
+- **art** - Image editing, color tools, SVG, pixel art
+- **audio** - Music creation, sound effects, recording, audio visualization
+- **dev** - Developer utilities, code generators, markdown tools
+- **game** - Game development assets and animation tools
+- **plan** - Planning and organization tools
+- **video** - Video processing, recording, and media conversion
 
-## Tools Overview
+## Shared Components
 
-### Audio & Sound Lab
-- **SFX Generator** - Create custom sound effects with waveforms, parameters, and presets
-- **Audio Visualizer** - Visualize audio in real-time with various display modes
+### Tool Component Baseline (`shared/css/components/tool-components.css`)
+Global themed controls for tools: buttons, selects, inputs, textareas, action rows, and details/foldout panels. It is auto-injected by `shared/dashboard-theme.js` and `shared/dashboard-current-output-autodescribe.js`, so tools that load either shared script receive the baseline without an extra `<link>`.
 
-### Art & Design
-- **Image Crop & Scale** - Crop and scale images for different platforms with automatic dimension calculation
-- **Pixel Art Studio** - Create and edit pixel art with grid support and color palette management
-- **Seamless Texture Maker** - Generate seamless textures for 3D applications and games
-- **Color Palette Extractor** - Extract color palettes from images
-- **Color Swapper** - Swap colors in images with various blending modes
-- **Image Transparency Tool** - Remove or add transparency to images
-- **SVG Editor** - Edit and create SVG graphics with vector tools
-- **3D Model Viewer** - View and rotate 3D models in your browser
-- **Image to SVG Converter** - Convert raster images to vector SVG graphics
-- **Image Split & Combine** - Split images into grids or combine multiple images
-- **Favicon Creator** - Create favicons from images
-- **Pixel Art Converter** - Convert images to pixel art style
+Prefer semantic native elements (`button`, `select`, `details`, `summary`, `.button-row`, `.actions`) and only add tool-specific CSS for layout or genuinely unique visuals.
 
-### Developer Utilities
-- **C# Class Extractor** - Extract C# classes from scripts
-- **CSS Background Generator** - Generate CSS background patterns and gradients
-- **Dialogue Tree Visualizer** - Visualize dialogue trees
-- **Electron App Icon Generator** - Generate icons for Electron apps
-- **HTML Button Generator** - Create HTML/CSS buttons
-- **HTML Separator and Combiner** - Split and combine HTML files
-- **HTML Viewer** - View HTML files
-- **Interactive Book** - Create interactive books
-- **Markdown Multi-Tool** - Convert between markdown formats and other text formats
-- **Meta OG Tag Generator** - Generate Open Graph tags
-- **QR Code Creator** - Generate QR codes from text
-- **Website Builder** - Build simple websites with drag-and-drop interface
-- **Wave Animation** - Create animated wave effects for web pages
-- **Readme File Viewer** - View and edit README files
+### Upload Card Component (`shared/css/components/upload-card.css`)
+Universal styled upload area with dashed border, arrow icon, and dark theme. Compatible with all dashboard themes (fire, water, purple, nature, rock).
 
-### Planning Tools
-- **Game Idea Generator** - Generate creative game ideas and concepts
-- **Kanban Board** - Simple Kanban board for task management
-- **Poker Blind Level Manager** - Manage blinds for poker games
-- **Roadmap Builder** - Create project roadmaps and timelines
+**Usage:** Add `<link rel="stylesheet" href="/tools/shared/css/components/upload-card.css">` to your HTML head, then replace file input labels with:
+```html
+<label class="upload-card" for="fileInput">
+    <span class="upload-card-icon arrow-icon">&#8595;</span>
+    <strong>Choose a file</strong>
+    <span>or drag it here.</span>
+    <input id="fileInput" type="file" accept="image/*" hidden>
+</label>
+```
 
-### Games & Others
-- **Demo Game** - A demonstration game
-- **Rage Meter** - Measure your rage
+**Updated tools:** interactive-book, toon-image-shader, color-palette-extractor, normalmap-maker, image-transparency-tool, seamless-texture-maker, color-swapper, image-crop-and-scale, favicon-creator, gif-viewer
 
-## Features
+---
 
-- **Privacy Focused**: All processing happens in your browser - no data is sent to servers
-- **No Registration Required**: Use all tools immediately without creating an account
-- **Fast and Lightweight**: Optimized for performance with minimal resource usage
-- **Cross-Platform**: Works on desktop, tablet, and mobile devices
-- **Modern UI**: Clean, intuitive interface with dark/light theme support
-- **Responsive Design**: Adapts to any screen size
+## Featured Tools
 
-## Browser Requirements
+### Sprite Animation Studio Pro (`game/sprite-animation-studio/`)
+A professional-grade HTML5 Canvas sprite animation tool with frame-by-frame editing, onion skinning, layers, undo/redo, and multi-format export (sprite sheet PNG, JSON atlas, CSS animation). See README.md for full documentation.
 
-All tools require a modern browser with support for:
-- Web Audio API (for audio tools)
-- Canvas API (for visualizations)
-- Modern JavaScript features
-- Local Storage (for saving presets)
+### Audio Recorder (`audio/audio-recorder/`)
+Records microphone input, shared PC/tab audio, or both mixed together and exposes the latest recording through the dashboard asset descriptor bridge.
 
-## Contributing
+### Video Recorder (`video/video-recorder/`)
+Records webcam video with optional microphone audio and exposes the latest recording through the dashboard asset descriptor bridge.
 
-We welcome contributions to improve URageTools! Please follow these steps:
+---
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+## Dashboard Image Insertion
 
-## License
+- Image-capable art tools should avoid parser-blocking CDN scripts so the dashboard iframe can finish loading before an image is injected.
+- Tools with file inputs should accept dashboard-injected `File` objects through normal `input`/`change` events.
+- Tools without file inputs should listen for `tool:load-asset` messages from `urage-dashboard` and load `payload.dataUrl`, `payload.imageUrl`, or `payload.previewImageUrl`.
 
-MIT License
+## Dashboard Game Engine Exports
 
-Copyright (c) 2026 URageTools
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-## Author
-
-URageTools - A collection of creative web tools for developers and designers
+- Prefer exposing processed outputs through the shared dashboard bridge with `describeCurrentAssets` when a tool has more than one exportable result.
+- Each asset descriptor should include `kind`, `title`, `fileName`, `mimeType`, and either `sourceUrl`, `dataUrl`, or `textContent`.
+- Every non-vendored `index.html` should load `tools/shared/dashboard-current-output-autodescribe.js` near the end of the body unless it has a stronger explicit descriptor script that still needs the same fallback.
+- For generated media tools, expose the final processed file first in `describeCurrentAssets`, then add structured companions like JSON config, engine snippets, palettes, or source previews.
+- If a tool does not expose descriptors, the Tools workspace now falls back to visible download links, canvases, image/video/audio elements, and text outputs, then lets the user choose which output to send in the shared `Send Resource` overlay.
+- Browser-local `blob:` and canvas outputs are stored by the dashboard and served through `/api/game-engine-export-file`, so game-engine importers can fetch them like normal generated files.
+- `npm run check:tools` audits every non-vendored HTML tool for the shared fallback and explicit current-asset descriptor coverage.

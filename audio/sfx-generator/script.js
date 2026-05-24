@@ -5,6 +5,10 @@ const canvasCtx = canvas.getContext('2d');
 const analyser = audioCtx.createAnalyser();
 analyser.fftSize = 2048;
 
+function applyDashboardTheme(nextTheme) {
+    document.body.setAttribute('data-dashboard-theme', nextTheme || 'fire');
+}
+
 function setWave(type, btn) {
     waveType = type;
     document.querySelectorAll('#waveSelectors button').forEach(b => b.classList.remove('active'));
@@ -230,6 +234,14 @@ function playSFX() {
 }
 
 async function downloadSFX() {
+    const blob = await renderSfxBlob();
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `sfx-${Date.now()}.wav`;
+    link.click();
+}
+
+async function renderSfxBlob() {
     const p = getParams();
     const sampleRate = 44100;
     const offlineCtx = new OfflineAudioContext(1, sampleRate * p.duration, sampleRate);
@@ -251,11 +263,38 @@ async function downloadSFX() {
     osc.stop(p.duration);
     
     const buffer = await offlineCtx.startRendering();
-    const blob = bufferToWave(buffer, sampleRate * p.duration);
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `sfx-${Date.now()}.wav`;
-    link.click();
+    return bufferToWave(buffer, sampleRate * p.duration);
+}
+
+function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.onerror = () => reject(new Error('Failed to read SFX WAV.'));
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function describeCurrentAsset() {
+    const blob = await renderSfxBlob();
+    const dataUrl = await blobToDataUrl(blob);
+    const params = {
+        ...getParams(),
+        waveType,
+        attack: parseFloat(document.getElementById('attack').value),
+        decay: parseFloat(document.getElementById('decay').value)
+    };
+    return {
+        kind: 'audio',
+        title: 'Generated SFX WAV',
+        fileName: `sfx-${waveType}-${Math.round(params.startFreq)}hz.wav`,
+        mimeType: 'audio/wav',
+        dataUrl,
+        previewKind: 'audio',
+        previewUrl: dataUrl,
+        sourceDetail: 'Generated WAV sound effect from SFX Generator.',
+        metadata: { sourceTool: 'sfx-generator', params }
+    };
 }
 
 function bufferToWave(abuffer, len) {
@@ -310,3 +349,13 @@ function draw() {
     canvasCtx.stroke();
 }
 draw();
+
+window.addEventListener('message', (event) => {
+    const message = event && event.data;
+    if (message && message.type === 'tool:theme') applyDashboardTheme(message.payload && message.payload.theme);
+});
+
+window.__urageToolDescribeCurrentAsset = describeCurrentAsset;
+window.__urageToolDescribeCurrentAssets = async () => [await describeCurrentAsset()];
+
+applyDashboardTheme(document.body.getAttribute('data-dashboard-theme') || 'fire');

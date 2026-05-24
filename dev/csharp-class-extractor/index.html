@@ -4,23 +4,214 @@
     <meta charset="UTF-8">
     <title>Unity C# Class Extractor Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="../../shared/dashboard-theme.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #252526; color: #d4d4d4; line-height: 1.5; }
-        .app-wrapper { padding: 20px; }
-        .container { max-width: 1000px; margin: auto; }
-        textarea { width: 100%; height: 350px; background: #1e1e1e; color: #dcdcdc; border: 1px solid #3e3e42; border-radius: 4px; padding: 12px; font-family: 'Consolas', monospace; font-size: 14px; resize: vertical; }
-        .controls { margin: 20px 0; display: flex; gap: 10px; }
-        button { background: #0e639c; color: white; border: none; padding: 10px 20px; border-radius: 2px; cursor: pointer; font-size: 14px; }
-        button:hover { background: #1177bb; }
-        button.secondary { background: #3e3e42; }
-        button.secondary:hover { background: #4d4d52; }
-        .output-item { background: #2d2d2d; margin-top: 15px; border: 1px solid #454545; border-radius: 4px; }
-        .filename { background: #37373d; padding: 8px 12px; font-weight: bold; color: #4ec9b0; display: flex; justify-content: space-between; }
-        pre { padding: 15px; overflow-x: auto; margin: 0; font-size: 13px; color: #9cdcfe; }
-        .status { color: #ce9178; font-style: italic; }
+        :root {
+            --tool-bg: #120d0d;
+            --tool-surface: rgba(24, 14, 14, 0.92);
+            --tool-surface-alt: rgba(18, 11, 11, 0.98);
+            --tool-line: rgba(255, 180, 128, 0.18);
+            --tool-line-strong: rgba(255, 180, 128, 0.34);
+            --tool-text: #f6f1ee;
+            --tool-muted: #c8b6ae;
+            --tool-accent: #ff8a4d;
+            --tool-accent-soft: rgba(255, 138, 77, 0.14);
+            --tool-code: #a5d6ff;
+        }
+
+        /* RESET + FULL HEIGHT */
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* BODY */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--tool-bg);
+            color: var(--tool-text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* THEMES */
+        body[data-dashboard-theme="water"] {
+            --tool-bg: #0d1522;
+            --tool-surface: rgba(12, 21, 37, 0.94);
+            --tool-surface-alt: rgba(10, 17, 29, 0.98);
+            --tool-line: rgba(114, 190, 255, 0.18);
+            --tool-line-strong: rgba(114, 190, 255, 0.34);
+            --tool-text: #eef5ff;
+            --tool-muted: #a9bfd8;
+            --tool-accent: #59b6ff;
+            --tool-accent-soft: rgba(89, 182, 255, 0.14);
+            --tool-code: #7bd0ff;
+        }
+
+        body[data-dashboard-theme="nature"] {
+            --tool-bg: #11170f;
+            --tool-surface: rgba(18, 24, 16, 0.94);
+            --tool-surface-alt: rgba(13, 19, 11, 0.98);
+            --tool-line: rgba(146, 213, 120, 0.18);
+            --tool-line-strong: rgba(146, 213, 120, 0.34);
+            --tool-text: #f2f8ee;
+            --tool-muted: #bccfaf;
+            --tool-accent: #82cd5f;
+            --tool-accent-soft: rgba(130, 205, 95, 0.14);
+            --tool-code: #9ae27b;
+        }
+
+        body[data-dashboard-theme="rock"] {
+            --tool-bg: #151515;
+            --tool-surface: rgba(24, 24, 24, 0.95);
+            --tool-surface-alt: rgba(16, 16, 16, 0.98);
+            --tool-line: rgba(196, 190, 176, 0.18);
+            --tool-line-strong: rgba(196, 190, 176, 0.34);
+            --tool-text: #f2efea;
+            --tool-muted: #b7aea2;
+            --tool-accent: #c4ae8a;
+            --tool-accent-soft: rgba(196, 174, 138, 0.14);
+            --tool-code: #d8c29f;
+        }
+
+        /* APP WRAPPER */
+        .app-wrapper {
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            flex: 1;
+            width: 100%;
+            margin: auto;
+            background: var(--tool-surface);
+            border: 1px solid var(--tool-line);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+
+            display: flex;
+            flex-direction: column;
+
+            min-height: calc(100vh - 40px);
+        }
+
+        /* TYPOGRAPHY */
+        h2 {
+            margin-top: 0;
+        }
+
+        p {
+            color: var(--tool-muted);
+        }
+
+        /* TEXTAREA */
+        textarea {
+            width: 100%;
+            flex: 1;
+            min-height: 350px;
+
+            background: var(--tool-surface-alt);
+            color: var(--tool-text);
+
+            border: 1px solid var(--tool-line-strong);
+            border-radius: 10px;
+
+            padding: 12px;
+
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+
+            resize: vertical;
+        }
+
+        /* CONTROLS */
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* BUTTONS */
+        button {
+            background: var(--tool-accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        button:hover {
+            filter: brightness(1.07);
+        }
+
+        button.secondary {
+            background: var(--tool-surface-alt);
+            border: 1px solid var(--tool-line);
+            color: var(--tool-text);
+        }
+
+        button.secondary:hover {
+            background: var(--tool-surface);
+        }
+
+        /* OUTPUT */
+        #output {
+            margin-top: 10px;
+        }
+
+        /* OUTPUT ITEMS */
+        .output-item {
+            background: var(--tool-surface-alt);
+            margin-top: 15px;
+            border: 1px solid var(--tool-line);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* FILE NAME BAR */
+        .filename {
+            background: var(--tool-accent-soft);
+            padding: 8px 12px;
+            font-weight: bold;
+            color: var(--tool-accent);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* CODE PREVIEW */
+        pre {
+            padding: 15px;
+            overflow-x: auto;
+            margin: 0;
+            font-size: 13px;
+            color: var(--tool-code);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* STATUS */
+        .status {
+            color: var(--tool-muted);
+            font-style: italic;
+        }
     </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
 <div class="app-wrapper">
 <div class="container">
@@ -40,6 +231,7 @@
 </div>
 
 <script>
+    window.registerDashboardThemeSync();
     let extractedFiles = [];
 
     function extractClasses() {
@@ -125,6 +317,25 @@
             link.click();
         });
     }
+
+    function describeCurrentAssets() {
+        return extractedFiles.map(file => ({
+            kind: 'text',
+            title: file.name,
+            fileName: file.name,
+            mimeType: 'text/x-csharp',
+            textContent: file.content,
+            previewKind: 'text',
+            previewText: file.content,
+            sourceDetail: 'Extracted C# script file.',
+            metadata: { sourceTool: 'csharp-class-extractor', resourceFormat: 'csharp' }
+        }));
+    }
+
+    window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+    window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
 </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

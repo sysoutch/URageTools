@@ -1,4 +1,4 @@
-# 🎯 URage Favicon Creator
+# Favicon Creator
 
 ![Thumbnail](thumbnail.png)
 

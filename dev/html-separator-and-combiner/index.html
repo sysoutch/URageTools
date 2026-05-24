@@ -20,9 +20,11 @@
     <meta name="twitter:image" content="https://tools.urage.net/dev/html-separator-and-combiner/thumbnail.png">
 
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+    <script src="../../shared/dashboard-theme.js"></script>
+    <link rel="stylesheet" href="/tools/shared/css/upload-btn.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
 <div class="app-wrapper">
 <div class="container">
@@ -36,8 +38,11 @@
     
     <div id="separator" class="mode-section active">
         <div class="card">
-            <div id="dropArea" class="drop-area">Drag & Drop HTML file or click box below</div>
-            <input type="file" id="fileInput" accept=".html,.htm" style="display: none;">
+            <label class="upload-btn" for="fileInput" id="dropArea">
+                <span class="upload-btn-icon">📄</span>
+                <span class="upload-btn-text">Drag & Drop HTML file or click to upload</span>
+                <input type="file" id="fileInput" accept=".html,.htm" hidden>
+            </label>
             <textarea id="sepInput" placeholder="Paste full HTML here...">
 &lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
@@ -155,5 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </div>
 <script src="script.js"></script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

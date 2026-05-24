@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+	function applyDashboardTheme(nextTheme) {
+		document.body.setAttribute('data-dashboard-theme', nextTheme || 'fire');
+		if (typeof window.applyDashboardThemeVars === 'function') {
+			window.applyDashboardThemeVars(nextTheme || 'fire');
+		}
+	}
 	const generateBtn = document.getElementById('generateBtn');
 	const ideaText = document.querySelector('.idea-text');
 	const ideaType = document.querySelector('.idea-type');
@@ -401,4 +407,38 @@ if (event.key === ' ' || event.key === 'Enter') {
 generateGameIdea();
 }
 });
+
+function describeCurrentAssets() {
+	const details = Array.from(ideaDetails.querySelectorAll('li')).map(node => node.textContent || '');
+	const payload = {
+		idea: ideaText.textContent || '',
+		type: ideaType.textContent || '',
+		details
+	};
+	const text = JSON.stringify(payload, null, 2);
+	return [{
+		kind: 'text',
+		title: 'Game Idea JSON',
+		fileName: 'game-idea.json',
+		mimeType: 'application/json',
+		textContent: text,
+		previewKind: 'text',
+		previewText: text,
+		sourceDetail: 'Generated game idea prompt data.',
+		metadata: { sourceTool: 'game-idea-generator', resourceFormat: 'game-idea-json' }
+	}];
+}
+
+window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
+
+	if (typeof window.registerDashboardThemeSync === 'function') {
+		window.registerDashboardThemeSync(applyDashboardTheme);
+	} else {
+		window.addEventListener('message', function(event) {
+			const message = event && event.data;
+			if (message && message.type === 'tool:theme') applyDashboardTheme(message.payload && message.payload.theme);
+		});
+		applyDashboardTheme(document.body.getAttribute('data-dashboard-theme') || 'fire');
+	}
 });

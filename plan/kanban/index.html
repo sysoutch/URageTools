@@ -18,16 +18,56 @@
             --header-bg: rgba(255, 255, 255, 0.8);
         }
 
-        [data-theme="dark"] {
-            --bg-app: #0f172a;
-            --bg-sidebar: #020617;
-            --sidebar-text: #94a3b8;
-            --column-bg: #1e293b;
-            --card-bg: #334155;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-color: #475569;
-            --header-bg: rgba(15, 23, 42, 0.8);
+        body[data-dashboard-theme="fire"] {
+            --primary: #ff7b42;
+            --bg-app: #1a110d;
+            --bg-sidebar: #110a08;
+            --sidebar-text: #d1b0a2;
+            --column-bg: #261915;
+            --card-bg: #2f1f1a;
+            --text-main: #f8f2ee;
+            --text-muted: #c8b2a8;
+            --border-color: rgba(255, 137, 78, 0.18);
+            --header-bg: rgba(26, 17, 13, 0.84);
+        }
+
+        body[data-dashboard-theme="water"] {
+            --primary: #5daeff;
+            --bg-app: #08131d;
+            --bg-sidebar: #06101a;
+            --sidebar-text: #a4c0d7;
+            --column-bg: #132233;
+            --card-bg: #1a2d43;
+            --text-main: #eef7ff;
+            --text-muted: #a8bfd6;
+            --border-color: rgba(93, 174, 255, 0.18);
+            --header-bg: rgba(8, 19, 29, 0.84);
+        }
+
+        body[data-dashboard-theme="nature"] {
+            --primary: #8fd36b;
+            --bg-app: #0b140c;
+            --bg-sidebar: #09100a;
+            --sidebar-text: #b2c8aa;
+            --column-bg: #17261a;
+            --card-bg: #203123;
+            --text-main: #f3fbf0;
+            --text-muted: #b7c9af;
+            --border-color: rgba(143, 211, 107, 0.18);
+            --header-bg: rgba(11, 20, 12, 0.84);
+        }
+
+        body[data-dashboard-theme="rock"] {
+            --primary: #d1c2ad;
+            --bg-app: #14110e;
+            --bg-sidebar: #100d0b;
+            --sidebar-text: #c6baab;
+            --column-bg: #221d18;
+            --card-bg: #2c251f;
+            --text-main: #f6f2eb;
+            --text-muted: #c1b5a6;
+            --border-color: rgba(209, 194, 173, 0.18);
+            --header-bg: rgba(20, 17, 14, 0.84);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
@@ -69,10 +109,6 @@
         .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
 
         .toolbar { display: flex; align-items: center; gap: 15px; }
-        .theme-toggle { width: 50px; height: 26px; background: #334155; border-radius: 50px; position: relative; cursor: pointer; border: 2px solid var(--border-color); }
-        .toggle-circle { width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.3s; }
-        [data-theme="dark"] .toggle-circle { left: 26px; background: var(--primary); }
-
         /* --- KANBAN --- */
         .board-canvas { 
             display: flex; padding: 25px; gap: 20px; overflow-x: auto; flex-grow: 1; align-items: flex-start; 
@@ -134,7 +170,7 @@
         .btn-primary { background: var(--primary); color: white; }
     </style>
 </head>
-<body data-theme="light">
+<body data-dashboard-theme="fire">
 
     <div class="app-wrapper">
     <nav>
@@ -153,9 +189,6 @@
                 <input type="text" class="search-input" id="searchBar" placeholder="Search tasks..." oninput="filterCards()">
             </div>
             <div class="toolbar">
-                <div class="theme-toggle" onclick="toggleTheme()">
-                    <div class="toggle-circle"></div>
-                </div>
                 <button class="btn btn-primary" onclick="addColumn()">+ Add Column</button>
             </div>
         </header>
@@ -188,7 +221,6 @@
 
     <script>
         let state = {
-            theme: 'light',
             activeBoard: 0,
             boards: [{
                 name: 'Main Project',
@@ -208,10 +240,16 @@
         let draggingCardId = null; 
         let draggingColumnIndex = null;
 
+        function applyDashboardTheme(theme) {
+            const allowed = new Set(['fire', 'water', 'purple', 'nature', 'rock']);
+            const nextTheme = allowed.has(String(theme || '').trim()) ? String(theme).trim() : 'fire';
+            document.body.setAttribute('data-dashboard-theme', nextTheme);
+        }
+
         function init() {
             const saved = localStorage.getItem('flowstate_v4');
             if (saved) state = JSON.parse(saved);
-            document.body.setAttribute('data-theme', state.theme);
+            applyDashboardTheme(document.body.getAttribute('data-dashboard-theme') || 'fire');
             render();
         }
 
@@ -446,12 +484,6 @@
         }
 
         /* --- STANDARD APP FUNCTIONS --- */
-        function toggleTheme() {
-            state.theme = state.theme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', state.theme);
-            render();
-        }
-
         function filterCards() {
             const query = document.getElementById('searchBar').value.toLowerCase();
             document.querySelectorAll('.card').forEach(card => {
@@ -504,7 +536,33 @@
             render();
         }
 
+        function describeCurrentAssets() {
+            const text = JSON.stringify(state, null, 2);
+            return [{
+                kind: 'text',
+                title: 'Kanban Board JSON',
+                fileName: 'kanban-board.json',
+                mimeType: 'application/json',
+                textContent: text,
+                previewKind: 'text',
+                previewText: text,
+                sourceDetail: 'Kanban board state data.',
+                metadata: { sourceTool: 'kanban', resourceFormat: 'kanban-json' }
+            }];
+        }
+
+        window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+        window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
+
+        window.addEventListener('message', event => {
+            const message = event?.data || null;
+            if (!message || message.source !== 'urage-dashboard') return;
+            if (message.type === 'tool:theme') applyDashboardTheme(message.payload?.theme);
+        });
+
         init();
     </script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 </body>
 </html>

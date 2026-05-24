@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Web Playground</title>
+    <script src="../../shared/dashboard-theme.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
     <div class="header">
         <h1>LIVE PREVIEW</h1>
         <div class="header-actions">
-            <small id="status" style="color: #888;">Ready</small>
+            <small id="status" style="color: var(--muted);">Ready</small>
             <button class="share-btn" onclick="shareProject()">SHARE</button>
         </div>
     </div>
@@ -40,6 +41,8 @@
     </div>
 
     <script src="script.js"></script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+
 
 </body>
 </html>

@@ -6,6 +6,7 @@ import { OBJLoader } from 'https://unpkg.com/three@0.165.0/examples/jsm/loaders/
 import { RGBELoader } from 'https://unpkg.com/three@0.165.0/examples/jsm/loaders/RGBELoader.js';
 
 let scene, camera, renderer, controls, currentModel, grid;
+let currentDashboardAsset = null;
 let flatShading = false;
 let metallic = 0.5;
 let roughness = 0.5;
@@ -14,7 +15,15 @@ let lightRotation = 0;
 let lightIntensity = 1.2;
 let modelRotation = 0;
 
+applyDashboardTheme(document.body.getAttribute('data-dashboard-theme') || 'fire');
+window.addEventListener('message', handleDashboardMessage);
 init();
+
+function applyDashboardTheme(theme) {
+    const allowed = new Set(['fire', 'water', 'purple', 'nature', 'rock']);
+    const nextTheme = allowed.has(String(theme || '').trim()) ? String(theme).trim() : 'fire';
+    document.body.setAttribute('data-dashboard-theme', nextTheme);
+}
 
 function init() {
     // Scene setup
@@ -263,6 +272,72 @@ function setupInterface() {
 
     lucide.createIcons();
 }
+
+function loadModelFromUrl(modelUrl, fileNameHint) {
+    const sourceUrl = String(modelUrl || '').trim();
+    if (!sourceUrl) return;
+    const fallbackName = String(fileNameHint || '').trim() || 'dashboard-model.glb';
+    document.getElementById('loading').style.display = 'flex';
+    fetch(sourceUrl, { cache: 'no-store' })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch model (' + response.status + ').');
+            return response.blob();
+        })
+        .then(blob => {
+            const fileName = String(fallbackName || '').trim() || 'dashboard-model.glb';
+            const file = new File([blob], fileName, { type: blob.type || 'application/octet-stream' });
+            loadModel(file);
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Error loading 3D model from dashboard payload.');
+            document.getElementById('loading').style.display = 'none';
+        });
+}
+
+function setCurrentDashboardAsset(payload) {
+    const sourcePayload = payload && typeof payload === 'object' ? payload : {};
+    const modelUrl = String(sourcePayload.modelUrl || sourcePayload.url || '').trim();
+    if (!modelUrl) {
+        currentDashboardAsset = null;
+        window.__urageThreeModelViewerCurrentAsset = null;
+        return;
+    }
+    currentDashboardAsset = {
+        kind: 'model3d',
+        modelUrl,
+        modelFileName: String(sourcePayload.modelFileName || sourcePayload.fileName || 'dashboard-model.glb').trim() || 'dashboard-model.glb',
+        previewImageUrl: String(sourcePayload.previewImageUrl || '').trim(),
+        previewFileName: String(sourcePayload.previewFileName || '').trim(),
+        prompt: String(sourcePayload.prompt || '').trim(),
+        metadata: sourcePayload.metadata && typeof sourcePayload.metadata === 'object' ? sourcePayload.metadata : {}
+    };
+    window.__urageThreeModelViewerCurrentAsset = { ...currentDashboardAsset };
+}
+
+function handleDashboardMessage(event) {
+    const message = event && event.data ? event.data : null;
+    if (!message || message.source !== 'urage-dashboard') return;
+    if (message.type === 'tool:theme') {
+        applyDashboardTheme(message.payload?.theme);
+        return;
+    }
+    if (message.type !== 'tool:load-asset') return;
+    const payload = message.payload && typeof message.payload === 'object' ? message.payload : {};
+    if (String(payload.kind || '').trim() !== 'model3d') return;
+    const modelUrl = String(payload.modelUrl || payload.url || '').trim();
+    if (!modelUrl) return;
+    setCurrentDashboardAsset(payload);
+    loadModelFromUrl(modelUrl, payload.modelFileName || payload.fileName || 'dashboard-model.glb');
+}
+
+window.__threeModelViewerLoadAssetPayload = payload => {
+    const modelUrl = String(payload?.modelUrl || payload?.url || '').trim();
+    if (!modelUrl) return;
+    setCurrentDashboardAsset(payload);
+    loadModelFromUrl(modelUrl, payload?.modelFileName || payload?.fileName || 'dashboard-model.glb');
+};
+window.__urageToolDescribeCurrentAsset = () => currentDashboardAsset ? { ...currentDashboardAsset } : null;
 
 function updateMaterial() {
     if (!currentModel) return;
