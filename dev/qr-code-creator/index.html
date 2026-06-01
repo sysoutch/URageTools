@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Creator</title>
+  <script src="../../shared/dashboard-theme.js"></script>
   <script src="../../shared/dashboard-tool-bridge.js"></script>
   <style>
     :root {
@@ -94,6 +95,10 @@
 
     .placeholder-text { color: #94a3b8; font-size: 0.95rem; pointer-events: none; }
 
+    body[data-dashboard-sidebar-externalized="true"] .controls-panel {
+      display: none;
+    }
+
     @media (max-width: 480px) {
       body { padding: 16px; align-items: flex-start; }
       .app-container { margin-top: 20px; }
@@ -102,7 +107,7 @@
     }
   </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
 
   <div class="app-container">
     <header>
@@ -110,7 +115,7 @@
       <p class="subtitle">Generate, customize, and download QR codes instantly.</p>
     </header>
 
-    <main class="controls-panel">
+    <main class="controls-panel" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="QR Controls">
       <label for="qr-input">Content to Encode:</label>
       <input type="text" id="qr-input" placeholder="https://example.com or any text..." autocomplete="off">
 

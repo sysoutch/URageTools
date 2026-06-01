@@ -1,5 +1,5 @@
 const fileInput = document.getElementById('file-input');
-const dropZone = document.getElementById('drop-zone');
+const dropZone = document.getElementById('drop-zone') || document.querySelector('#crop-upload-wrapper .upload-card') || document.getElementById('crop-upload-wrapper');
 const previews = document.getElementById('previews');
 const dlAllBtn = document.getElementById('download-all-btn');
 const modeSelect = document.getElementById('mode-select');
@@ -147,9 +147,11 @@ function calculateOpaqueBounds(img, mode = 'tight') {
 }
 
 function applyDashboardTheme(theme) {
-    const allowed = new Set(['fire', 'water', 'nature', 'rock']);
-    const nextTheme = allowed.has(String(theme || '').trim()) ? String(theme).trim() : 'fire';
-    document.body.setAttribute('data-dashboard-theme', nextTheme);
+    if (typeof window.applyDashboardThemeVars === 'function') {
+        window.applyDashboardThemeVars(theme || document.body.getAttribute('data-dashboard-theme') || 'fire');
+        return;
+    }
+    document.body.setAttribute('data-dashboard-theme', String(theme || 'fire').trim() || 'fire');
 }
 
 resetFocusBtn.onclick = () => {
@@ -180,7 +182,26 @@ modeSelect.onchange = () => {
     if (sourceImg) render();
 };
 
-dropZone.onclick = () => fileInput.click();
+if (dropZone && fileInput) {
+    dropZone.onclick = event => {
+        if (event.target !== fileInput) fileInput.click();
+    };
+    dropZone.addEventListener('dragover', event => {
+        event.preventDefault();
+        dropZone.classList.add('dragover');
+        if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', event => {
+        event.preventDefault();
+        dropZone.classList.remove('dragover');
+        const file = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files[0] : null;
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = ev => loadSourceImage(ev.target.result).catch(error => console.error(error));
+        reader.readAsDataURL(file);
+    });
+}
 fileInput.onchange = e => {
     const file = e.target.files[0];
     if (!file) return;

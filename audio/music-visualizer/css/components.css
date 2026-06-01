@@ -9,6 +9,10 @@
   overflow: hidden;
 }
 
+body[data-dashboard-sidebar-externalized="true"] .sidebar {
+  display: none;
+}
+
 /* =========================================================
    SIDEBAR
 ========================================================= */

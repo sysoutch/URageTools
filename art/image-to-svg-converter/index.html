@@ -20,6 +20,7 @@
         .drop-zone { border: 2px dashed var(--tool-line-strong); border-radius: 14px; padding: 40px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.03); margin-bottom: 20px; position: relative; }
         .drop-zone:hover { border-color: var(--tool-accent); background: color-mix(in srgb, var(--tool-accent) 10%, transparent); }
         .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: var(--tool-surface-alt); padding: 15px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--tool-line); }
+        body[data-dashboard-sidebar-externalized] .controls { display: none !important; }
         .control-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 0.8rem; font-weight: bold; color: var(--tool-muted); }
         .val-display { font-weight: normal; color: var(--tool-accent); float: right; }
@@ -46,7 +47,7 @@
 <div class="app-wrapper">
 <div class="container">
     <h1>Professional Vectorizer</h1>
-    <div class="controls">
+    <div class="controls" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Vector Controls">
         <div class="control-group">
             <label>Preset Quick-Start</label>
             <select id="presetSelect">

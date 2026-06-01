@@ -31,7 +31,11 @@ function loadImageSource(source) {
 }
 
 function applyDashboardTheme(nextTheme) {
-    document.body.setAttribute('data-dashboard-theme', nextTheme || 'fire');
+    if (typeof window.applyDashboardThemeVars === 'function') {
+        window.applyDashboardThemeVars(nextTheme || document.body.getAttribute('data-dashboard-theme') || 'fire');
+        return;
+    }
+    document.body.setAttribute('data-dashboard-theme', String(nextTheme || 'fire').trim() || 'fire');
 }
 
 const presets = {

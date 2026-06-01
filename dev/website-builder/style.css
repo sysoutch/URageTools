@@ -220,6 +220,65 @@ body, html {
     box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
 }
 
+@media (max-width: 720px) {
+    body[data-dashboard-theme],
+    html[data-dashboard-theme] {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body[data-dashboard-theme] .app-container {
+        grid-template-areas:
+            "header"
+            "sidebar-left"
+            "canvas"
+            "sidebar-right";
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(420px, 1fr) auto;
+        min-width: 0;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    body[data-dashboard-theme] .app-header {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 12px;
+    }
+
+    body[data-dashboard-theme] .btn-group {
+        width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+        gap: 8px;
+    }
+
+    body[data-dashboard-theme] .btn-group .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    body[data-dashboard-theme] .sidebar-left,
+    body[data-dashboard-theme] .sidebar-right {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        border-inline: 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    body[data-dashboard-theme] .gjs-cv-canvas {
+        min-height: 420px;
+        width: 100%;
+        min-width: 0;
+    }
+}
+
 /* --- 10. IMPORT HTML DIV --- */
 .import-html-div {
     position: fixed;

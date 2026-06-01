@@ -37,8 +37,7 @@ export function registerEventModule(app) {
         let nextHovered = false;
         if (isClosedBookVisible && event) {
             const { x, y } = app.getCanvasPoint(event);
-            const coverX = app.isClosedEnd(pagesData) ? margin + pageWidth : margin;
-            const frameX = coverX - 4;
+            const frameX = app.getClosedCoverCenterX() - 4;
             const frameY = margin;
             const frameWidth = pageWidth + 8;
             const frameHeight = pageHeight;
@@ -52,10 +51,12 @@ export function registerEventModule(app) {
         els.bookTitleInput?.addEventListener('input', () => {
             app.syncActiveBookFromState();
             app.renderBookTabs();
+            app.scheduleBookStateSave();
             app.scheduleInitBook(180);
         });
         els.bookDescriptionInput?.addEventListener('input', () => {
             app.syncActiveBookFromState();
+            app.scheduleBookStateSave();
             app.scheduleInitBook(180);
         });
         els.bookStyleSelect?.addEventListener('change', event => {
@@ -76,6 +77,9 @@ export function registerEventModule(app) {
             state.currentPage = 0;
             state.progress = 0;
             state.isAnimating = false;
+            state.isPreparingFlip = false;
+            state.preparingFlipDirection = 0;
+            state.queuedPageFlips = [];
             app.render();
             app.setStatus('Book view reset to the beginning.');
         });
@@ -90,6 +94,7 @@ export function registerEventModule(app) {
             app.getActiveBook().dynamicPages = state.dynamicPages;
             state.currentPage = 0;
             void app.initBook();
+            app.scheduleBookStateSave();
             app.setStatus('Cleared all custom image pages from the book.');
         });
         els.openMediaTrayButton?.addEventListener('click', () => app.setMediaTrayOpen(true));
@@ -121,6 +126,7 @@ export function registerEventModule(app) {
             state.slideDuration = Math.max(120, Math.floor(val * 0.48));
             state.animationDurationSlow = Math.max(state.animationDuration, val + 500);
             state.animationDurationFast = Math.max(200, Math.floor(val * 0.45));
+            app.scheduleBookStateSave();
             app.setStatus(`Animation speed set to ${(val / 1000).toFixed(2)}s.`);
         });
         els.pageFontSizeSelect?.addEventListener('change', event => {
@@ -133,6 +139,7 @@ export function registerEventModule(app) {
             state.pageRenderCache.clear();
             state.prerenderedPages = [];
             state.prerenderedPageKeys = [];
+            app.scheduleBookStateSave();
             app.setStatus(`Page text size set to ${val}px.`);
             app.scheduleInitBook(50);
         });
@@ -146,6 +153,7 @@ export function registerEventModule(app) {
             state.pageRenderCache.clear();
             state.prerenderedPages = [];
             state.prerenderedPageKeys = [];
+            app.scheduleBookStateSave();
             app.setStatus(`Page background set to ${val}.`);
             app.scheduleInitBook(50);
         });
@@ -223,10 +231,7 @@ export function registerEventModule(app) {
                     break;
                 case 's':
                     event.preventDefault();
-                    try {
-                        localStorage.setItem('interactive-book-state', JSON.stringify(state));
-                    } catch {}
-                    location.reload();
+                    app.saveBookState();
                     break;
                 case 't':
                     if (!state.isCanvasHovered) break;
@@ -257,6 +262,17 @@ export function registerEventModule(app) {
             app.setClosedBookHovered(false);
             app.setMagnifierVisible(false);
         });
+        els.canvas.addEventListener('wheel', event => {
+            if (state.sealed) {
+                event.preventDefault();
+                app.setStatus('The seal blocks page actions. Left-click the chains to break them.');
+                return;
+            }
+            const dominantDelta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+            if (Math.abs(dominantDelta) < 4) return;
+            event.preventDefault();
+            app.queuePageFlip(dominantDelta > 0 ? 1 : -1);
+        }, { passive: false });
         els.canvas.addEventListener('pointerdown', event => {
             if (event.button === 2) {
                 const pagesData = state.pagesData?.length ? state.pagesData : app.buildPagesData();
@@ -404,17 +420,29 @@ export function registerEventModule(app) {
         });
 
         window.addEventListener('beforeunload', () => {
+            try {
+                app.saveBookState({ silent: true });
+            } catch {}
             state.objectUrls.forEach(url => URL.revokeObjectURL(url));
             state.objectUrls.clear();
         });
     }
 
     async function init() {
+        window.registerDashboardThemeSync?.(theme => app.applyDashboardTheme(theme));
         app.applyDashboardTheme(document.body.getAttribute('data-dashboard-theme') || 'fire');
-        app.applyBookStyle(els.bookStyleSelect?.value || 'inferno');
-        state.books = [app.createBook({ title: 'My Journal' })];
-        state.activeBookId = state.books[0].id;
+        const restored = app.restoreBookState();
+        if (!restored) {
+            state.books = [app.createBook({ title: 'My Journal' })];
+            state.activeBookId = state.books[0].id;
+            app.applyBookStyle(els.bookStyleSelect?.value || 'inferno');
+        } else {
+            app.applyBookStyle(state.bookStyle);
+        }
         app.applyActiveBookToState();
+        if (els.pageFontSizeSelect) els.pageFontSizeSelect.value = String(state.fontSize || 22);
+        if (els.pageBgColorSelect) els.pageBgColorSelect.value = String(state.bgColor || '#fdfbf0');
+        if (els.animationSpeedSelect) els.animationSpeedSelect.value = String(state.animationDuration || 760);
         app.populateInsertPositionSelect();
         app.updateSealButton();
         bindEvents();

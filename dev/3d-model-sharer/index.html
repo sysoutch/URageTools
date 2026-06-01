@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D Model Sharer</title>
+  <title>Sketchfab IO</title>
+  <script src="../../shared/dashboard-theme.js"></script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js" defer></script>
   <style>
     :root {
-      --bg: #070b12;
-      --panel: rgba(14, 22, 35, 0.9);
-      --line: rgba(255,255,255,.11);
-      --text: #f6f7fb;
-      --muted: #98a6ba;
-      --soft: #c9d3e2;
-      --accent: #7c5cff;
-      --accent2: #27c3ff;
+      --bg: var(--tool-bg, #070b12);
+      --panel: var(--tool-surface, rgba(14, 22, 35, 0.9));
+      --line: var(--tool-line, rgba(255,255,255,.11));
+      --text: var(--tool-text, #f6f7fb);
+      --muted: var(--tool-muted, #98a6ba);
+      --soft: var(--tool-soft, #c9d3e2);
+      --accent: var(--tool-accent, #7c5cff);
+      --accent2: var(--tool-accent-strong, #27c3ff);
       --shadow: 0 24px 80px rgba(0,0,0,.42);
       color-scheme: dark;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -367,7 +369,7 @@
     }
   </script>
 </head>
-<body>
+<body data-dashboard-theme="fire">
   <div id="app">
     <aside class="rail">
       <div class="logo">3D</div>
@@ -379,7 +381,7 @@
     <aside class="left">
       <header class="brand">
         <div>
-          <h1>3D Model Sharer</h1>
+          <h1>Sketchfab IO</h1>
           <p>No npm · Sketchfab · ArtStation · Meshy</p>
         </div>
         <span class="badge">Static HTML</span>
@@ -538,9 +540,9 @@
           <div><span>Created with generative AI tools (Open Properties Page after Upload)</span><small>Was this model partly or fully created with generative AI tools?</small></div>
           <label class="switch"><input id="aiReminderUsed" type="checkbox"><span class="slider"></span></label>
         </div>
-        <div class="warningBox">
+        <div id="aiWarningBox" class="warningBox">
           <strong>AI-created model reminder</strong><br>
-          Sketchfab’s “Created with generative AI tools” setting is not exposed as a public upload API field.
+          Sketchfab's "Created with generative AI tools" setting is not exposed as a public upload API field.
           If this model used AI, enable that setting manually in Sketchfab after upload.
         </div>
 
@@ -622,6 +624,10 @@
 
     function setStatus(message) {
       $('status').textContent = message;
+      window.parent?.postMessage({
+        type: 'dashboard:model3d-share-status',
+        status: String(message || '')
+      }, window.location.origin);
     }
 
     function authHeaders() {
@@ -849,7 +855,7 @@
       return new File([blob], `${base}_with_textures.zip`, { type: 'application/zip' });
     }
 
-    async function selectModelFiles(files) {
+    async function selectModelFiles(files, options = {}) {
       files = [...files].filter(Boolean);
       if (!files.length) return;
 
@@ -867,6 +873,11 @@
         : main.name;
 
       if (!$('uploadName').value) $('uploadName').value = main.name.replace(/\.[^.]+$/, '');
+
+      if (options.preview === false) {
+        setStatus(`${main.name} selected for background upload.`);
+        return;
+      }
 
       if (preview) {
         setStatus(`Previewing ${preview.name}…`);
@@ -1054,9 +1065,17 @@
 
 
     async function uploadToSketchfab() {
-      if (!state.sketchfabToken) return setStatus('Paste and save a Sketchfab API token first.');
+      if (!state.sketchfabToken) {
+        const status = 'Paste and save a Sketchfab API token first.';
+        setStatus(status);
+        return { ok: false, status };
+      }
       const file = await makeUploadFile();
-      if (!file) return setStatus('Choose or drop a model first.');
+      if (!file) {
+        const status = 'Choose or drop a model first.';
+        setStatus(status);
+        return { ok: false, status };
+      }
 
       const form = new FormData();
       form.set('modelFile', file);
@@ -1110,16 +1129,58 @@
         const uid = extractSketchfabModelUid(text);
         if (uid) {
           showPostUploadLinks(uid);
+          const modelUrl = `https://sketchfab.com/3d-models/${uid}`;
           if (!$('aiReminderUsed')?.checked) {
             setStatus(`Upload accepted by Sketchfab. Use “Open model properties” to adjust website-only settings if needed.`);
           }
+          return { ok: true, uid, modelUrl, status: $('status').textContent || 'Upload accepted by Sketchfab.' };
         } else {
           setStatus(`Upload accepted by Sketchfab: ${text}\nCould not detect model UID automatically. Use Sketchfab dashboard to edit properties.`);
+          return { ok: true, status: $('status').textContent || 'Upload accepted by Sketchfab.' };
         }
       } catch (err) {
         setStatus(`Upload failed: ${err.message}`);
+        return { ok: false, status: $('status').textContent || `Upload failed: ${err.message}` };
       }
     }
+
+    async function fetchDashboardModelFile(modelUrl, fileName) {
+      const res = await fetch(modelUrl);
+      if (!res.ok) throw new Error(`Failed to fetch model from dashboard (${res.status}).`);
+      const blob = await res.blob();
+      return new File([blob], fileName || 'dashboard-model.glb', { type: blob.type || 'model/gltf-binary' });
+    }
+
+    async function shareDashboardModelToTarget(payload) {
+      const target = String(payload?.target || 'sketchfab').toLowerCase();
+      if (target !== 'sketchfab') throw new Error('Only Sketchfab sharing is available right now.');
+      const file = await fetchDashboardModelFile(payload.modelUrl, payload.fileName);
+      await selectModelFiles([file], { preview: false });
+      if (payload.name) $('uploadName').value = payload.name;
+      if (payload.description) $('uploadDescription').value = payload.description;
+      return await uploadToSketchfab();
+    }
+
+    window.addEventListener('message', async event => {
+      const payload = event.data || {};
+      if (!payload || payload.type !== 'dashboard:model3d-share') return;
+      const requestId = payload.requestId || '';
+      try {
+        const result = await shareDashboardModelToTarget(payload);
+        event.source?.postMessage({
+          type: 'dashboard:model3d-share-result',
+          requestId,
+          ...result
+        }, event.origin || window.location.origin);
+      } catch (err) {
+        event.source?.postMessage({
+          type: 'dashboard:model3d-share-result',
+          requestId,
+          ok: false,
+          status: err?.message || '3D model share failed.'
+        }, event.origin || window.location.origin);
+      }
+    });
 
     async function searchSketchfab() {
       const params = new URLSearchParams({
@@ -1374,6 +1435,28 @@
       $('frameBtn').onclick = () => viewer.frame();
       $('wireBtn').onclick = () => viewer.toggleWireframe();
       $('gridBtn').onclick = () => viewer.toggleGrid();
+
+      // Dynamic warning box text based on AI checkbox state.
+      const aiWarningBox = $('aiWarningBox');
+      const aiReminderUsed = $('aiReminderUsed');
+      function updateAiWarning() {
+        if (aiReminderUsed.checked) {
+          aiWarningBox.innerHTML = '<strong>AI-created model reminder</strong><br>' +
+            'Sketchfab\'s "Created with generative AI tools" setting is not exposed as a public upload API field.' +
+            '<br>If this model used AI, enable that setting manually in Sketchfab after upload.';
+        } else {
+          const btnHtml = '<button id="openAiPropertiesBtn" type="button" style="margin-left:.25rem;padding:.2rem .45rem;font-size:.78rem;">Open Properties</button>';
+          aiWarningBox.innerHTML = 'Note: If you used AI in your process, enable <em>Created with generative AI tools</em> ' + btnHtml + ' after upload.';
+          const btn = aiWarningBox.querySelector('#openAiPropertiesBtn');
+          if (btn) {
+            btn.onclick = () => {
+              window.open('https://sketchfab.com/settings/properties', '_blank', 'noopener');
+            };
+          }
+        }
+      }
+      aiReminderUsed.addEventListener('change', updateAiWarning);
+      updateAiWarning();
     }
 
 

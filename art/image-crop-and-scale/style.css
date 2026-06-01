@@ -5,24 +5,6 @@
     --success: #8fcf63; --card-bg: #0f0c0c; --danger: #ef4444;
 }
 
-[data-dashboard-theme="water"] {
-    --accent: #59b6ff; --accent-hover: #2f8cf0; --bg: #0d1522; --surface: #142034;
-    --text: #eef5ff; --text-dim: #aac0d8; --border: rgba(114, 190, 255, 0.18);
-    --success: #6fd7c5; --card-bg: #0e1726;
-}
-
-[data-dashboard-theme="nature"] {
-    --accent: #82cd5f; --accent-hover: #58a23c; --bg: #11170f; --surface: #182113;
-    --text: #f2f8ee; --text-dim: #bccfaf; --border: rgba(146, 213, 120, 0.18);
-    --success: #c4df74; --card-bg: #0f160d;
-}
-
-[data-dashboard-theme="rock"] {
-    --accent: #c4ae8a; --accent-hover: #9b8563; --bg: #151515; --surface: #202020;
-    --text: #f2efea; --text-dim: #b7aea2; --border: rgba(196, 190, 176, 0.18);
-    --success: #d6c39d; --card-bg: #121212;
-}
-
 * { box-sizing: border-box; transition: background 0.2s, color 0.2s; }
 body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
@@ -58,3 +40,7 @@ canvas { max-width: 100%; height: auto; border-radius: 4px; }
 .toggle-row { display: flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: normal; font-size: 0.8rem; cursor: pointer; }
 .toggle-row input[type="checkbox"] { width: auto; margin: 0; accent-color: var(--accent); }
 input:disabled { opacity: 0.45; cursor: not-allowed; }
+
+body[data-dashboard-sidebar-externalized] .sidebar { display: none !important; }
+body[data-dashboard-sidebar-externalized] { display: block; overflow: auto; }
+body[data-dashboard-sidebar-externalized] .main { min-height: 100vh; }

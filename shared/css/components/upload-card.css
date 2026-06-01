@@ -1,7 +1,7 @@
 /**
  * Shared Upload Card Component
  * Universal styled upload area with dashed border, arrow icon, and dark theme
- * Compatible with all dashboard themes (fire, water, nature, rock)
+ * Uses the global dashboard tool theme variables from /tools/shared/css/tool-theme.css.
  * 
  * Usage: Add <link rel="stylesheet" href="/tools/shared/css/upload-card.css"> to your HTML head
  *        Then replace file input labels with the upload-card class structure
@@ -73,72 +73,27 @@
     font-size: 0.82rem;
 }
 
-/* =========================================================
-   THEME OVERRIDES (if tool doesn't define CSS variables)
-   ========================================================= */
-
-/* Fire theme (default) */
-body[data-dashboard-theme="fire"] .upload-card,
-.upload-card {
-    --_uc-accent: #ff8a4d;
-    --_uc-text: #f6f1ee;
-    --_uc-muted: #c8b6ae;
-    --_uc-line: rgba(255, 180, 128, 0.34);
-}
-
-/* Water theme */
-body[data-dashboard-theme="water"] .upload-card {
-    --_uc-accent: #59b6ff;
-    --_uc-text: #eef5ff;
-    --_uc-muted: #a9bfd8;
-    --_uc-line: rgba(114, 190, 255, 0.34);
-}
-
-/* Purple theme */
-body[data-dashboard-theme="purple"] .upload-card {
-    --_uc-accent: #c27cff;
-    --_uc-text: #f9eefe;
-    --_uc-muted: #d1a9d8;
-    --_uc-line: rgba(194, 124, 255, 0.34);
-}
-
-/* Nature theme */
-body[data-dashboard-theme="nature"] .upload-card {
-    --_uc-accent: #82cd5f;
-    --_uc-text: #f2f8ee;
-    --_uc-muted: #bccfaf;
-    --_uc-line: rgba(146, 213, 120, 0.34);
-}
-
-/* Rock theme */
-body[data-dashboard-theme="rock"] .upload-card {
-    --_uc-accent: #c4ae8a;
-    --_uc-text: #f2efea;
-    --_uc-muted: #b7aea2;
-    --_uc-line: rgba(196, 190, 176, 0.34);
-}
-
 /* Fallback styling for tools without dashboard theme */
 .upload-card:not([data-dashboard-theme]) {
-    border-color: var(--_uc-line, rgba(255, 180, 128, 0.34));
+    border-color: var(--tool-line-strong, rgba(255, 180, 128, 0.34));
     background: rgba(18, 13, 13, 0.92);
-    color: var(--_uc-text, #f6f1ee);
+    color: var(--tool-text, #f6f1ee);
 }
 
 .upload-card:hover:not([data-dashboard-theme]) {
-    border-color: var(--_uc-accent, #ff8a4d);
+    border-color: var(--tool-accent, #ff8a4d);
 }
 
 .upload-card-icon:not([data-dashboard-theme]),
 .upload-card-icon.arrow-icon:not([data-dashboard-theme]) {
-    background: color-mix(in srgb, var(--_uc-accent, #ff8a4d) 12%, transparent);
-    color: var(--_uc-accent, #ff8a4d);
+    background: color-mix(in srgb, var(--tool-accent, #ff8a4d) 12%, transparent);
+    color: var(--tool-accent, #ff8a4d);
 }
 
 .upload-card strong:not([data-dashboard-theme]) {
-    color: var(--_uc-text, #f6f1ee);
+    color: var(--tool-text, #f6f1ee);
 }
 
 .upload-card span:not([data-dashboard-theme]) {
-    color: var(--_uc-muted, #c8b6ae);
+    color: var(--tool-muted, #c8b6ae);
 }

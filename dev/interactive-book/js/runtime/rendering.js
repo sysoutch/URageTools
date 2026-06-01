@@ -1381,6 +1381,36 @@ export function registerRenderingModule(app) {
         }
     }
 
+    function getQueuedFlipPageIndex(layerIndex, pagesData) {
+        const direction = state.dir > 0 ? 1 : -1;
+        const projectedCurrent = app.clampPageIndex(state.currentPage + (direction * 2 * (layerIndex + 1)), pagesData);
+        return app.clampPageIndex(direction > 0 ? projectedCurrent + 1 : projectedCurrent, pagesData);
+    }
+
+    function drawQueuedFlipStack(flipSpec, pagesData) {
+        const queued = Array.isArray(state.queuedPageFlips) ? state.queuedPageFlips : [];
+        const direction = state.dir > 0 ? 1 : -1;
+        const matchingTurns = queued.filter(entry => entry === direction).slice(0, 4);
+        if (matchingTurns.length === 0) return;
+        for (let index = matchingTurns.length - 1; index >= 0; index -= 1) {
+            const pageIndex = getQueuedFlipPageIndex(index, pagesData);
+            const pageCanvas = getRenderedPageCanvas(pageIndex, pagesData);
+            if (!pageCanvas) {
+                void ensurePageRendered(pageIndex, state.activeRenderToken);
+                continue;
+            }
+            const staggeredProgress = clamp01((state.progress * 0.86) - ((index + 1) * 0.1));
+            const visibleProgress = Math.max(0.025, staggeredProgress);
+            const hingeOffset = direction > 0 ? -(index + 1) * 3 : (index + 1) * 3;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0.2, 0.56 - (index * 0.08));
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10 + (index * 3);
+            drawDeformedPage(pageCanvas, flipSpec.startX + hingeOffset, flipSpec.direction, visibleProgress, pageIndex, pagesData);
+            ctx.restore();
+        }
+    }
+
     function prepareDragFlipCanvases(direction, pagesData) {
         if (!direction || !pagesData?.length) return;
         const token = state.activeRenderToken;
@@ -1567,6 +1597,7 @@ export function registerRenderingModule(app) {
             const flipImage = getRenderedPageCanvas(flipIndex, pagesData);
             if (flipImage) {
                 const flipSpec = app.getFlipDrawSpec(leftX, rightX, pagesData);
+                drawQueuedFlipStack(flipSpec, pagesData);
                 drawDeformedPage(flipImage, flipSpec.startX, flipSpec.direction, state.progress, flipIndex, pagesData);
                 const flipMedia = state.mediaElements.get(pagesData[flipIndex]?.id);
                 if (flipMedia) {

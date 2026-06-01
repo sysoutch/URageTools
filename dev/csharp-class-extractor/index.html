@@ -141,6 +141,10 @@
             flex-wrap: wrap;
         }
 
+        body[data-dashboard-sidebar-externalized] .controls {
+            display: none;
+        }
+
         /* BUTTONS */
         button {
             background: var(--tool-accent);
@@ -220,7 +224,7 @@
     
     <textarea id="inputCode" placeholder="Paste your Unity C# script here..."></textarea>
     
-    <div class="controls">
+    <div class="controls" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Extractor Controls">
         <button onclick="extractClasses()">Extract & Preview</button>
         <button class="secondary" onclick="downloadZip()">Download All as .ZIP</button>
         <span id="status" class="status"></span>

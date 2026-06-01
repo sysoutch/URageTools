@@ -10,48 +10,10 @@
     --card-bg: #1c1c1f;
 }
 
-body[data-dashboard-theme="fire"] {
-    --bg: #120806;
-    --panel: #1b0f0d;
-    --border: rgba(255, 137, 78, 0.18);
-    --accent: #ff7b42;
-    --accent-hover: #ff9f6c;
-    --text-main: #f8f2ee;
-    --text-dim: #c3b1a8;
-    --card-bg: #130b09;
-}
-
-body[data-dashboard-theme="water"] {
-    --bg: #07111b;
-    --panel: #0c1b29;
-    --border: rgba(93, 174, 255, 0.22);
-    --accent: #5daeff;
-    --accent-hover: #84c3ff;
-    --text-main: #eef7ff;
-    --text-dim: #a8c0d7;
-    --card-bg: #0a1420;
-}
-
-body[data-dashboard-theme="nature"] {
-    --bg: #09140c;
-    --panel: #122016;
-    --border: rgba(143, 211, 107, 0.22);
-    --accent: #8fd36b;
-    --accent-hover: #a8e084;
-    --text-main: #f3fbf0;
-    --text-dim: #b1c7aa;
-    --card-bg: #0d170f;
-}
-
-body[data-dashboard-theme="rock"] {
-    --bg: #13100c;
-    --panel: #1d1914;
-    --border: rgba(209, 194, 173, 0.2);
-    --accent: #d1c2ad;
-    --accent-hover: #e1d4bf;
-    --text-main: #f6f2eb;
-    --text-dim: #bbb0a1;
-    --card-bg: #17130f;
+body[data-dashboard-theme] {
+    --panel: var(--tool-surface);
+    --border: var(--tool-line);
+    --card-bg: var(--tool-surface-strong);
 }
 
 * { 
@@ -80,6 +42,10 @@ body {
     display: flex;
     width: 100%;
     height: 100%;
+}
+
+body[data-dashboard-sidebar-externalized="true"] #sidebar {
+    display: none;
 }
 
 /* 3D Viewport Area */

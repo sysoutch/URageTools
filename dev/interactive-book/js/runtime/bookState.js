@@ -1,5 +1,47 @@
 export function registerBookStateModule(app) {
     const { els, state, basePages, bookSkins, maxSealIntegrity, pageWidth, pageHeight, margin } = app;
+    const storageKey = 'interactive-book-state-v2';
+
+    function getDisplayFileName(value, fallback = 'Book Page') {
+        const raw = String(value || '').trim();
+        if (!raw) return fallback;
+        let candidate;
+        try {
+            const url = new URL(raw, window.location.href);
+            candidate =
+                url.searchParams.get('file') ||
+                url.searchParams.get('filename') ||
+                url.searchParams.get('name') ||
+                url.pathname.split('/').filter(Boolean).pop();
+        } catch {
+            candidate = raw.split(/[\\/]/).pop();
+        }
+        candidate = String(candidate || '')
+            .split(/[?#]/)[0]
+            .trim();
+        try {
+            candidate = decodeURIComponent(candidate);
+        } catch {}
+        const lastDot = candidate.lastIndexOf('.');
+        let name = candidate;
+        let ext = '';
+        if (lastDot > 0) {
+            name = candidate.slice(0, lastDot);
+            ext = candidate.slice(lastDot + 1).toUpperCase();
+        }
+        name = name
+            .replace(/[_.-]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        return ext
+            ? `${name} (${ext})`
+            : name || fallback;
+    }
+
+    function isPersistentMediaSource(source) {
+        const value = String(source || '').trim();
+        return Boolean(value && !value.startsWith('blob:') && !value.startsWith('data:'));
+    }
 
     function createBook(input) {
         const index = state.books.length + 1;
@@ -56,6 +98,7 @@ export function registerBookStateModule(app) {
         state.currentPage = 0;
         applyActiveBookToState();
         void app.initBook();
+        scheduleBookStateSave();
         setStatus(`Switched to ${getActiveBook().title}.`);
     }
 
@@ -67,6 +110,7 @@ export function registerBookStateModule(app) {
         state.currentPage = 0;
         applyActiveBookToState();
         void app.initBook();
+        scheduleBookStateSave();
         setStatus(`Created ${book.title}.`);
     }
 
@@ -78,15 +122,94 @@ export function registerBookStateModule(app) {
         }, Number.isFinite(delay) ? delay : 140);
     }
 
+    function serializePage(page) {
+        if (!isPersistentMediaSource(page?.image)) return null;
+        return {
+            id: String(page.id || crypto.randomUUID()),
+            image: String(page.image || '').trim(),
+            name: getDisplayFileName(page.name || page.image, 'Book Page'),
+            text: String(page.text || '').trim(),
+            sourceKind: String(page.sourceKind || 'dashboard'),
+            mediaKind: String(page.mediaKind || inferMediaKind(page)),
+            bg: String(page.bg || '#fdfbf0')
+        };
+    }
+
+    function serializeBook(book) {
+        const pages = Array.isArray(book?.dynamicPages) ? book.dynamicPages.map(serializePage).filter(Boolean) : [];
+        return {
+            id: String(book?.id || crypto.randomUUID()),
+            title: String(book?.title || 'Untitled Book').trim() || 'Untitled Book',
+            description: String(book?.description || '').trim(),
+            dynamicPages: pages
+        };
+    }
+
+    function saveBookState(options) {
+        syncActiveBookFromState();
+        const payload = {
+            version: 2,
+            activeBookId: state.activeBookId,
+            bookStyle: state.bookStyle,
+            fontSize: state.fontSize,
+            bgColor: state.bgColor,
+            animationDuration: state.animationDuration,
+            books: state.books.map(serializeBook).filter(Boolean)
+        };
+        localStorage.setItem(storageKey, JSON.stringify(payload));
+        if (!options?.silent) setStatus('Book saved.');
+    }
+
+    function scheduleBookStateSave() {
+        if (state.bookSaveTimer) window.clearTimeout(state.bookSaveTimer);
+        state.bookSaveTimer = window.setTimeout(() => {
+            state.bookSaveTimer = 0;
+            saveBookState({ silent: true });
+        }, 220);
+    }
+
+    function restoreBookState() {
+        const rawValue = localStorage.getItem(storageKey);
+        if (!rawValue) return false;
+        let payload = null;
+        try {
+            payload = JSON.parse(rawValue);
+        } catch {
+            return false;
+        }
+        const books = Array.isArray(payload?.books)
+            ? payload.books.map(book => createBook({
+                id: book.id,
+                title: book.title,
+                description: book.description,
+                dynamicPages: Array.isArray(book.dynamicPages) ? book.dynamicPages.map(createDynamicPage).filter(page => page.image) : []
+            })).filter(book => book.id)
+            : [];
+        if (books.length === 0) return false;
+        state.books = books;
+        state.activeBookId = books.some(book => book.id === payload.activeBookId) ? payload.activeBookId : books[0].id;
+        state.bookStyle = Object.prototype.hasOwnProperty.call(bookSkins, payload?.bookStyle) ? payload.bookStyle : state.bookStyle;
+        state.fontSize = Number.isFinite(payload?.fontSize) ? Math.max(12, Math.min(42, payload.fontSize)) : state.fontSize;
+        state.bgColor = String(payload?.bgColor || state.bgColor || '#fdfbf0');
+        state.animationDuration = Number.isFinite(payload?.animationDuration) ? Math.max(200, payload.animationDuration) : state.animationDuration;
+        return true;
+    }
+
     function applyDashboardTheme(theme) {
-        const allowed = new Set(['fire', 'water', 'nature', 'rock']);
+        const allowed = new Set(['blood', 'fire', 'water', 'love', 'purple', 'crystal', 'nature', 'rock']);
         const nextTheme = allowed.has(String(theme || '').trim()) ? String(theme).trim() : 'fire';
         document.body.setAttribute('data-dashboard-theme', nextTheme);
     }
 
     function applyBookStyle(styleId) {
         const nextStyle = Object.prototype.hasOwnProperty.call(bookSkins, styleId) ? styleId : 'inferno';
-        if (state.bookStyle === nextStyle) return;
+        if (state.bookStyle === nextStyle) {
+            document.body.setAttribute('data-book-style', nextStyle);
+            if (els.bookStyleSelect && els.bookStyleSelect.value !== nextStyle) {
+                els.bookStyleSelect.value = nextStyle;
+            }
+            return;
+        }
         state.bookStyle = nextStyle;
         document.body.setAttribute('data-book-style', nextStyle);
         state.prerenderedPages = [];
@@ -95,6 +218,7 @@ export function registerBookStateModule(app) {
         if (els.bookStyleSelect && els.bookStyleSelect.value !== nextStyle) {
             els.bookStyleSelect.value = nextStyle;
         }
+        scheduleBookStateSave();
     }
 
     function setStatus(text) {
@@ -115,6 +239,8 @@ export function registerBookStateModule(app) {
         state.progress = 0;
         state.isAnimating = false;
         state.isPreparingFlip = false;
+        state.preparingFlipDirection = 0;
+        state.queuedPageFlips = [];
         state.dir = 0;
         state.animationPhase = 'idle';
         state.animationPlan = null;
@@ -348,14 +474,15 @@ export function registerBookStateModule(app) {
 
     function createDynamicPage(input) {
         const mediaKind = inferMediaKind(input);
+        const fallbackName = mediaKind === 'video' ? 'Video Page' : 'Book Page';
         return {
             id: String(input.id || crypto.randomUUID()),
             image: String(input.image || '').trim(),
-            name: String(input.name || 'Book Page').trim() || 'Book Page',
+            name: getDisplayFileName(input.name || input.image, fallbackName),
             text: String(input.text || '').trim(),
             sourceKind: String(input.sourceKind || 'upload'),
             mediaKind,
-            bg: '#fdfbf0'
+            bg: String(input.bg || '#fdfbf0')
         };
     }
 
@@ -420,12 +547,12 @@ export function registerBookStateModule(app) {
     function normalizePoolImage(poolId, image, index) {
         if (typeof image === 'string') {
             const url = String(image || '').trim();
-            return url ? { id: `${poolId}:${index}`, poolId, name: `Pool Image ${index + 1}`, url, detail: url } : null;
+            return url ? { id: `${poolId}:${index}`, poolId, name: getDisplayFileName(url, `Pool Image ${index + 1}`), url, detail: getDisplayFileName(url, 'Pool image') } : null;
         }
         const url = String(image?.url || image?.source || '').trim();
         if (!url) return null;
-        const fileName = String(image?.fileName || image?.name || `Pool Image ${index + 1}`).trim();
-        return { id: `${poolId}:${index}`, poolId, name: fileName, url, detail: String(image?.source || url).trim() };
+        const fileName = getDisplayFileName(image?.fileName || image?.name || url, `Pool Image ${index + 1}`);
+        return { id: `${poolId}:${index}`, poolId, name: fileName, url, detail: getDisplayFileName(image?.source || url, fileName) };
     }
 
     function getGeneratedImageUrl(image) {
@@ -441,7 +568,7 @@ export function registerBookStateModule(app) {
         const url = getGeneratedImageUrl(image);
         if (!url) return null;
         const id = String(image?.id || `recent-${index}`);
-        const fileName = String(image?.imageFileName || image?.fileName || `Generated ${index + 1}`).trim();
+        const fileName = getDisplayFileName(image?.imageFileName || image?.fileName || url, `Generated ${index + 1}`);
         const prompt = String(image?.prompt || '').trim();
         return { id, name: fileName, url, detail: prompt || 'Generated image' };
     }
@@ -555,6 +682,7 @@ export function registerBookStateModule(app) {
             titleInput?.addEventListener('input', event => {
                 page.name = String(event.target?.value || '').trim() || 'Book Page';
                 populateInsertPositionSelect();
+                scheduleBookStateSave();
                 scheduleInitBook(180);
             });
             textInput?.addEventListener('input', event => {
@@ -562,6 +690,7 @@ export function registerBookStateModule(app) {
                 state.pageRenderCache.clear();
                 state.prerenderedPages = [];
                 state.prerenderedPageKeys = [];
+                scheduleBookStateSave();
                 app.requestBookRender();
             });
 
@@ -596,7 +725,9 @@ export function registerBookStateModule(app) {
             removeButton.textContent = 'Remove';
             removeButton.addEventListener('click', () => {
                 state.dynamicPages = state.dynamicPages.filter(entry => entry.id !== page.id);
+                getActiveBook().dynamicPages = state.dynamicPages;
                 state.currentPage = 0;
+                scheduleBookStateSave();
                 void app.initBook();
             });
             actions.append(insertButton, uploadButton, gotoButton, removeButton);
@@ -718,6 +849,7 @@ export function registerBookStateModule(app) {
         const insertAt = Number.isInteger(options?.insertAt) ? Math.max(0, Math.min(state.dynamicPages.length, options.insertAt)) : getInsertIndexFromSelection();
         state.dynamicPages.splice(insertAt, 0, ...nextPages);
         getActiveBook().dynamicPages = state.dynamicPages;
+        scheduleBookStateSave();
         void app.initBook();
     }
 
@@ -767,6 +899,7 @@ export function registerBookStateModule(app) {
         const [page] = state.dynamicPages.splice(index, 1);
         state.dynamicPages.splice(nextIndex, 0, page);
         getActiveBook().dynamicPages = state.dynamicPages;
+        scheduleBookStateSave();
         void app.initBook();
     }
 
@@ -778,6 +911,7 @@ export function registerBookStateModule(app) {
         const nextIndex = state.dynamicPages.findIndex(entry => entry.id === beforePageId);
         state.dynamicPages.splice(nextIndex < 0 ? state.dynamicPages.length : nextIndex, 0, page);
         getActiveBook().dynamicPages = state.dynamicPages;
+        scheduleBookStateSave();
         void app.initBook();
     }
 
@@ -790,6 +924,7 @@ export function registerBookStateModule(app) {
         state.dynamicPages = state.dynamicPages.filter(page => page.id !== pageId);
         getActiveBook().dynamicPages = state.dynamicPages;
         state.currentPage = 0;
+        scheduleBookStateSave();
         void app.initBook();
     }
 
@@ -1072,6 +1207,8 @@ export function registerBookStateModule(app) {
         state.activeRenderToken += 1;
         state.isAnimating = false;
         state.isPreparingFlip = false;
+        state.preparingFlipDirection = 0;
+        state.queuedPageFlips = [];
         state.progress = 0;
         state.animationStartTime = 0;
         state.animationStartProgressRaw = 0;
@@ -1129,6 +1266,9 @@ export function registerBookStateModule(app) {
         switchBook,
         addBook,
         scheduleInitBook,
+        saveBookState,
+        scheduleBookStateSave,
+        restoreBookState,
         applyDashboardTheme,
         applyBookStyle,
         setStatus,

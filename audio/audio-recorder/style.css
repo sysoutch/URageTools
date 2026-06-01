@@ -158,6 +158,10 @@ audio {
   display: none !important;
 }
 
+body[data-dashboard-sidebar-externalized] .control-card {
+  display: none !important;
+}
+
 @media (max-width: 720px) {
   .recorder-shell {
     padding: 16px;

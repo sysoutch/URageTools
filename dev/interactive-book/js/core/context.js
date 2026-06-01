@@ -146,6 +146,7 @@ export function createInteractiveBookApp() {
         animationDurationFast: 350,
         animationPhase: 'idle',
         animationPlan: null,
+        preparingFlipDirection: 0,
         animationPageCanvases: new Map(),
         animationStartOffset: 0,
         animationTargetOffset: 0,
@@ -180,6 +181,7 @@ export function createInteractiveBookApp() {
         dragDirection: 0,
         dragProgress: 0,
         dragPreparedDirection: 0,
+        queuedPageFlips: [],
         flipSpeed: 'normal',
         mediaTrayDrag: {
             active: false,

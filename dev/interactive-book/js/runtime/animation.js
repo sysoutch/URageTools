@@ -205,6 +205,51 @@ export function registerAnimationModule(app) {
         requestAnimationFrame(animate);
     }
 
+    function getQueuedTargetPage(pagesData) {
+        const activeTarget = state.isAnimating || state.isPreparingFlip
+            ? state.currentPage + (((state.isPreparingFlip ? state.preparingFlipDirection : state.dir) || 0) * 2)
+            : state.currentPage;
+        return (state.queuedPageFlips || []).reduce((page, direction) => {
+            return clampPageIndex(page + (direction * 2), pagesData);
+        }, clampPageIndex(activeTarget, pagesData));
+    }
+
+    function canTurnFromPage(pageIndex, direction, pagesData) {
+        return clampPageIndex(pageIndex + (direction * 2), pagesData) !== clampPageIndex(pageIndex, pagesData);
+    }
+
+    function queuePageFlip(direction) {
+        if (state.sealed) {
+            app.setStatus('The seal blocks page actions. Left-click the chains to break them.');
+            return false;
+        }
+        const nextDirection = direction > 0 ? 1 : -1;
+        const pagesData = state.pagesData?.length ? state.pagesData : app.buildPagesData();
+        const projectedPage = getQueuedTargetPage(pagesData);
+        if (!canTurnFromPage(projectedPage, nextDirection, pagesData)) return false;
+        state.queuedPageFlips = Array.isArray(state.queuedPageFlips) ? state.queuedPageFlips : [];
+        if (state.queuedPageFlips.length >= 10) state.queuedPageFlips.shift();
+        state.queuedPageFlips.push(nextDirection);
+        state.flipSpeed = 'fast';
+        app.setStatus(`Queued ${state.queuedPageFlips.length} page turn${state.queuedPageFlips.length === 1 ? '' : 's'}.`);
+        drainQueuedPageFlips();
+        return true;
+    }
+
+    function drainQueuedPageFlips() {
+        if (state.isAnimating || state.isPreparingFlip) return;
+        state.queuedPageFlips = Array.isArray(state.queuedPageFlips) ? state.queuedPageFlips : [];
+        const pagesData = state.pagesData?.length ? state.pagesData : app.buildPagesData();
+        while (state.queuedPageFlips.length > 0) {
+            const direction = state.queuedPageFlips.shift();
+            if (!canTurnFromPage(state.currentPage, direction, pagesData)) continue;
+            state.flipSpeed = 'fast';
+            void beginPageFlip(direction);
+            return;
+        }
+        state.flipSpeed = 'normal';
+    }
+
     function startClosedBookSideFlip() {
         if (state.isAnimating || state.isPreparingFlip || state.sealed) return;
         const pagesData = state.pagesData?.length ? state.pagesData : app.buildPagesData();
@@ -244,10 +289,14 @@ export function registerAnimationModule(app) {
             }
         }
         state.isPreparingFlip = true;
+        state.preparingFlipDirection = direction;
         try {
             await app.ensurePageIndexesRendered(Array.from(renderIndexes), token);
         } finally {
-            if (token === state.activeRenderToken) state.isPreparingFlip = false;
+            if (token === state.activeRenderToken) {
+                state.isPreparingFlip = false;
+                state.preparingFlipDirection = 0;
+            }
         }
         if (token !== state.activeRenderToken || state.isAnimating) return;
         state.dir = direction;
@@ -278,6 +327,7 @@ export function registerAnimationModule(app) {
             if (canvas) state.animationPageCanvases.set(index, canvas);
         });
         state.isPreparingFlip = false;
+        state.preparingFlipDirection = 0;
         state.isAnimating = true;
         state.animationStartOffset = state.viewOffsetX;
         state.flipSpeed = 'normal';
@@ -295,6 +345,7 @@ export function registerAnimationModule(app) {
         state.currentPage = plan.targetPage;
         state.isAnimating = false;
         state.isPreparingFlip = false;
+        state.preparingFlipDirection = 0;
         state.progress = 0;
         state.animationStartTime = 0;
         state.animationStartProgressRaw = 0;
@@ -326,6 +377,7 @@ export function registerAnimationModule(app) {
         state.animationTargetOffset = targetOffset;
         app.renderVisiblePagesSoon();
         app.requestBookRender();
+        drainQueuedPageFlips();
     }
 
     function continueAnimation(pagesData) {
@@ -345,6 +397,7 @@ export function registerAnimationModule(app) {
             state.animationTargetOffset = targetOffset;
             app.renderVisiblePagesSoon();
             app.requestBookRender();
+            drainQueuedPageFlips();
             return true;
         }
         if (state.animationPhase === 'pop-open') {
@@ -428,6 +481,8 @@ export function registerAnimationModule(app) {
         startAnimationPhase,
         startClosedBookSideFlip,
         beginPageFlip,
+        queuePageFlip,
+        drainQueuedPageFlips,
         startDragReleaseFlip,
         commitDragPageFlip,
         finishPageFlip,

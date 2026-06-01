@@ -41,6 +41,14 @@
             gap: 30px;
         }
 
+        body[data-dashboard-sidebar-externalized] .container {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        body[data-dashboard-sidebar-externalized] .input-section {
+            display: none;
+        }
+
         h1, h3 { margin-top: 0; }
 
         .input-section, .preview-section {
@@ -143,7 +151,7 @@
 <body data-dashboard-theme="fire">
 
 <div class="container">
-    <div class="input-section">
+    <div class="input-section" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Meta Controls">
         <h3>SEO Configurator</h3>
         <div class="control-group">
             <label>Page Title</label>

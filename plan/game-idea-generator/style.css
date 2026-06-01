@@ -182,6 +182,14 @@ h1 {
     overflow: hidden;
 }
 
+body[data-dashboard-theme] .generate-btn {
+    overflow: hidden !important;
+}
+
+body[data-dashboard-sidebar-externalized] .generate-btn {
+    display: none !important;
+}
+
 .generate-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
@@ -194,18 +202,17 @@ h1 {
 .generate-btn::after {
     content: "";
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-    transform: rotate(45deg);
+    transform: translateX(-120%) skewX(-18deg);
     transition: all 0.5s;
     z-index: -1;
 }
 
 .generate-btn:hover::after {
-    transform: rotate(45deg) translate(20%, 20%);
+    transform: translateX(120%) skewX(-18deg);
 }
 
 .features {

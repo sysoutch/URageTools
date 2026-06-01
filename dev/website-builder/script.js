@@ -251,7 +251,7 @@ const tpls = {
             <section class="py-28 bg-white text-center">
                 <div class="max-w-4xl mx-auto px-6">
                     <span class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider">v2.0 is live</span>
-                    <h1 class="text-7xl font-black text-gray-900 mt-8 mb-6 tracking-tight">Everything you need to <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">scale faster.</span></h1>
+                    <h1 class="text-7xl font-black text-gray-900 mt-8 mb-6 tracking-tight">Everything you need to <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-crystal-600">scale faster.</span></h1>
                     <p class="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">Stop managing infrastructure and start building features. The all-in-one platform for modern developers.</p>
                     <div class="flex justify-center gap-4">
                         <div class="p-4 border border-gray-100 rounded-2xl shadow-sm bg-gray-50 w-40 text-left">

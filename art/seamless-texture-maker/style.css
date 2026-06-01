@@ -5,6 +5,7 @@ body[data-dashboard-theme="rock"] { --p: #c4ae8a; --bg: #151515; --card: rgba(24
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
 body { margin: 0; background: radial-gradient(circle at top right, color-mix(in srgb, var(--p) 16%, transparent) 0%, transparent 38%), linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%), var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
+body[data-dashboard-sidebar-externalized="true"] .sidebar { display: none; }
 .sidebar { width: 400px; background: var(--card); border-right: 1px solid var(--border); padding: 25px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index: 10; }
 .viewport { flex: 1; display: grid; grid-template-rows: 1fr 1fr; background: rgba(0,0,0,0.3); }
 

@@ -309,3 +309,34 @@ canvas {
     .main-actions { grid-template-columns: 1fr; }
     #waveSelectors { grid-template-columns: repeat(2, 1fr); }
 }
+
+@media (max-width: 520px) {
+    body[data-dashboard-theme] {
+        padding-inline: 12px;
+        align-items: stretch;
+    }
+
+    body[data-dashboard-theme] .container,
+    body[data-dashboard-theme] .presets-sidebar {
+        max-width: 100%;
+    }
+
+    body[data-dashboard-theme] .adsr-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body[data-dashboard-theme] .control-group {
+        display: grid;
+        grid-template-columns: minmax(42px, auto) minmax(0, 1fr) auto;
+        width: 100%;
+    }
+
+    body[data-dashboard-theme] .control-group input[type=range] {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+body[data-dashboard-sidebar-externalized] .controls {
+    display: none !important;
+}

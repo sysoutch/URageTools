@@ -21,42 +21,6 @@
     sans-serif;
 }
 
-[data-dashboard-theme="water"] {
-  --bg: #07111b;
-  --panel: #0c1b29;
-  --panel-2: #112334;
-  --muted: #aac1d6;
-  --text: #eef7ff;
-  --line: rgba(93,174,255,.18);
-  --accent: #5daeff;
-  --accent-2: #7ee0eb;
-  --danger: #ff8797;
-}
-
-[data-dashboard-theme="nature"] {
-  --bg: #09140c;
-  --panel: #122016;
-  --panel-2: #18281d;
-  --muted: #b1c7aa;
-  --text: #f3fbf0;
-  --line: rgba(143,211,107,.18);
-  --accent: #8fd36b;
-  --accent-2: #c7ec8d;
-  --danger: #ff8d7a;
-}
-
-[data-dashboard-theme="rock"] {
-  --bg: #13100c;
-  --panel: #1d1914;
-  --panel-2: #26211a;
-  --muted: #bbb0a1;
-  --text: #f6f2eb;
-  --line: rgba(209,194,173,.17);
-  --accent: #d1c2ad;
-  --accent-2: #e9cfa3;
-  --danger: #ff9a7a;
-}
-
 * {
   box-sizing: border-box;
   min-width: 0;
@@ -170,6 +134,14 @@ h1 {
   grid-template-columns: 420px minmax(0, 1fr);
 
   overflow: hidden;
+}
+
+body[data-dashboard-sidebar-externalized="true"] .grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body[data-dashboard-sidebar-externalized="true"] .grid > aside.panel.stack {
+  display: none;
 }
 
 /* =========================================================

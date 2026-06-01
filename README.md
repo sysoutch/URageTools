@@ -14,10 +14,19 @@ User can put more categories for tools here.
 ### Tool Component Baseline (`shared/css/components/tool-components.css`)
 Global themed controls for tools: buttons, selects, inputs, textareas, action rows, and details/foldout panels. It is auto-injected by `shared/dashboard-theme.js` and `shared/dashboard-current-output-autodescribe.js`, so tools that load either shared script receive the baseline without an extra `<link>`.
 
+The shared tool component stylesheet now also normalizes older standalone tool shells, sidebars, cards, rails, controls, and output panels onto the dashboard token set. Prefer adding new tools to that shared layer instead of hardcoding per-tool theme colors.
+
 Prefer semantic native elements (`button`, `select`, `details`, `summary`, `.button-row`, `.actions`) and only add tool-specific CSS for layout or genuinely unique visuals.
 
+The shared dashboard stylesheet is re-appended after local tool styles at runtime so legacy tools keep their layout CSS while inheriting the current dashboard theme tokens for surfaces, controls, borders, and text. Do not hardcode per-tool theme colors when a `--tool-*` token or the shared component baseline can express the same state.
+
+### Sidebar Scrollview Pattern (`shared/css/sidebar-scrollview.css`)
+Global sidebar and foldout styling for tools with left/right sidebars. It is auto-injected after the shared component baseline by `shared/dashboard-theme.js`, so it is the final source of truth for sidebar scroll containment, outer sidebar border removal, panel blocks, and disclosure chevrons.
+
+Prefer `.sidebar`, `.tool-sidebar`, `.left-rail`, `.right-rail`, `#sidebar`, or direct `#app > aside.panel`/`.left`/`.right` sidebars. For collapsible sections, use native `<details>`/`<summary>` with `.control-group`, `.sidebar-panel`, `.tool-foldout`, `.pool-sub-foldout`, or `.foldout`; the shared stylesheet hides native markers and supplies one token-based chevron.
+
 ### Upload Card Component (`shared/css/components/upload-card.css`)
-Universal styled upload area with dashed border, arrow icon, and dark theme. Compatible with all dashboard themes (fire, water, purple, nature, rock).
+Universal styled upload area with dashed border, arrow icon, and dark theme. Compatible with all dashboard themes (fire, water, crystal, nature, rock).
 
 **Usage:** Add `<link rel="stylesheet" href="/tools/shared/css/components/upload-card.css">` to your HTML head, then replace file input labels with:
 ```html

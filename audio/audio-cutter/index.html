@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HTML5 Audio Cutter</title>
+  <title>Audio Cutter</title>
+  <script src="../../shared/dashboard-theme.js"></script>
   <style>
     :root {
       --bg: #10131a;
@@ -159,6 +160,10 @@
       gap: 18px;
     }
 
+    body[data-dashboard-sidebar-externalized] .controls {
+      display: none !important;
+    }
+
     .time-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -222,11 +227,11 @@
     }
   </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
   <div class="app">
     <header>
       <div>
-        <h1>HTML5 Audio Cutter</h1>
+        <h1>Audio Cutter</h1>
         <p>Load MP3, WAV, M4A, OGG, AAC, or any browser-supported audio, select a region, preview it, then export as WAV.</p>
       </div>
       <label class="file-button">
@@ -249,7 +254,7 @@
         <div id="playhead" class="playhead"></div>
       </section>
 
-      <section class="card controls">
+      <section class="card controls" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Cut Controls">
         <div class="time-grid">
           <label>
             <span>Start time, seconds</span>

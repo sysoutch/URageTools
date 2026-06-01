@@ -9,7 +9,7 @@
  *   2. Wrap your file input with: <label class="upload-btn" for="yourFileInput">
  *   3. Use classes: .upload-btn-icon, .upload-btn-text inside the label
  * 
- * Compatible themes: fire, water, nature, rock (via [data-dashboard-theme])
+ * Theme tokens come from /tools/shared/css/tool-theme.css.
  */
 
 /* ===== Upload Button Base ===== */
@@ -104,34 +104,4 @@
 .upload-card span {
     color: var(--text-dim, #c3b1a8);
     font-size: 0.78rem;
-}
-
-/* ===== Theme Variations ===== */
-
-[data-dashboard-theme="water"] .upload-btn {
-    --_accent: var(--accent, #5daeff);
-    border-color: rgba(93, 174, 255, 0.2);
-}
-
-[data-dashboard-theme="water"] .upload-btn:hover {
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, #5daeff 24%, transparent);
-}
-
-[data-dashboard-theme="purple"] .upload-btn {
-    --_accent: var(--accent, #c27cff);
-    border-color: rgba(194, 124, 255, 0.2);
-}
-
-[data-dashboard-theme="purple"] .upload-btn:hover {
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, #c27cff 24%, transparent);
-}
-
-[data-dashboard-theme="nature"] .upload-btn {
-    --_accent: var(--accent, #8fd36b);
-    border-color: rgba(143, 211, 107, 0.2);
-}
-
-[data-dashboard-theme="rock"] .upload-btn {
-    --_accent: var(--accent, #d1c2ad);
-    border-color: rgba(209, 194, 173, 0.2);
 }

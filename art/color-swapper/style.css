@@ -11,39 +11,6 @@
     --toolbar-height: 56px;
 }
 
-body[data-dashboard-theme="water"] {
-    --primary: #59b6ff;
-    --bg: #0d1522;
-    --card: rgba(12, 21, 37, 0.94);
-    --panel: rgba(10, 17, 29, 0.98);
-    --border: rgba(114, 190, 255, 0.18);
-    --border-strong: rgba(114, 190, 255, 0.34);
-    --text: #eef5ff;
-    --muted: #a9bfd8;
-}
-
-body[data-dashboard-theme="nature"] {
-    --primary: #82cd5f;
-    --bg: #11170f;
-    --card: rgba(18, 24, 16, 0.94);
-    --panel: rgba(13, 19, 11, 0.98);
-    --border: rgba(146, 213, 120, 0.18);
-    --border-strong: rgba(146, 213, 120, 0.34);
-    --text: #f2f8ee;
-    --muted: #bccfaf;
-}
-
-body[data-dashboard-theme="rock"] {
-    --primary: #c4ae8a;
-    --bg: #151515;
-    --card: rgba(24, 24, 24, 0.95);
-    --panel: rgba(16, 16, 16, 0.98);
-    --border: rgba(196, 190, 176, 0.18);
-    --border-strong: rgba(196, 190, 176, 0.34);
-    --text: #f2efea;
-    --muted: #b7aea2;
-}
-
 * {
     box-sizing: border-box;
 }
@@ -76,6 +43,10 @@ select {
     height: 100vh;
     display: flex;
     overflow: hidden;
+}
+
+body[data-dashboard-sidebar-externalized="true"] .color-panel {
+    display: none;
 }
 
 /* REAL LEFT STICKY SIDEBAR WITH ITS OWN SCROLLVIEW */

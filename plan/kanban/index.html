@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlowState Pro | Full Sortable</title>
+    <script src="../../shared/dashboard-theme.js"></script>
     <style>
         :root {
             --primary: #4f46e5;
@@ -18,56 +19,17 @@
             --header-bg: rgba(255, 255, 255, 0.8);
         }
 
-        body[data-dashboard-theme="fire"] {
-            --primary: #ff7b42;
-            --bg-app: #1a110d;
-            --bg-sidebar: #110a08;
-            --sidebar-text: #d1b0a2;
-            --column-bg: #261915;
-            --card-bg: #2f1f1a;
-            --text-main: #f8f2ee;
-            --text-muted: #c8b2a8;
-            --border-color: rgba(255, 137, 78, 0.18);
-            --header-bg: rgba(26, 17, 13, 0.84);
-        }
-
-        body[data-dashboard-theme="water"] {
-            --primary: #5daeff;
-            --bg-app: #08131d;
-            --bg-sidebar: #06101a;
-            --sidebar-text: #a4c0d7;
-            --column-bg: #132233;
-            --card-bg: #1a2d43;
-            --text-main: #eef7ff;
-            --text-muted: #a8bfd6;
-            --border-color: rgba(93, 174, 255, 0.18);
-            --header-bg: rgba(8, 19, 29, 0.84);
-        }
-
-        body[data-dashboard-theme="nature"] {
-            --primary: #8fd36b;
-            --bg-app: #0b140c;
-            --bg-sidebar: #09100a;
-            --sidebar-text: #b2c8aa;
-            --column-bg: #17261a;
-            --card-bg: #203123;
-            --text-main: #f3fbf0;
-            --text-muted: #b7c9af;
-            --border-color: rgba(143, 211, 107, 0.18);
-            --header-bg: rgba(11, 20, 12, 0.84);
-        }
-
-        body[data-dashboard-theme="rock"] {
-            --primary: #d1c2ad;
-            --bg-app: #14110e;
-            --bg-sidebar: #100d0b;
-            --sidebar-text: #c6baab;
-            --column-bg: #221d18;
-            --card-bg: #2c251f;
-            --text-main: #f6f2eb;
-            --text-muted: #c1b5a6;
-            --border-color: rgba(209, 194, 173, 0.18);
-            --header-bg: rgba(20, 17, 14, 0.84);
+        body[data-dashboard-theme] {
+            --primary: var(--tool-accent);
+            --bg-app: var(--tool-bg);
+            --bg-sidebar: var(--tool-surface-strong);
+            --sidebar-text: var(--tool-muted);
+            --column-bg: var(--tool-surface);
+            --card-bg: var(--tool-surface-alt);
+            --text-main: var(--tool-text);
+            --text-muted: var(--tool-muted);
+            --border-color: var(--tool-line);
+            --header-bg: color-mix(in srgb, var(--tool-surface) 86%, transparent);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; transition: background-color 0.3s, color 0.3s; }
@@ -241,9 +203,11 @@
         let draggingColumnIndex = null;
 
         function applyDashboardTheme(theme) {
-            const allowed = new Set(['fire', 'water', 'purple', 'nature', 'rock']);
-            const nextTheme = allowed.has(String(theme || '').trim()) ? String(theme).trim() : 'fire';
-            document.body.setAttribute('data-dashboard-theme', nextTheme);
+            if (typeof window.applyDashboardThemeVars === 'function') {
+                window.applyDashboardThemeVars(theme || document.body.getAttribute('data-dashboard-theme') || 'fire');
+                return;
+            }
+            document.body.setAttribute('data-dashboard-theme', String(theme || 'fire').trim() || 'fire');
         }
 
         function init() {

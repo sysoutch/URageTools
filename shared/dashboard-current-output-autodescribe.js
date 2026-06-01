@@ -1,18 +1,29 @@
 (function() {
   "use strict";
 
-  function ensureSharedToolComponentStyles() {
-    if (document.getElementById("urage-shared-tool-component-styles")) {
+  function ensureStylesheet(id, href) {
+    var existing = document.getElementById(id);
+    if (existing) {
+      (document.head || document.documentElement).appendChild(existing);
       return;
     }
     var link = document.createElement("link");
-    link.id = "urage-shared-tool-component-styles";
+    link.id = id;
     link.rel = "stylesheet";
-    link.href = "/tools/shared/css/components/tool-components.css";
+    link.href = href;
     (document.head || document.documentElement).appendChild(link);
   }
 
-  ensureSharedToolComponentStyles();
+  function ensureSharedToolStyles() {
+    var themeHost = document.body || document.documentElement;
+    if (!themeHost.getAttribute("data-dashboard-theme") && !document.documentElement.getAttribute("data-dashboard-theme")) {
+      themeHost.setAttribute("data-dashboard-theme", "fire");
+    }
+    ensureStylesheet("urage-shared-tool-theme-styles", "/tools/shared/css/tool-theme.css");
+    ensureStylesheet("urage-shared-tool-component-styles", "/tools/shared/css/components/tool-components.css");
+  }
+
+  ensureSharedToolStyles();
 
   if (window.__urageToolDescribeCurrentAssets || window.__urageToolDescribeCurrentAsset) {
     return;

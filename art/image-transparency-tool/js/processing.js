@@ -1,8 +1,9 @@
-const ALLOWED_THEMES = new Set(["fire", "water", "nature", "rock"]);
-
 export function applyDashboardTheme(theme) {
-  const nextTheme = ALLOWED_THEMES.has(String(theme || "").trim()) ? String(theme).trim() : "fire";
-  document.body.setAttribute("data-dashboard-theme", nextTheme);
+  if (typeof window.applyDashboardThemeVars === "function") {
+    window.applyDashboardThemeVars(theme || document.body.getAttribute("data-dashboard-theme") || "fire");
+    return;
+  }
+  document.body.setAttribute("data-dashboard-theme", String(theme || "fire").trim() || "fire");
 }
 
 export function setStatus(elements, text, tone) {

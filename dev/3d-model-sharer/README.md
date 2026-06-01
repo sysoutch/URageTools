@@ -1,4 +1,4 @@
-# 3D Model Sharer
+# Sketchfab IO
 
 Single-file static web tool for previewing and uploading 3D models.
 

@@ -114,6 +114,10 @@ p {
     margin-bottom: 30px;
 }
 
+body[data-dashboard-sidebar-externalized] .generator-controls {
+    display: none !important;
+}
+
 .control-group {
     margin-bottom: 20px;
 }

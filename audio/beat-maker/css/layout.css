@@ -12,6 +12,14 @@
   overflow: hidden;
 }
 
+body[data-dashboard-sidebar-externalized="true"] .app {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body[data-dashboard-sidebar-externalized="true"] .sidebar {
+  display: none;
+}
+
 /* =========================================================
    SIDEBAR
 ========================================================= */

@@ -1,4 +1,4 @@
-/* Pixel Art Studio UI glue.
+/* Pixel Art Converter UI glue.
  * Heavy image work lives in art/pixel-art-converter/js/pas-*.js (window.PAS).
  */
 (function () {
@@ -321,9 +321,11 @@
     }
 
     function applyDashboardTheme(theme) {
-        const allowed = new Set(['fire', 'water', 'nature', 'rock']);
-        const nextTheme = allowed.has(String(theme || '').trim()) ? String(theme).trim() : 'fire';
-        document.body.setAttribute('data-dashboard-theme', nextTheme);
+        if (typeof window.applyDashboardThemeVars === 'function') {
+            window.applyDashboardThemeVars(theme || document.body.getAttribute('data-dashboard-theme') || 'fire');
+            return;
+        }
+        document.body.setAttribute('data-dashboard-theme', String(theme || 'fire').trim() || 'fire');
     }
 
     function updateReadouts() {

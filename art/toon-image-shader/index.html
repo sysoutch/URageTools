@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Toon Image Shader</title>
+  <script src="../../shared/dashboard-theme.js"></script>
   <script src="../../shared/dashboard-tool-bridge.js"></script>
   <link rel="stylesheet" href="/tools/shared/css/components/upload-card.css">
   <style>
@@ -541,9 +542,17 @@
         grid-template-columns: 1fr;
       }
     }
+
+    body[data-dashboard-sidebar-externalized] main {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    body[data-dashboard-sidebar-externalized] .panel {
+      display: none;
+    }
   </style>
 </head>
-<body>
+<body data-dashboard-theme="fire">
   <header>
     <section class="title">
       <h1>Toon Image<br/>Shader Lab</h1>
@@ -553,7 +562,7 @@
   </header>
 
   <main>
-    <aside class="panel">
+    <aside class="panel" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Toon Controls">
       <div id="upload-card-wrapper">
         <label class="upload-card" for="fileInput">
           <span class="upload-card-icon arrow-icon">&#8595;</span>

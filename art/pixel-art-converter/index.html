@@ -3,19 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Art Studio</title>
+    <title>Pixel Art Converter</title>
+    <script src="../../shared/dashboard-theme.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-dashboard-theme="fire">
 
-    <div class="sidebar">
-        <div class="header-row compact">
-            <div>
-                <h1>Pixel Art Studio</h1>
-                <div class="sidebar-subtitle">Batch-ready sprite cleanup and pixel conversion.</div>
-            </div>
-        </div>
-
+<div class="tool-layout">
+    <div class="sidebar" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Pixel Controls">
         <details class="control-group sidebar-panel source-panel" id="sourceDetails" open>
             <summary>
                 <span class="summary-title">Source</span>
@@ -581,10 +576,10 @@
             <button class="btn btn-outline" id="downloadScaledBtn" style="display:none;">Save 4K Scale</button>
             <button class="btn btn-outline" id="downloadGifBtn" style="display:none;">Save GIF</button>
             <button class="btn btn-outline" id="downloadFramesBtn" style="display:none;">Save Frames</button>
-        </div>
-    </div>
+        </div><!-- /.action-panel -->
+        </div><!-- /.sidebar -->
 
-    <div class="main-content">
+        <div class="main-content">
         <div class="preview-view-tabs" role="tablist" aria-label="Preview mode">
             <button class="preview-view-tab active" id="previewModeTwoBtn" data-preview-mode="two" type="button" role="tab" aria-selected="true">2 Views</button>
             <button class="preview-view-tab" id="previewModeRevealBtn" data-preview-mode="reveal" type="button" role="tab" aria-selected="false">Reveal Slider</button>
@@ -631,7 +626,8 @@
         <div class="instructions">
             <strong>Pro Tip:</strong> Use "AI to Real Pixels" first for fake pixel-art renders, then tune Block Sampling and Palette. Export from target size when you need an actual low-resolution pixel image.
         </div>
-    </div>
+        </div><!-- /.main-content -->
+    </div><!-- /.tool-layout -->
 
     <script src="js/pas-core.js"></script>
     <script src="js/pas-png-indexed.js"></script>

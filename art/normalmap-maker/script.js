@@ -26,9 +26,11 @@
   const normalizeMultiMode = value => String(value || '').trim() === 'combined' ? 'combined' : 'each';
 
   function applyDashboardTheme(theme) {
-    const allowed = new Set(['fire', 'water', 'nature', 'rock']);
-    const nextTheme = allowed.has(String(theme || '').trim()) ? String(theme).trim() : 'fire';
-    document.body.setAttribute('data-dashboard-theme', nextTheme);
+    if (typeof window.applyDashboardThemeVars === 'function') {
+      window.applyDashboardThemeVars(theme || document.body.getAttribute('data-dashboard-theme') || 'fire');
+      return;
+    }
+    document.body.setAttribute('data-dashboard-theme', String(theme || 'fire').trim() || 'fire');
   }
 
   async function loadDashboardAsset(payload) {

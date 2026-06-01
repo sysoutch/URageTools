@@ -171,6 +171,10 @@ video {
   display: none !important;
 }
 
+body[data-dashboard-sidebar-externalized] .control-card {
+  display: none !important;
+}
+
 @media (max-width: 820px) {
   .video-shell {
     padding: 16px;

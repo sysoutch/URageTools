@@ -78,6 +78,14 @@ select {
   background: transparent;
 }
 
+body[data-dashboard-sidebar-externalized="true"] .tool-shell {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body[data-dashboard-sidebar-externalized="true"] .tool-sidebar {
+  display: none;
+}
+
 .tool-sidebar {
   display: grid;
   gap: 14px;
