@@ -7,9 +7,9 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
   <!-- Shared libs -->
-  <link rel="stylesheet" href="../../shared/libs/fontawesome/css/fontawesome.css">
-  <link rel="stylesheet" href="../../shared/libs/fontawesome/css/brands.css">
-  <link rel="stylesheet" href="../../shared/libs/fontawesome/css/solid.css">
+  <link rel="stylesheet" href="../../../shared/libs/fontawesome/css/fontawesome.css">
+  <link rel="stylesheet" href="../../../shared/libs/fontawesome/css/brands.css">
+  <link rel="stylesheet" href="../../../shared/libs/fontawesome/css/solid.css">
 
   <!-- 3D Game Map Generator styles -->
    <link rel="stylesheet" href="./css/styles.css">
@@ -26,7 +26,7 @@
 </head>
 <body data-dashboard-theme="fire">
   <div class="app-shell">
-    <aside class="side-panel">
+    <aside class="side-panel" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="3D Map Controls">
       <header class="tool-header">
         <div>
           <p class="eyebrow">Dev Tool</p>
@@ -163,6 +163,8 @@
 
       <section class="panel action-panel">
         <button id="generateButton" class="primary" type="button">Generate Map</button>
+        <button id="exportZipButton" type="button"><i class="fas fa-file-archive"></i> Export ZIP</button>
+        <div class="action-separator"></div>
         <button id="exportPngButton" type="button">Export PNG</button>
         <button id="exportJsonButton" type="button">Export JSON</button>
       </section>
@@ -181,13 +183,16 @@
   </div>
 
   <!-- Shared dashboard theme -->
-  <script src="../../shared/dashboard-theme.js"></script>
+  <script src="../../../shared/dashboard-theme.js"></script>
+
+  <!-- Shared auto-describe bridge -->
+  <script src="../../../shared/dashboard-current-output-autodescribe.js"></script>
+
+  <!-- Shared dashboard output bridge -->
+  <script src="../../../shared/dashboard-tool-bridge.js"></script>
 
   <!-- ES module entry point for 3D map generator -->
    <script type="module" src="./js/app.js"></script>
-
-  <!-- Shared auto-describe bridge -->
-  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
 
 </body>
 </html>

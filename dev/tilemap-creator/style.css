@@ -1499,3 +1499,11 @@ kbd {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+body[data-dashboard-sidebar-externalized] .app-shell {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body[data-dashboard-sidebar-externalized] .side-panel[data-dashboard-tool-sidebar] {
+  display: none !important;
+}

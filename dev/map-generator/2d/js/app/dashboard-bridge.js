@@ -51,6 +51,40 @@
     }
   }
 
+  function blobToDataUrl(blob) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() { resolve(reader.result); };
+      reader.onerror = function() { reject(reader.error || new Error("Failed to read blob.")); };
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function buildZipDescriptor() {
+    if (typeof window.buildMapZipBlob !== "function") {
+      return Promise.resolve(null);
+    }
+    return window.buildMapZipBlob().then(function(result) {
+      if (!result || !result.blob) return null;
+      return blobToDataUrl(result.blob).then(function(dataUrl) {
+        return {
+          kind: "file",
+          title: "2D Map Generator ZIP",
+          fileName: result.fileName || getMapFileName(".zip"),
+          mimeType: "application/zip",
+          dataUrl: dataUrl,
+          previewKind: "file",
+          sourceDetail: "Complete 2D map package with JSON, preview image, settings, and sprites.",
+          metadata: {
+            sourceTool: "map-generator",
+            resourceFormat: "map-generator-zip",
+            generatorMode: typeof generatorMode !== "undefined" ? generatorMode : ""
+          }
+        };
+      });
+    });
+  }
+
   function buildJsonDescriptor(title, fileName, payload, format) {
     if (!payload) {
       return null;
@@ -89,11 +123,35 @@
     if (setupDescriptor) {
       descriptors.push(setupDescriptor);
     }
-    return descriptors;
+    return buildZipDescriptor().then(function(zipDescriptor) {
+      if (zipDescriptor) {
+        descriptors.push(zipDescriptor);
+      }
+      return descriptors;
+    }).catch(function(error) {
+      console.warn("[MapGenerator 2D] Could not describe ZIP output.", error);
+      return descriptors;
+    });
   }
 
-  window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
-  window.__urageToolDescribeCurrentAsset = function() {
-    return describeCurrentAssets()[0] || null;
-  };
+  if (typeof window.registerDashboardToolBridge === "function") {
+    window.registerDashboardToolBridge({
+      onDescribeCurrentAssets: describeCurrentAssets,
+      onExportImage: function() {
+        var descriptor = buildCanvasDescriptor();
+        return descriptor ? {
+          fileName: descriptor.fileName,
+          mimeType: descriptor.mimeType,
+          dataUrl: descriptor.dataUrl,
+          width: descriptor.width,
+          height: descriptor.height
+        } : null;
+      }
+    });
+  } else {
+    window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+    window.__urageToolDescribeCurrentAsset = function() {
+      return describeCurrentAssets().then(function(descriptors) { return descriptors[0] || null; });
+    };
+  }
 })();

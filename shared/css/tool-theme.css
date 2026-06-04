@@ -111,6 +111,25 @@ body[data-dashboard-theme="rock"] {
   --tool-soft: #e5d5b8;
 }
 
+html[data-dashboard-theme="light"],
+body[data-dashboard-theme="light"] {
+  color-scheme: light;
+  --tool-accent: #8fa8ce;
+  --tool-accent-strong: #6f8db8;
+  --tool-bg: #ffffff;
+  --tool-surface: #ffffff;
+  --tool-surface-strong: #ffffff;
+  --tool-surface-alt: #ffffff;
+  --tool-line: rgba(124, 145, 177, 0.24);
+  --tool-line-strong: rgba(122, 147, 186, 0.32);
+  --tool-text: #1a2432;
+  --tool-muted: #5c6b80;
+  --tool-success: #3d9d65;
+  --tool-danger: #c84657;
+  --tool-soft: #f6f9fd;
+  --tool-shadow: 0 18px 50px rgba(40, 61, 90, 0.14);
+}
+
 body[data-dashboard-theme] {
   --accent: var(--tool-accent);
   --accent-hover: color-mix(in srgb, var(--tool-accent) 72%, white 28%);

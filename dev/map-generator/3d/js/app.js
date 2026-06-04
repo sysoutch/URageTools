@@ -3,6 +3,7 @@ import { getModelAssets, importModelFiles } from "./model-assets.js";
 import { exportRendererPng, renderMap, setupScrollZoom } from "./renderer.js";
 import { state, syncStateFromControls } from "./state.js";
 import { registerToolTheme } from "./theme.js";
+import { setCanvasReference, exportZip as doExportZip, buildZipBlob } from "./export-zip.js";
 
 const canvas = document.getElementById("mapCanvas");
 const statsNode = document.getElementById("mapStats");
@@ -125,11 +126,23 @@ function buildMapJsonPayload() {
   };
 }
 
-function describeCurrentAssets() {
+// Register canvas reference for export-zip module
+setCanvasReference(canvas);
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("Failed to read blob."));
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function describeCurrentAssets() {
   renderMap(canvas, state);
   const pngDataUrl = exportRendererPng();
   const jsonText = JSON.stringify(buildMapJsonPayload(), null, 2);
-  return [
+  const descriptors = [
     {
       kind: "image",
       title: "3D Game Map PNG",
@@ -155,6 +168,22 @@ function describeCurrentAssets() {
       metadata: { sourceTool: "map-generator", mode: "3d", resourceFormat: "blockout-json" }
     }
   ];
+  try {
+    const zipResult = await buildZipBlob();
+    descriptors.push({
+      kind: "file",
+      title: "3D Game Map ZIP",
+      fileName: zipResult.fileName,
+      mimeType: "application/zip",
+      dataUrl: await blobToDataUrl(zipResult.blob),
+      previewKind: "file",
+      sourceDetail: "Complete 3D blockout package with JSON, preview image, settings, and model metadata.",
+      metadata: { sourceTool: "map-generator", mode: "3d", resourceFormat: "map-generator-zip" }
+    });
+  } catch (error) {
+    console.warn("[MapGenerator 3D] Could not describe ZIP output.", error);
+  }
+  return descriptors;
 }
 
 function bindControls() {
@@ -194,6 +223,11 @@ function bindControls() {
     }
     if (button.id === "exportJsonButton") {
       exportJson();
+      return;
+    }
+    if (button.id === "exportZipButton") {
+      doExportZip();
+      return;
     }
   });
 
@@ -225,5 +259,21 @@ bindControls();
 updateAssetList();
 refresh();
 registerToolTheme(() => renderMap(canvas, state));
-window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
-window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
+if (typeof window.registerDashboardToolBridge === "function") {
+  window.registerDashboardToolBridge({
+    onDescribeCurrentAssets: describeCurrentAssets,
+    onExportImage: () => {
+      renderMap(canvas, state);
+      return {
+        fileName: buildMapFileName(".png"),
+        mimeType: "image/png",
+        dataUrl: exportRendererPng(),
+        width: canvas.width,
+        height: canvas.height
+      };
+    }
+  });
+} else {
+  window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+  window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets().then(descriptors => descriptors[0] || null);
+}

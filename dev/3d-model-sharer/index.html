@@ -5,6 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sketchfab IO</title>
   <script src="../../shared/dashboard-theme.js"></script>
+  <style id="tool-theme-override">
+    html[data-dashboard-theme],
+    body[data-dashboard-theme] {
+      --tool-accent: #7c5cff !important;
+      --tool-accent-strong: #27c3ff !important;
+      --tool-bg: #070b12 !important;
+      --tool-surface: rgba(14, 22, 35, 0.9) !important;
+      --tool-surface-strong: rgba(8, 13, 22, 0.98) !important;
+      --tool-surface-alt: rgba(11, 18, 30, 0.94) !important;
+      --tool-line: rgba(255, 255, 255, 0.11) !important;
+      --tool-line-strong: rgba(255, 255, 255, 0.22) !important;
+      --tool-text: #f6f7fb !important;
+      --tool-muted: #98a6ba !important;
+      --tool-soft: #c9d3e2 !important;
+      --tool-success: #71dd8a !important;
+      --tool-danger: #ef6d6d !important;
+    }
+
+    /* Dashboard shell isolation — prevent dashboard CSS from breaking our layout */
+    body[data-dashboard-theme] #app {
+      grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) minmax(300px, 360px) !important;
+      background: transparent !important;
+    }
+  </style>
   <script src="../../shared/dashboard-current-output-autodescribe.js" defer></script>
   <style>
     :root {
@@ -21,13 +45,10 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
-    html, body, #app { height: 100%; }
+    html, body, #app { height: 100%; min-height: 0; margin: 0; padding: 0; }
     body {
       margin: 0;
-      background:
-        radial-gradient(circle at 20% 10%, rgba(124,92,255,.22), transparent 34rem),
-        radial-gradient(circle at 85% 25%, rgba(39,195,255,.12), transparent 36rem),
-        linear-gradient(135deg, #05070d 0%, #0b1220 100%);
+      background: linear-gradient(135deg, #05070d 0%, #0b1220 100%);
       color: var(--text);
       overflow: hidden;
     }
@@ -58,44 +79,40 @@
     }
     textarea { min-height: 92px; resize: vertical; }
     label { color: var(--muted); font-size: .84rem; }
-    #app { display: grid; grid-template-columns: 82px 360px minmax(0, 1fr) 380px; }
-    .rail {
-      display: grid; grid-template-rows: auto repeat(3, 56px) 1fr; gap: .7rem;
-      padding: 1rem .75rem; background: rgba(5,9,16,.82);
-      border-right: 1px solid var(--line); backdrop-filter: blur(18px);
+    #app {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) minmax(300px, 360px) !important;
+      min-height: 0; background: transparent !important;
     }
-    .logo {
-      width: 50px; height: 50px; display: grid; place-items: center; border-radius: 17px;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      font-weight: 900; margin: 0 auto 1rem;
-    }
-    .railbtn {
-      width: 56px; height: 56px; display: grid; place-items: center; border-radius: 18px;
-      color: var(--muted); border: 1px solid transparent; background: transparent; padding: 0;
-    }
-    .railbtn.active { color: white; background: rgba(124,92,255,.16); border-color: rgba(124,92,255,.36); }
-    .left, .right {
+    .left,
+    .right {
       background: var(--panel);
       padding: 1rem;
       overflow: auto;
       backdrop-filter: blur(18px);
     }
-    .left { border-right: 1px solid var(--line); }
-    .right { border-left: 1px solid var(--line); }
+    .left { border-right: 1px solid var(--line); width: auto !important; max-width: none !important; min-width: 280px !important; flex: 0 0 auto !important; }
+    .right { border-left: 1px solid var(--line); width: auto !important; max-width: none !important; min-width: 300px !important; flex: 0 0 auto !important; }
+    body[data-dashboard-sidebar-externalized] #app { grid-template-columns: minmax(280px, 340px) minmax(0, 1fr) !important; }
+    body[data-dashboard-sidebar-externalized] .right[data-dashboard-external-sidebar-source] { display: none !important; }
+    body[data-dashboard-sidebar-externalized] .left { display: block !important; }
+    body[data-dashboard-sidebar-externalized] .viewer { height: 100%; min-height: 0; }
     .brand { display: flex; justify-content: space-between; align-items: start; gap: 1rem; margin-bottom: 1rem; }
     .brand h1 { margin: 0; font-size: 1.2rem; letter-spacing: -.03em; }
-    .brand p { margin: .2rem 0 0; color: var(--muted); font-size: .88rem; }
+    .brand p { display: none; }
+    .brand h1::after {
+      content: "Sketchfab search, import, preview, and upload.";
+      display: block;
+      margin-top: .2rem;
+      color: var(--muted);
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
     .badge {
       border: 1px solid rgba(255,255,255,.16); border-radius: 999px;
       padding: .32rem .58rem; font-size: .72rem; color: var(--soft); background: rgba(255,255,255,.055);
     }
-    .tabs {
-      display: grid; grid-template-columns: repeat(3, 1fr); padding: .25rem;
-      border-radius: 16px; background: rgba(255,255,255,.045);
-      border: 1px solid var(--line); margin-bottom: 1rem;
-    }
-    .tab { border: 0; border-radius: 12px; background: transparent; color: var(--muted); padding: .72rem .25rem; font-size: .82rem; }
-    .tab.active { color: white; background: linear-gradient(135deg, rgba(124,92,255,.45), rgba(39,195,255,.16)); }
     .hidden { display: none !important; }
     .card {
       border: 1px solid var(--line);
@@ -119,13 +136,15 @@
     .result small { display: block; color: var(--muted); margin: .25rem 0 .48rem; }
     .result button { padding: .42rem .52rem; border-radius: 10px; font-size: .78rem; }
     .viewer {
-      position: relative; min-width: 0; overflow: hidden;
-      background: radial-gradient(circle at center, rgba(124,92,255,.12), transparent 32rem), linear-gradient(180deg, #0b111d, #060911);
+      position: relative; min-width: 0; height: 100%; min-height: 0; overflow: hidden;
+      background: linear-gradient(180deg, #0b111d, #060911) !important;
     }
+
     #viewer { width: 100%; height: 100%; display: block; }
     .viewerTop {
       position: absolute; top: 1rem; left: 1rem; right: 1rem;
       display: flex; justify-content: space-between; align-items: center; pointer-events: none;
+      z-index: 4;
     }
     .viewerTop > * { pointer-events: auto; }
     .glass {
@@ -133,9 +152,11 @@
       backdrop-filter: blur(16px); border-radius: 18px; box-shadow: var(--shadow);
     }
     .toolset { display: flex; gap: .45rem; padding: .35rem; }
+    .toolset button { white-space: nowrap; }
     .status {
       position: absolute; left: 1rem; right: 1rem; bottom: 1rem;
       color: var(--muted); padding: .75rem .9rem; white-space: pre-wrap;
+      z-index: 4;
     }
     .dropzone {
       position: relative;
@@ -353,9 +374,10 @@
     .textureItem input { width: auto; }
     @media (max-width: 1220px) {
       body { overflow: auto; }
-      #app { grid-template-columns: 76px 1fr; height: auto; }
-      .viewer { grid-column: 2; height: 70vh; min-height: 560px; }
-      .right { grid-column: 2; border-left: 0; }
+      #app { grid-template-columns: 1fr; height: auto; }
+      .viewer { height: 70vh; min-height: 560px; }
+      .left,
+      .right { min-width: 0 !important; border-inline: 0; }
     }
   </style>
 
@@ -371,28 +393,7 @@
 </head>
 <body data-dashboard-theme="fire">
   <div id="app">
-    <aside class="rail">
-      <div class="logo">3D</div>
-      <button class="railbtn active" data-tab="sketchfab">S</button>
-      <button class="railbtn" data-tab="artstation">A</button>
-      <button class="railbtn" data-tab="meshy">M</button>
-    </aside>
-
-    <aside class="left">
-      <header class="brand">
-        <div>
-          <h1>Sketchfab IO</h1>
-          <p>No npm · Sketchfab · ArtStation · Meshy</p>
-        </div>
-        <span class="badge">Static HTML</span>
-      </header>
-
-      <nav class="tabs">
-        <button class="tab active" data-tab="sketchfab">Sketchfab</button>
-        <button class="tab" data-tab="artstation">ArtStation</button>
-        <button class="tab" data-tab="meshy">Meshy</button>
-      </nav>
-
+    <aside class="left" data-dashboard-tool-sidebar-ignore>
       <section id="tabSketchfab" class="tabPanel">
         <div class="card stack">
           <h2>Sketchfab Search</h2>
@@ -410,32 +411,10 @@
         </div>
         <div id="results" class="results"><p class="muted">Search Sketchfab to show models here.</p></div>
       </section>
-
-      <section id="tabArtstation" class="tabPanel hidden">
-        <div class="card stack">
-          <h2>ArtStation Reference</h2>
-          <input id="artstationQuery" value="environment concept art" />
-          <button id="artstationSearch" class="primary">Open ArtStation Search</button>
-          <small class="muted">Reference/open only. No scraping or automated downloads.</small>
-        </div>
-      </section>
-
-      <section id="tabMeshy" class="tabPanel hidden">
-        <div class="card stack">
-          <h2>Meshy Text to 3D</h2>
-          <textarea id="meshyPrompt">a small cute robot with white ceramic panels and orange accents, game asset, high quality</textarea>
-          <div class="row">
-            <button id="meshyPreview" class="primary">Create Preview</button>
-            <button id="meshyPoll">Poll Task</button>
-          </div>
-          <input id="meshyTaskId" placeholder="Meshy task id" />
-          <button id="meshyImport">Import Result GLB</button>
-        </div>
-      </section>
     </aside>
 
     <main class="viewer">
-      <canvas id="viewer"></canvas>
+      <canvas id="sketchfab-viewer"></canvas>
       <div class="viewerTop">
         <div class="glass toolset">
           <button id="frameBtn">Frame</button>
@@ -446,7 +425,7 @@
       <div id="status" class="status glass">Ready. Choose/drop GLB, glTF, ZIP, or FBX to preview.</div>
     </main>
 
-    <aside class="right">
+    <aside class="right" data-dashboard-tool-sidebar-ignore>
       <section class="card stack">
         <h2>Upload / Import Model</h2>
         <div id="dropzone" class="dropzone">
@@ -492,8 +471,6 @@
         <h2>API Keys</h2>
         <label>Sketchfab API token</label>
         <input id="sketchfabToken" type="password" />
-        <label>Meshy API key</label>
-        <input id="meshyKey" type="password" />
         <div class="toolbar">
           <button id="saveKeys" class="primary">Save keys</button>
           <button id="clearKeys">Clear keys</button>
@@ -603,11 +580,9 @@
     };
 
     const SKETCHFAB_API = 'https://api.sketchfab.com/v3';
-    const MESHY_API = 'https://api.meshy.ai';
 
     const state = {
       sketchfabToken: localStorage.getItem('sketchfab_token') || '',
-      meshyKey: localStorage.getItem('meshy_api_key') || '',
       selectedFiles: [],
       selectedMainFile: null,
       patchedUploadFile: null,
@@ -634,14 +609,11 @@
       return state.sketchfabToken ? { Authorization: `Token ${state.sketchfabToken}` } : {};
     }
 
-    function meshyHeaders() {
-      return state.meshyKey ? { Authorization: `Bearer ${state.meshyKey}`, 'Content-Type': 'application/json' } : {};
-    }
-
     async function fetchJson(url, options = {}) {
       const res = await fetch(url, options);
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || data.error || data.message || JSON.stringify(data));
+      let data;
+      try { data = await res.json(); } catch (_) { data = {}; }
+      if (!res.ok) throw new Error(data.detail || data.error || data.message || (await res.text()).trim() || 'API error');
       return data;
     }
 
@@ -1240,51 +1212,6 @@
       }
     }
 
-    function extractMeshyGlb(task) {
-      return [
-        task?.model_urls?.glb,
-        task?.model_urls?.GLB,
-        task?.result?.model_urls?.glb,
-        task?.result?.glb_url,
-        task?.glb_url,
-        task?.output?.model_urls?.glb,
-        task?.output?.glb
-      ].filter(Boolean)[0] || '';
-    }
-
-    async function createMeshyPreview() {
-      if (!state.meshyKey) return setStatus('Paste and save a Meshy API key first.');
-      setStatus('Creating Meshy preview task…');
-      try {
-        const data = await fetchJson(`${MESHY_API}/openapi/v2/text-to-3d`, {
-          method: 'POST',
-          headers: meshyHeaders(),
-          body: JSON.stringify({ mode: 'preview', prompt: $('meshyPrompt').value.trim() })
-        });
-        $('meshyTaskId').value = data.result || data.id || data.task_id || '';
-        setStatus(`Meshy task created: ${$('meshyTaskId').value || JSON.stringify(data)}`);
-      } catch (err) {
-        setStatus(`Meshy failed: ${err.message}`);
-      }
-    }
-
-    async function pollMeshy(importResult = false) {
-      if (!state.meshyKey) return setStatus('Paste and save a Meshy API key first.');
-      const taskId = $('meshyTaskId').value.trim();
-      if (!taskId) return setStatus('Enter a Meshy task id first.');
-
-      setStatus(`Polling Meshy task ${taskId}…`);
-      try {
-        const data = await fetchJson(`${MESHY_API}/openapi/v2/text-to-3d/${encodeURIComponent(taskId)}`, { headers: meshyHeaders() });
-        const glb = extractMeshyGlb(data);
-        setStatus(`Meshy status: ${data.status || data.task_status || 'unknown'}${glb ? '\\nGLB ready.' : ''}`);
-        if (importResult && glb) await viewer.loadUrl(glb, `Meshy ${taskId}`);
-      } catch (err) {
-        setStatus(`Meshy poll failed: ${err.message}`);
-      }
-    }
-
-
     const FALLBACK_CATEGORIES = [
       { name: 'Animals & Pets', slug: 'animals-pets' },
       { name: 'Architecture', slug: 'architecture' },
@@ -1350,7 +1277,6 @@
 
     function setupUI() {
       $('sketchfabToken').value = state.sketchfabToken;
-      $('meshyKey').value = state.meshyKey;
       setupLicenseControls();
 
       fetchSketchfabCategories();
@@ -1361,16 +1287,6 @@
         closeAiNoticeModal();
         window.open(pendingPropertiesUrl, '_blank', 'noopener');
       };
-
-      document.querySelectorAll('[data-tab]').forEach(btn => {
-        btn.onclick = () => {
-          const tab = btn.dataset.tab;
-          document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-          $('tabSketchfab').classList.toggle('hidden', tab !== 'sketchfab');
-          $('tabArtstation').classList.toggle('hidden', tab !== 'artstation');
-          $('tabMeshy').classList.toggle('hidden', tab !== 'meshy');
-        };
-      });
 
       $('chooseModelBtn').onclick = () => $('modelFileInput').click();
       $('chooseFolderBtn').onclick = () => $('modelFolderInput').click();
@@ -1409,29 +1325,20 @@
 
       $('saveKeys').onclick = () => {
         state.sketchfabToken = $('sketchfabToken').value.trim();
-        state.meshyKey = $('meshyKey').value.trim();
         localStorage.setItem('sketchfab_token', state.sketchfabToken);
-        localStorage.setItem('meshy_api_key', state.meshyKey);
-        setStatus('Keys saved locally.');
+        setStatus('Sketchfab token saved locally.');
       };
 
       $('clearKeys').onclick = () => {
         state.sketchfabToken = '';
-        state.meshyKey = '';
         $('sketchfabToken').value = '';
-        $('meshyKey').value = '';
         localStorage.removeItem('sketchfab_token');
-        localStorage.removeItem('meshy_api_key');
-        setStatus('Keys cleared.');
+        setStatus('Sketchfab token cleared.');
       };
 
       $('searchBtn').onclick = searchSketchfab;
       $('queryInput').onkeydown = e => { if (e.key === 'Enter') searchSketchfab(); };
       $('uploadSketchfabBtn').onclick = uploadToSketchfab;
-      $('artstationSearch').onclick = () => window.open(`https://www.artstation.com/search?sort_by=relevance&query=${encodeURIComponent($('artstationQuery').value.trim() || '3d art')}`, '_blank', 'noopener');
-      $('meshyPreview').onclick = createMeshyPreview;
-      $('meshyPoll').onclick = () => pollMeshy(false);
-      $('meshyImport').onclick = () => pollMeshy(true);
       $('frameBtn').onclick = () => viewer.frame();
       $('wireBtn').onclick = () => viewer.toggleWireframe();
       $('gridBtn').onclick = () => viewer.toggleGrid();
@@ -1557,9 +1464,9 @@
     }
 
     function createViewer() {
-      const canvas = $('viewer');
+      const canvas = $('sketchfab-viewer');
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
@@ -1591,6 +1498,7 @@
 
       function resize() {
         const rect = canvas.parentElement.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return;
         renderer.setSize(rect.width, rect.height, false);
         camera.aspect = rect.width / rect.height;
         camera.updateProjectionMatrix();
@@ -1875,6 +1783,8 @@
         return loadZipFromBlob(await res.blob(), name);
       }
 
+      const resizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
+      resizeObserver?.observe(canvas.parentElement);
       addEventListener('resize', resize);
       resize();
 

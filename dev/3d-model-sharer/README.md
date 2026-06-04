@@ -1,12 +1,14 @@
 # Sketchfab IO
 
-Single-file static web tool for previewing and uploading 3D models.
+Single-file static web tool for previewing, importing, and uploading Sketchfab 3D models.
 
 No npm.  
 No Vite.  
 No backend server.  
 No OAuth server.  
 No build step.
+
+The dashboard embeds this tool as its own three-column workspace. The left column keeps Sketchfab search/import results, the center column is the viewer, and the right column owns upload, texture, API key, publish, and scene controls. Both internal sidebars opt out of dashboard sidebar mirroring so the server-hosted view matches the direct tool page.
 
 Open:
 

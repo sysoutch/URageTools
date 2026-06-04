@@ -914,7 +914,6 @@ body[data-dashboard-theme]:has(.left-rail .brand-mark) pre {
 }
 
 body[data-dashboard-theme]:has(#app .viewer) #app {
-  grid-template-columns: 72px minmax(300px, 360px) minmax(0, 1fr) minmax(300px, 380px) !important;
   min-width: 0 !important;
 }
 
