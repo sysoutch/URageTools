@@ -6,6 +6,7 @@ A collection of tools to help with planning, organizing, and conceptualizing pro
 
 - **Game Idea Generator**: Generate creative ideas for games and interactive experiences
 - **Roadmap Builder**: Create visual roadmaps for project planning and development
+- **AI Legitimacy Matrix**: Assess AI use cases by ownership, permission, transformation, copying risk, and disclosure
 
 ## Features
 

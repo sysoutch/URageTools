@@ -25,6 +25,8 @@ Global sidebar and foldout styling for tools with left/right sidebars. It is aut
 
 Prefer `.sidebar`, `.tool-sidebar`, `.left-rail`, `.right-rail`, `#sidebar`, or direct `#app > aside.panel`/`.left`/`.right` sidebars. For collapsible sections, use native `<details>`/`<summary>` with `.control-group`, `.sidebar-panel`, `.tool-foldout`, `.pool-sub-foldout`, or `.foldout`; the shared stylesheet hides native markers and supplies one token-based chevron.
 
+Tools that use normal document scrolling instead of a fixed-height `.tool-layout` should add `data-dashboard-scroll-document` to `<body>`. This opts out of the shared `100vh` shell lock while retaining dashboard theming and stable vertical scrolling.
+
 ### Upload Card Component (`shared/css/components/upload-card.css`)
 Universal styled upload area with dashed border, arrow icon, and dark theme. Compatible with all dashboard themes (fire, water, crystal, nature, rock).
 
@@ -52,6 +54,15 @@ Records microphone input, shared PC/tab audio, or both mixed together and expose
 
 ### Video Recorder (`video/video-recorder/`)
 Records webcam video with optional microphone audio and exposes the latest recording through the dashboard asset descriptor bridge.
+
+### AI Legitimacy Matrix (`plan/ai-legit-matrix/`)
+Builds editable AI-use assessments and exposes the current matrix as JSON and Markdown resources.
+
+### Pseudo Albedo Tools (`art/albedo-tools/`)
+Converts normal or height maps into a stylized pseudo-albedo PNG and accepts dashboard-injected source images.
+
+### ComfyUI MP4 Transcriber (`video/video-transcriber/`)
+Extracts browser-decoded MP4 audio to mono 16 kHz WAV, runs a ComfyUI transcription workflow, and exposes both WAV and transcript outputs.
 
 ---
 

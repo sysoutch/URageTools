@@ -28,6 +28,25 @@ function describeCurrentBookAsset(app) {
     };
 }
 
+function loadDashboardAsset(app, payload) {
+    const kind = String(payload?.kind || 'image').trim().toLowerCase();
+    if (!['image', 'gif', 'video'].includes(kind)) throw new Error('Interactive Book accepts image, GIF, or video assets.');
+    const source = String(payload?.imageUrl || payload?.previewImageUrl || payload?.sourceUrl || payload?.url || payload?.dataUrl || '').trim();
+    if (!source) throw new Error('Dashboard asset has no media URL.');
+    const fileName = String(payload?.imageFileName || payload?.previewFileName || payload?.fileName || 'Dashboard Page').trim() || 'Dashboard Page';
+    const mimeType = String(payload?.mimeType || (kind === 'video' ? 'video/mp4' : kind === 'gif' ? 'image/gif' : 'image/png')).trim();
+    app.addDynamicPages([{
+        id: crypto.randomUUID(),
+        image: source,
+        name: fileName,
+        text: String(payload?.prompt || '').trim(),
+        sourceKind: 'dashboard-send',
+        type: mimeType
+    }]);
+    app.setStatus(`Added ${fileName} from the dashboard.`);
+    return { loaded: true };
+}
+
 export async function initInteractiveBook() {
     const app = createInteractiveBookApp();
     registerBookStateModule(app);
@@ -40,5 +59,6 @@ export async function initInteractiveBook() {
         const descriptor = describeCurrentBookAsset(app);
         return descriptor ? [descriptor] : [];
     };
+    window.__urageToolLoadAssetPayload = payload => loadDashboardAsset(app, payload);
     return app;
 }

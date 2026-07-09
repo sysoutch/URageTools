@@ -20,6 +20,7 @@ const els = {
 let selectedFile = null;
 let extractedAudioBlob = null;
 let extractedAudioName = "audio.wav";
+let extractedAudioObjectUrl = "";
 const clientId = crypto.randomUUID();
 
 function log(message, type = "") {
@@ -35,6 +36,8 @@ function normalizeServerUrl() { return els.serverUrl.value.trim().replace(/\/$/,
 function setFile(file) {
   selectedFile = file;
   extractedAudioBlob = null;
+  if (extractedAudioObjectUrl) URL.revokeObjectURL(extractedAudioObjectUrl);
+  extractedAudioObjectUrl = "";
   els.fileLabel.textContent = file ? `${file.name} (${formatBytes(file.size)})` : "No file selected";
   els.extractAudioBtn.disabled = !file;
   els.transcribeBtn.disabled = !file;
@@ -80,6 +83,7 @@ async function extractAudio(file) {
   const wavBuffer = audioBufferToMonoWav(decodedBuffer, 16000);
   extractedAudioName = safeFileName(file.name || "input.mp4").replace(/\.[^.]+$/, "") + ".wav";
   extractedAudioBlob = new Blob([wavBuffer], { type: "audio/wav" });
+  extractedAudioObjectUrl = URL.createObjectURL(extractedAudioBlob);
   els.downloadAudioBtn.disabled = false;
 
   setProgress(100);
@@ -392,3 +396,32 @@ els.downloadTxtBtn.addEventListener("click", () => {
   const blob = new Blob([els.transcript.value], { type: "text/plain;charset=utf-8" });
   downloadBlob(blob, "transcript.txt");
 });
+
+function describeCurrentAssets() {
+  const assets = [];
+  if (els.transcript.value.trim()) {
+    assets.push({
+      kind: "text",
+      title: "Video transcript",
+      fileName: "transcript.txt",
+      mimeType: "text/plain",
+      textContent: els.transcript.value.trim(),
+      metadata: { sourceTool: "video-transcriber", resourceFormat: "transcript" }
+    });
+  }
+  if (extractedAudioBlob) {
+    assets.push({
+      kind: "audio",
+      title: "Extracted mono audio",
+      fileName: extractedAudioName,
+      mimeType: "audio/wav",
+      sourceUrl: extractedAudioObjectUrl,
+      metadata: { sourceTool: "video-transcriber", resourceFormat: "wav-16khz-mono" }
+    });
+  }
+  return assets;
+}
+
+window.describeCurrentAssets = describeCurrentAssets;
+window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
+window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;

@@ -36,6 +36,15 @@ body[data-dashboard-theme] {
   overflow: hidden !important;
 }
 
+html:has(body[data-dashboard-scroll-document]),
+body[data-dashboard-theme][data-dashboard-scroll-document] {
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  scrollbar-gutter: stable;
+}
+
 body[data-dashboard-theme] .tool-layout {
   height: 100vh !important;
   min-height: 0 !important;

@@ -8,6 +8,7 @@ Dashboard tool for assembling image, GIF, and video pages into a themed flip-boo
 - Disk uploads, dashboard image pools, and recent generated images as page sources.
 - Image plus optional text per page.
 - Draggable Dashboard Media Tray with add-selected and add-all insertion flows.
+- Direct dashboard asset loading that inserts generated images by URL without cloning them into large in-memory file payloads.
 - Current Book Pages sidebar for renaming, reordering, inserting, and removing pages.
 - Canvas flip-book preview with closed-cover, open-spread, and sealed-book states.
 

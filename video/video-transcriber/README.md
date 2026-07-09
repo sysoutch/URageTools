@@ -15,6 +15,16 @@ This is a browser-only HTML5 tool for:
 - `script.js` - MP4 audio extraction, WAV encoding, ComfyUI upload/prompt/history logic.
 - `README.md` - this file.
 
+## Dashboard integration
+
+The tool is discovered automatically from `tools/video/video-transcriber/index.html`.
+
+- It inherits the active dashboard palette through `dashboard-theme.js`.
+- The ComfyUI connection controls are marked as `Transcriber Settings`.
+- `dashboard-tool-bridge.js` allows the Tools workspace to inject an MP4 through the native file input.
+- `describeCurrentAssets()` exposes the transcript text and extracted mono 16 kHz WAV to the Send Resource flow.
+- The shared current-output fallback remains available for visible output discovery.
+
 ## Important
 
 This version does **not** require FFmpeg WASM or CDN libraries. It uses the browser's native `AudioContext.decodeAudioData()` support. This works for MP4 files whose audio codec is supported by the browser, usually AAC in MP4.

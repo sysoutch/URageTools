@@ -12,6 +12,7 @@ A collection of creative tools for artists and designers to generate, manipulate
 - **Image Split and Combine**: Split images into parts or combine multiple images
 - **Image to SVG Converter**: Convert raster images to scalable vector graphics
 - **Image Transparency Tool**: Modify image transparency and create transparent backgrounds
+- **Pseudo Albedo Tools**: Generate a stylized base-color texture from normal or height maps
 - **Pixel Art Converter**: Convert images to pixel art style
 - **Seamless Texture Maker**: Create seamless repeatable textures
 - **SVG Editor**: Edit and create scalable vector graphics
