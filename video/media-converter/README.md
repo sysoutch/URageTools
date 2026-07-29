@@ -9,6 +9,7 @@ Browser-based converter for turning uploaded videos or animated GIFs into GIF ou
 - Extracts PNG frame sequences.
 - Configurable FPS and output width.
 - Provides preview, download, and frame ZIP actions.
+- Sends converted GIF resources directly to GIF Viewer through Dashboard Send Resource.
 - Accepts dashboard tool messages so Video Studio can send a selected clip into the tool or run a background MP4-to-GIF conversion through the same converter.
 
 ## Workflow
@@ -17,6 +18,7 @@ Browser-based converter for turning uploaded videos or animated GIFs into GIF ou
 2. Choose `Media To GIF` or `Media To PNG Frames`.
 3. Set FPS and width.
 4. Convert, preview, and download the result.
+5. Use Send Resource and choose GIF Viewer to inspect the converted animation frame by frame.
 
 ## Notes
 

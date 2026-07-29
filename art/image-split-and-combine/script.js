@@ -773,6 +773,36 @@
   }
 
   function describeCurrentAssets() {
+    if (state.mode === 'split') {
+      const { cols } = getSplitSettings();
+      const frames = buildSplitFrameCanvases();
+      const baseName = getSplitBaseName();
+      return frames.map((canvas, index) => {
+        const row = Math.floor(index / cols) + 1;
+        const col = index % cols + 1;
+        const fileName = `${baseName}-split-${row}-${col}.png`;
+        const dataUrl = canvas.toDataURL('image/png');
+        return {
+          kind: 'image',
+          title: `Split ${index + 1} of ${frames.length}`,
+          fileName,
+          mimeType: 'image/png',
+          dataUrl,
+          width: canvas.width,
+          height: canvas.height,
+          previewKind: 'image',
+          previewUrl: dataUrl,
+          sourceDetail: `Split output ${index + 1} of ${frames.length} (row ${row}, column ${col}).`,
+          metadata: {
+            sourceTool: 'image-split-and-combine',
+            mode: 'split',
+            splitIndex: index + 1,
+            splitRow: row,
+            splitColumn: col
+          }
+        };
+      });
+    }
     const canvas = getProcessedCanvasForCurrentMode();
     if (!canvas || canvas.width <= 0 || canvas.height <= 0) {
       return [];
@@ -781,7 +811,7 @@
     const dataUrl = canvas.toDataURL('image/png');
     return [{
       kind: 'image',
-      title: state.mode === 'combine' ? 'Combined Atlas' : 'Split Preview',
+      title: 'Combined Atlas',
       fileName,
       mimeType: 'image/png',
       dataUrl,
@@ -789,9 +819,7 @@
       height: canvas.height,
       previewKind: 'image',
       previewUrl: dataUrl,
-      sourceDetail: state.mode === 'combine'
-        ? 'Combined atlas from Image Split + Combine.'
-        : 'Split preview from Image Split + Combine.',
+      sourceDetail: 'Combined atlas from Image Split + Combine.',
       metadata: {
         sourceTool: 'image-split-and-combine',
         mode: state.mode

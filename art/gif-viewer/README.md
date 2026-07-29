@@ -15,6 +15,7 @@ Complete fixed standalone version.
 - Download original GIF
 - Download selected frames as `gif_frames.zip`
 - Guarded dashboard loading so non-GIF image payloads are ignored
+- Receives converted GIF resources from Media Converter through Dashboard Send Resource
 - Chunked frame decoding with a memory-based frame cap
 - Sampled timeline thumbnails for large GIFs to avoid browser lockups
 

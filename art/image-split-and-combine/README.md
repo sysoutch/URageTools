@@ -8,6 +8,7 @@ This tool allows you to split images into smaller pieces and combine them back t
 
 - Split images into customizable grid layouts
 - Combine multiple images into a single image
+- Send individual split tiles to LazyDev Image Studio or 3D Model Studio through the dashboard resource handoff
 - Adjust image quality and format settings
 - Responsive design for various screen sizes
 
@@ -18,6 +19,7 @@ This tool allows you to split images into smaller pieces and combine them back t
 3. Adjust quality settings if needed
 4. Click "Split" or "Combine" to process the image
 5. Download the resulting image
+6. In the dashboard, use **Send Resource → LazyDev** to import every split tile as separate Image Studio assets or 3D MultiView sources
 
 ## Technical Details
 

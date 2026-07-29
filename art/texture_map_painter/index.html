@@ -290,7 +290,7 @@
           <button id="blur">Blur Height</button>
           <button id="clear" class="danger">Reset Maps</button>
           <button id="fill" class="primary">Fill Target</button>
-          <button id="importAlbedo">Import Albedo</button>
+          <button id="importAlbedo" title="Import albedo and rebuild the derived height, normal, roughness, and smoothness maps">Import Albedo + Maps</button>
           <button id="clearAlbedo">Clear Albedo</button>
         </div>
       </div>
@@ -392,6 +392,11 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+    import {
+      populateHeightFromAlbedo,
+      populateNormalFromHeight,
+      populateRoughnessFromAlbedo
+    } from './textureMapGeneration.js';
 
     const SIZE = 512;
     const albedoRGBA = new Uint8ClampedArray(SIZE * SIZE * 4);
@@ -1033,23 +1038,7 @@
     }
 
     function generateNormal() {
-      const s = +$('normalStrength').value / 14;
-      for (let y = 0; y < SIZE; y++) {
-        for (let x = 0; x < SIZE; x++) {
-          const xm = Math.max(0, x - 1), xp = Math.min(SIZE - 1, x + 1);
-          const ym = Math.max(0, y - 1), yp = Math.min(SIZE - 1, y + 1);
-          const dx = (heightMap[idx(xp,y)] - heightMap[idx(xm,y)]) / 255 * s;
-          const dy = (heightMap[idx(x,yp)] - heightMap[idx(x,ym)]) / 255 * s;
-          let nx = -dx, ny = -dy, nz = 1;
-          const len = Math.hypot(nx, ny, nz) || 1;
-          nx /= len; ny /= len; nz /= len;
-          const j = idx(x,y) * 4;
-          normalRGBA[j] = Math.round((nx * 0.5 + 0.5) * 255);
-          normalRGBA[j+1] = Math.round((ny * 0.5 + 0.5) * 255);
-          normalRGBA[j+2] = Math.round((nz * 0.5 + 0.5) * 255);
-          normalRGBA[j+3] = 255;
-        }
-      }
+      populateNormalFromHeight(heightMap, normalRGBA, SIZE, +$('normalStrength').value / 14);
     }
 
     function renderPaintCanvas() {
@@ -1133,30 +1122,32 @@
     }
 
     function generateHeightFromAlbedo() {
-      for (let y = 0; y < SIZE; y++) {
-        for (let x = 0; x < SIZE; x++) {
-          const j = idx(x, y) * 4;
-          const r = albedoRGBA[j], g = albedoRGBA[j + 1], b = albedoRGBA[j + 2];
-          const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-          heightMap[idx(x, y)] = Math.round(lum * 255);
-        }
-      }
+      populateHeightFromAlbedo(albedoRGBA, heightMap);
     }
 
     function generateRoughnessFromAlbedo() {
-      for (let i = 0; i < roughness.length; i++) {
-        const j = i * 4;
-        const r = albedoRGBA[j], g = albedoRGBA[j + 1], b = albedoRGBA[j + 2];
-        const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-        roughness[i] = Math.round((1 - lum) * 255);
-      }
+      populateRoughnessFromAlbedo(albedoRGBA, roughness);
+    }
+
+    function generateDerivedMapsFromAlbedo() {
+      generateHeightFromAlbedo();
+      generateNormal();
+      generateRoughnessFromAlbedo();
+      syncInverseMaps('roughness');
+      dirty = true;
     }
 
     function generateAllFromSourceImage() {
       if (!$('generateFromImage').checked) return;
-      generateHeightFromAlbedo();
-      generateRoughnessFromAlbedo();
-      syncInverseMaps('roughness');
+      generateDerivedMapsFromAlbedo();
+    }
+
+    function applyImportedAlbedoImageData(imageData, options = {}) {
+      albedoRGBA.set(imageData.data);
+      if (options.alwaysGenerateDerivedMaps === true || $('generateFromImage').checked) {
+        generateDerivedMapsFromAlbedo();
+        return;
+      }
       dirty = true;
     }
 
@@ -1325,9 +1316,9 @@
         c.width = c.height = SIZE;
         const ctx = c.getContext('2d');
         ctx.drawImage(img, 0, 0, SIZE, SIZE);
-        albedoRGBA.set(ctx.getImageData(0, 0, SIZE, SIZE).data);
-        dirty = true;
-        if ($('generateFromImage').checked) generateAllFromSourceImage();
+        applyImportedAlbedoImageData(ctx.getImageData(0, 0, SIZE, SIZE), {
+          alwaysGenerateDerivedMaps: true
+        });
         URL.revokeObjectURL(img.src);
       };
       img.src = URL.createObjectURL(file);
@@ -1475,13 +1466,6 @@
 
         controls3d.update();
 
-        // DEBUG
-        console.log("MODEL SIZE:", size);
-
-        console.log("MODEL SCALE:", scale);
-
-        console.log("MODEL CENTER:", center);
-
         // FORCE RENDER
         renderer.render(scene, camera);
 
@@ -1528,15 +1512,7 @@
         ctx.drawImage(img, 0, 0, SIZE, SIZE);
         const imageData = ctx.getImageData(0, 0, SIZE, SIZE);
 
-        albedoRGBA.set(imageData.data);
-        dirty = true;
-
-        if ($('generateFromImage').checked) {
-          generateHeightFromAlbedo();
-          generateRoughnessFromAlbedo();
-          syncInverseMaps('roughness');
-          dirty = true;
-        }
+        applyImportedAlbedoImageData(imageData);
 
         URL.revokeObjectURL(img.src);
       };
@@ -1583,14 +1559,7 @@
           const ctx = c.getContext('2d');
           ctx.drawImage(img, 0, 0, SIZE, SIZE);
           const imageData = ctx.getImageData(0, 0, SIZE, SIZE);
-          albedoRGBA.set(imageData.data);
-          dirty = true;
-          if ($('generateFromImage').checked) {
-            generateHeightFromAlbedo();
-            generateRoughnessFromAlbedo();
-            syncInverseMaps('roughness');
-            dirty = true;
-          }
+          applyImportedAlbedoImageData(imageData);
           URL.revokeObjectURL(img.src);
         };
         img.src = URL.createObjectURL(file);

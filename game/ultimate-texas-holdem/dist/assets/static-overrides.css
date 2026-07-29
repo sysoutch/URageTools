@@ -1,0 +1,49 @@
+/*
+ * Static distribution layout corrections.
+ * Keep the opening controls separate from card/result regions at dashboard iframe heights.
+ */
+@media (min-width: 861px) {
+  .table-stage--opening .board-area,
+  .table-stage--opening .board-banner,
+  .table-stage--opening .dealer-area,
+  .table-stage--opening .player-label,
+  .table-stage--opening .current-hand,
+  .table-stage--opening .player-cards,
+  .table-stage--opening .round-end-actions {
+    display: none;
+  }
+
+  .table-stage--opening .player-area {
+    top: 174px;
+    bottom: auto;
+    gap: 0;
+  }
+
+  .table-stage--opening .center-message--status {
+    top: 378px;
+    width: min(440px, calc(100% - 620px));
+  }
+
+  .table-stage:not(.table-stage--opening) .player-bets,
+  .table-stage:not(.table-stage--opening) .board-banner {
+    display: none;
+  }
+
+  .table-stage:not(.table-stage--opening) .player-area {
+    bottom: 90px;
+  }
+
+  .table-stage:not(.table-stage--opening) .center-message--status {
+    top: 305px;
+  }
+}
+
+@media (min-width: 861px) and (max-height: 760px) {
+  .table-stage--opening .player-area {
+    top: 158px;
+  }
+
+  .table-stage--opening .center-message--status {
+    top: 350px;
+  }
+}
