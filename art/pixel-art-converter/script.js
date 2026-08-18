@@ -913,7 +913,7 @@
         const smallerSide = Math.min(width, height);
         const largerSide = Math.max(width, height);
         const averageSide = Math.round((width + height) / 2);
-        const basis = String(els.autoPixelSizeBasisSelect ? els.autoPixelSizeBasisSelect.value : 'larger-side');
+        const basis = String(els.autoPixelSizeBasisSelect ? els.autoPixelSizeBasisSelect.value : 'smaller-side');
         if (basis === 'larger-side') return largerSide;
         if (basis === 'average-side') return averageSide;
         return smallerSide;
