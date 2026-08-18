@@ -139,8 +139,6 @@ export class AggressiveAI {
  * Dependencies: ../config/constants.js
  */
 
-import { AI_DECISION_DELAY, AI_DECISION_VARIANCE } from '../config/constants.js';
-
 /**
  * TightAI - Plays few hands and only raises with strong holdings.
  *
@@ -266,8 +264,6 @@ export class TightAI {
  *
  * Dependencies: ../config/constants.js
  */
-
-import { AI_DECISION_DELAY, AI_DECISION_VARIANCE } from '../config/constants.js';
 
 /**
  * BalancedAI - Plays a balanced mix of hands with moderate aggression.
@@ -395,8 +391,6 @@ export class BalancedAI {
  * Dependencies: ../config/constants.js
  */
 
-import { AI_DECISION_DELAY, AI_DECISION_VARIANCE } from '../config/constants.js';
-
 /**
  * LooseAI - Plays almost any two cards with occasional raises.
  *
@@ -522,8 +516,6 @@ export class LooseAI {
  *
  * Dependencies: ../config/constants.js
  */
-
-import { AI_DECISION_DELAY, AI_DECISION_VARIANCE } from '../config/constants.js';
 
 /**
  * ManiacAI - Plays every hand and raises constantly.

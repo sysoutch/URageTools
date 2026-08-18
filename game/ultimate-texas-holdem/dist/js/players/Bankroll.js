@@ -115,7 +115,7 @@ export class Bankroll {
    */
   get winRate() {
     if (this.#totalWagered === 0) return 0;
-    return (this.#netProfit / this.#totalWagered) * 100;
+    return (this.netProfit / this.#totalWagered) * 100;
   }
 
   /**

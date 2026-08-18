@@ -80,10 +80,16 @@ select {
 
 body[data-dashboard-sidebar-externalized="true"] .tool-shell {
   grid-template-columns: minmax(0, 1fr);
+  min-height: 100%;
 }
 
 body[data-dashboard-sidebar-externalized="true"] .tool-sidebar {
   display: none;
+}
+
+body[data-dashboard-sidebar-externalized="true"] .tool-main {
+  min-height: 100%;
+  overflow: auto;
 }
 
 .tool-sidebar {

@@ -5,7 +5,7 @@
 <title>SpriteForge AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="/vendor/gif.js"></script>
+<script src="vendor/gif.js"></script>
 <script src="../../shared/dashboard-tool-bridge.js"></script>
 <script src="../../shared/dashboard-theme.js"></script>
 <link rel="stylesheet" href="/tools/shared/css/components/upload-card.css">
@@ -15,7 +15,8 @@
 body[data-dashboard-theme="water"] { --tool-bg: #0d1522; --tool-surface: rgba(12, 21, 37, 0.94); --tool-surface-alt: rgba(10, 17, 29, 0.98); --tool-line: rgba(114, 190, 255, 0.18); --tool-accent: #59b6ff; --tool-text: #eef5ff; --tool-muted: #a9bfd8; }
 body[data-dashboard-theme="nature"] { --tool-bg: #11170f; --tool-surface: rgba(18, 24, 16, 0.94); --tool-surface-alt: rgba(13, 19, 11, 0.98); --tool-line: rgba(146, 213, 120, 0.18); --tool-accent: #82cd5f; --tool-text: #f2f8ee; --tool-muted: #bccfaf; }
 body[data-dashboard-theme="rock"] { --tool-bg: #151515; --tool-surface: rgba(24, 24, 24, 0.95); --tool-surface-alt: rgba(16, 16, 16, 0.98); --tool-line: rgba(196, 190, 176, 0.18); --tool-accent: #c4ae8a; --tool-text: #f2efea; --tool-muted: #b7aea2; }
-body { background: var(--tool-bg); color: var(--tool-text); font-family: sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--tool-bg); color: var(--tool-text); font-family: sans-serif; }
 canvas { image-rendering: pixelated; }
 .flex { display: flex; }
 .grid { display: grid; }
@@ -284,6 +285,7 @@ const DEFAULT_PROVIDER_ENDPOINTS = {
     ollama: "http://127.0.0.1:11434",
     lmstudio: "http://127.0.0.1:1234"
 };
+const hasSpriteForgeProxy = !window.location.pathname.startsWith("/tools/");
 const DEFAULT_AI_PROMPT = `Detect each full sprite character exactly once.
 Do not split a single sprite into parts.
 If diagonal or non-rectangular separation is needed, return polygon points.
@@ -447,6 +449,7 @@ function saveEndpointsToStorage() {
 }
 
 async function loadProviderDefaultsFromServer() {
+    if (!hasSpriteForgeProxy) return;
     try {
         const res = await fetch("/api/providers");
         const data = await res.json();
@@ -1777,6 +1780,20 @@ function isLikelyGridLikeBoxes(boxes) {
 
 /* ================= MODELS ================= */
 async function loadModels() {
+    if (!hasSpriteForgeProxy) {
+        modelSelect.innerHTML = "";
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "AI detection is available in the local SpriteForge server";
+        modelSelect.appendChild(opt);
+        modelSelect.disabled = true;
+        document.getElementById("aiButton").disabled = true;
+        document.getElementById("aiButton").title = "Run SpriteForge locally to use AI detection.";
+        log("Grid slicing works here. Start SpriteForge's local server for AI detection.");
+        return;
+    }
+    modelSelect.disabled = false;
+    document.getElementById("aiButton").disabled = false;
     const provider = providerSelect.value;
     const endpoint = getCurrentEndpoint();
 
@@ -2744,6 +2761,10 @@ function applyAiGridAdjustments(json) {
 
 /* ================= AI ================= */
 async function aiDetect() {
+    if (!hasSpriteForgeProxy) {
+        log("AI detection needs SpriteForge's local server; grid slicing remains available in this dashboard tool.");
+        return;
+    }
     if (!base64) {
         log("No image");
         return;
@@ -2956,7 +2977,7 @@ function generateGifPreview() {
         quality: 10,
         width: maxWidth,
         height: maxHeight,
-        workerScript: "/vendor/gif.worker.js"
+        workerScript: "vendor/gif.worker.js"
     });
 
     frameCanvases.forEach((frameCanvas) => {

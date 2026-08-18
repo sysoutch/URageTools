@@ -1,4 +1,2 @@
 output/
 *.err
-*.log
-node_modules/

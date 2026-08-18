@@ -60,6 +60,9 @@ const initialState = {
   tableRulePreset: 'official',
   dealerQualificationEnabled: true,
   dealerQualificationMinimum: 'PAIR_4',
+  dealerDisqualifiedAnteMode: 'PUSH',
+  preflopRaiseMode: 'THREE_OR_FOUR',
+  selectedSaloonId: 'dusty-spur',
   handWarningEnabled: true,
   handWarningThreshold: 'ONE_PAIR',
   warnOnCheck: true,
@@ -175,6 +178,9 @@ export class StateManager {
           tableRulePreset: this.#state.tableRulePreset,
           dealerQualificationEnabled: this.#state.dealerQualificationEnabled,
           dealerQualificationMinimum: this.#state.dealerQualificationMinimum,
+          dealerDisqualifiedAnteMode: this.#state.dealerDisqualifiedAnteMode,
+          preflopRaiseMode: this.#state.preflopRaiseMode,
+          selectedSaloonId: this.#state.selectedSaloonId,
           handWarningEnabled: this.#state.handWarningEnabled,
           handWarningThreshold: this.#state.handWarningThreshold,
           warnOnCheck: this.#state.warnOnCheck,
@@ -213,6 +219,9 @@ export class StateManager {
           this.#state.tableRulePreset = parsed.settings.tableRulePreset ?? 'official';
           this.#state.dealerQualificationEnabled = parsed.settings.dealerQualificationEnabled ?? true;
           this.#state.dealerQualificationMinimum = parsed.settings.dealerQualificationMinimum ?? 'PAIR_4';
+          this.#state.dealerDisqualifiedAnteMode = parsed.settings.dealerDisqualifiedAnteMode ?? 'PUSH';
+          this.#state.preflopRaiseMode = parsed.settings.preflopRaiseMode ?? 'THREE_OR_FOUR';
+          this.#state.selectedSaloonId = parsed.settings.selectedSaloonId ?? 'dusty-spur';
           this.#state.handWarningEnabled = parsed.settings.handWarningEnabled ?? true;
           this.#state.handWarningThreshold = parsed.settings.handWarningThreshold ?? 'ONE_PAIR';
           this.#state.warnOnCheck = parsed.settings.warnOnCheck ?? true;

@@ -1,9 +1,8 @@
 // script.js
 import * as THREE from 'three';
-import { OrbitControls } from 'https://unpkg.com/three@0.165.0/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'https://unpkg.com/three@0.165.0/examples/jsm/loaders/GLTFLoader.js';
-import { OBJLoader } from 'https://unpkg.com/three@0.165.0/examples/jsm/loaders/OBJLoader.js';
-import { RGBELoader } from 'https://unpkg.com/three@0.165.0/examples/jsm/loaders/RGBELoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 let scene, camera, renderer, controls, currentModel, grid;
 let currentDashboardAsset = null;
@@ -60,12 +59,6 @@ function init() {
 
     grid = new THREE.GridHelper(20, 40, 0x2a2a2e, 0x1a1a1a);
     scene.add(grid);
-
-    // HDRI Environment
-    new RGBELoader().load('https://cdn.jsdelivr.net/gh/pmndrs/threejs-demo-assets@master/hdri/royal_esplanade_1k.hdr', (tex) => {
-        tex.mapping = THREE.EquirectangularReflectionMapping;
-        scene.environment = tex;
-    });
 
     setupInterface();
     animate();
@@ -272,7 +265,20 @@ function setupInterface() {
         renderer.setSize(container.clientWidth, container.clientHeight);
     };
 
-    lucide.createIcons();
+    renderLocalIcons();
+}
+
+function renderLocalIcons() {
+    const glyphs = {
+        box: "□", "upload-cloud": "↑", image: "▧", maximize: "↗", layers: "▤",
+        camera: "◉", "zoom-in": "+", "zoom-out": "−", "rotate-cw": "↻",
+        "rotate-ccw": "↺", sun: "☼", square: "■", zap: "ϟ", sliders: "≡",
+        grid: "▦", move: "↔", "move-vertical": "↕", "move-horizontal": "↔"
+    };
+    document.querySelectorAll("[data-lucide]").forEach(icon => {
+        icon.textContent = glyphs[icon.dataset.lucide] || "•";
+        icon.setAttribute("aria-hidden", "true");
+    });
 }
 
 function loadModelFromUrl(modelUrl, fileNameHint) {

@@ -81,3 +81,8 @@ Extracts browser-decoded MP4 audio to mono 16 kHz WAV, runs a ComfyUI transcript
 - If a tool does not expose descriptors, the Tools workspace now falls back to visible download links, canvases, image/video/audio elements, and text outputs, then lets the user choose which output to send in the shared `Send Resource` overlay.
 - Browser-local `blob:` and canvas outputs are stored by the dashboard and served through `/api/game-engine-export-file`, so game-engine importers can fetch them like normal generated files.
 - `npm run check:tools` audits every non-vendored HTML tool for the shared fallback and explicit current-asset descriptor coverage.
+# Tool visual QA
+
+Run `node scripts/audit-tool-screenshots.mjs http://127.0.0.1:4782 artifacts/tool-visual-qa` from the repository root before declaring a cross-tool responsive change complete. It captures every catalogued tool at phone and desktop widths, writes a JSON report, and treats horizontal overflow or page-load failures as failures.
+
+Catalog entries use each tool's `thumbnail.png`, `thumbnail.jpg`, `thumbnail.jpeg`, or `thumbnail.webp` when present. Tools without an individual thumbnail use the shared `tools/shared/tool-cover.png`, so mobile cards always render an image cover.

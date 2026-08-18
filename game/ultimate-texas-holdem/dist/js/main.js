@@ -18,6 +18,8 @@ import { AnimationManager } from './animations/AnimationManager.js';
 import { SoundManager } from './audio/SoundManager.js';
 import { SaveManager } from './storage/SaveManager.js';
 import { Statistics } from './statistics/Statistics.js';
+import { SaloonMenu } from './ui/SaloonMenu.js';
+import { findSaloon } from './config/saloons.js';
 
 window.render_game_to_text = () => JSON.stringify({
   coordinateSystem: 'DOM card table; no positional movement controls',
@@ -29,6 +31,8 @@ window.render_game_to_text = () => JSON.stringify({
     .map(card => card.textContent.trim())
     .filter(Boolean),
   result: document.getElementById('hand-name')?.textContent?.trim() || '',
+  saloonMenuOpen: Boolean(document.querySelector('.saloon-menu')),
+  selectedSaloon: findSaloon(state.get('selectedSaloonId')).name,
 });
 
 window.advanceTime = () => {
@@ -49,6 +53,7 @@ export class GameApplication {
   #saveManager;
   #statistics;
   #aiEngine;
+  #saloonMenu;
   #isRunning;
 
   /**
@@ -62,6 +67,7 @@ export class GameApplication {
     this.#saveManager = null;
     this.#statistics = null;
     this.#aiEngine = null;
+    this.#saloonMenu = null;
     this.#isRunning = false;
   }
 
@@ -101,8 +107,7 @@ export class GameApplication {
 
     console.log('[GameApp] Game initialized successfully.');
 
-    // Start the first round directly - GameEngine manages its own game loop
-    this.startRound();
+    this.#openSaloonMenu();
   }
 
   /**
@@ -125,10 +130,37 @@ export class GameApplication {
       debugRevealDealerCards: false,
       selectedPlayMultiplier: 3,
       tableRulePreset: 'official',
+      dealerQualificationEnabled: true,
+      dealerQualificationMinimum: 'PAIR_4',
+      dealerDisqualifiedAnteMode: 'PUSH',
+      preflopRaiseMode: 'THREE_OR_FOUR',
+      selectedSaloonId: 'dusty-spur',
       handWarningEnabled: true,
       handWarningThreshold: 'ONE_PAIR',
       warnOnCheck: true,
       warnOnFold: true,
+    });
+  }
+
+  #openSaloonMenu() {
+    this.#saloonMenu = new SaloonMenu({
+      container: document.getElementById('saloon-menu-container'),
+      onSelect: ({ saloon, ante }) => {
+        const usesOfficialRules = state.get('tableRulePreset') !== 'legacy';
+        state.set({
+          selectedSaloonId: saloon.id,
+          anteBet: ante,
+          blindBet: usesOfficialRules ? ante : 0,
+          tripsBet: 0,
+        });
+        const saloonName = document.getElementById('current-saloon-name');
+        if (saloonName) saloonName.textContent = saloon.name;
+        this.startRound();
+      },
+    });
+    this.#saloonMenu.open({
+      bankroll: state.get('bankroll'),
+      selectedSaloonId: state.get('selectedSaloonId'),
     });
   }
 

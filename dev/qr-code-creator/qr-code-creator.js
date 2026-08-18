@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("qr-input");
   const sizeSlider = document.getElementById("size-slider");
   const fgColor = document.getElementById("fg-color");
+  const gradientToggle = document.getElementById("gradient-toggle");
+  const gradientStartColor = document.getElementById("gradient-start-color");
+  const gradientEndColor = document.getElementById("gradient-end-color");
   const eyeColor = document.getElementById("eye-color");
   const bgColor = document.getElementById("bg-color");
   const borderColor = document.getElementById("border-color");
@@ -53,6 +56,23 @@ document.addEventListener("DOMContentLoaded", () => {
     context.putImageData(imageData, x, y);
   }
 
+  function applyModuleGradient(context, width, height, background) {
+    if (!gradientToggle.checked) return;
+    const start = hexToRgb(gradientStartColor.value);
+    const end = hexToRgb(gradientEndColor.value);
+    const imageData = context.getImageData(0, 0, width, height);
+    for (let index = 0; index < imageData.data.length; index += 4) {
+      const isBackground = imageData.data[index] === background[0] && imageData.data[index + 1] === background[1] && imageData.data[index + 2] === background[2];
+      if (isBackground) continue;
+      const pixel = index / 4;
+      const ratio = ((pixel % width) / Math.max(1, width - 1) + Math.floor(pixel / width) / Math.max(1, height - 1)) / 2;
+      imageData.data[index] = Math.round(start[0] + (end[0] - start[0]) * ratio);
+      imageData.data[index + 1] = Math.round(start[1] + (end[1] - start[1]) * ratio);
+      imageData.data[index + 2] = Math.round(start[2] + (end[2] - start[2]) * ratio);
+    }
+    context.putImageData(imageData, 0, 0);
+  }
+
   function drawUploadedImage(context, qrSize, border) {
     if (!uploadedImage) {
       return;
@@ -78,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     qrLayer.height = qrSize;
     const qrContext = qrLayer.getContext("2d", {willReadFrequently: true});
     qrContext.drawImage(qrCanvas, 0, 0, qrSize, qrSize);
+    applyModuleGradient(qrContext, qrSize, qrSize, hexToRgb(bgColor.value));
     const moduleCount = qrInstance?._oQRCode?.getModuleCount?.() || 0;
     if (moduleCount > 0 && eyeColor.value.toLowerCase() !== fgColor.value.toLowerCase()) {
       const eyeSize = Math.ceil(qrSize * 7 / moduleCount);
@@ -197,7 +218,8 @@ document.addEventListener("DOMContentLoaded", () => {
       generateQR();
     });
   });
-  [fgColor, eyeColor, bgColor, borderColor, logoBorderColor].forEach(node => node.addEventListener("input", generateQR));
+  [fgColor, eyeColor, bgColor, borderColor, logoBorderColor, gradientStartColor, gradientEndColor].forEach(node => node.addEventListener("input", generateQR));
+  gradientToggle.addEventListener("change", generateQR);
   logoFile.addEventListener("change", () => {
     void loadImage(logoFile.files?.[0] || null);
   });

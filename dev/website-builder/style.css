@@ -10,6 +10,8 @@
     --danger: #ef4444;
 }
 
+*, *::before, *::after { box-sizing: border-box; }
+
 body[data-dashboard-theme="water"] { --bg-dark: #0d1522; --panel-bg: rgba(12, 21, 37, 0.94); --panel-strong: rgba(10, 17, 29, 0.98); --accent: #59b6ff; --border: rgba(114, 190, 255, 0.18); --text-main: #eef5ff; --text-dim: #a9bfd8; }
 body[data-dashboard-theme="nature"] { --bg-dark: #11170f; --panel-bg: rgba(18, 24, 16, 0.94); --panel-strong: rgba(13, 19, 11, 0.98); --accent: #82cd5f; --border: rgba(146, 213, 120, 0.18); --text-main: #f2f8ee; --text-dim: #bccfaf; }
 body[data-dashboard-theme="rock"] { --bg-dark: #151515; --panel-bg: rgba(24, 24, 24, 0.95); --panel-strong: rgba(16, 16, 16, 0.98); --accent: #c4ae8a; --border: rgba(196, 190, 176, 0.18); --text-main: #f2efea; --text-dim: #b7aea2; }

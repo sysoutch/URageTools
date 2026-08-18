@@ -68,31 +68,31 @@
         <div class="tool-group">
           <p class="mini-label">Action</p>
           <div class="mode-tabs brush-action-tabs" aria-label="Brush action">
-            <button class="mode-tab active" data-brush-mode="paint" type="button">Paint <kbd>P</kbd></button>
-            <button class="mode-tab" data-brush-mode="erase" type="button">Erase <kbd>E</kbd></button>
-            <button class="mode-tab" data-brush-mode="fill" type="button">Fill <kbd>F</kbd></button>
-            <button class="mode-tab" data-brush-mode="pick" type="button">Pick <kbd>I</kbd></button>
-            <button class="mode-tab" data-brush-mode="move" type="button">Move <kbd>M</kbd></button>
+            <button class="mode-tab brush-icon-button active" data-brush-mode="paint" type="button" aria-label="Paint" title="Paint (P)"><span aria-hidden="true">✎</span><kbd>P</kbd></button>
+            <button class="mode-tab brush-icon-button" data-brush-mode="erase" type="button" aria-label="Erase" title="Erase (E)"><span aria-hidden="true">⌫</span><kbd>E</kbd></button>
+            <button class="mode-tab brush-icon-button" data-brush-mode="fill" type="button" aria-label="Fill" title="Fill (F)"><span aria-hidden="true">▧</span><kbd>F</kbd></button>
+            <button class="mode-tab brush-icon-button" data-brush-mode="pick" type="button" aria-label="Pick tile" title="Pick tile (I)"><span aria-hidden="true">◉</span><kbd>I</kbd></button>
+            <button class="mode-tab brush-icon-button" data-brush-mode="move" type="button" aria-label="Move" title="Move (M)"><span aria-hidden="true">✥</span><kbd>M</kbd></button>
           </div>
         </div>
         <div class="tool-group paint-options-card">
           <p class="mini-label">Paint Options</p>
           <div class="paint-source-tabs" aria-label="Paint source mode">
-            <button class="paint-source-tab active" data-paint-source-mode="stamp" type="button">Stamp</button>
-            <button class="paint-source-tab" data-paint-source-mode="random" type="button">Random</button>
-            <button class="paint-source-tab" data-paint-source-mode="forward" type="button">Forward</button>
-            <button class="paint-source-tab" data-paint-source-mode="reverse" type="button">Reverse</button>
-            <button class="paint-source-tab" data-paint-source-mode="pingpong" type="button">Ping-pong</button>
-            <button class="paint-source-tab" data-paint-source-mode="noise" type="button">Cell noise</button>
+            <button class="paint-source-tab brush-icon-button active" data-paint-source-mode="stamp" type="button" aria-label="Stamp" title="Stamp"><span aria-hidden="true">▣</span></button>
+            <button class="paint-source-tab brush-icon-button" data-paint-source-mode="random" type="button" aria-label="Random" title="Random"><span aria-hidden="true">⤨</span></button>
+            <button class="paint-source-tab brush-icon-button" data-paint-source-mode="forward" type="button" aria-label="Forward order" title="Forward order"><span aria-hidden="true">→</span></button>
+            <button class="paint-source-tab brush-icon-button" data-paint-source-mode="reverse" type="button" aria-label="Reverse order" title="Reverse order"><span aria-hidden="true">←</span></button>
+            <button class="paint-source-tab brush-icon-button" data-paint-source-mode="pingpong" type="button" aria-label="Ping-pong order" title="Ping-pong order"><span aria-hidden="true">↔</span></button>
+            <button class="paint-source-tab brush-icon-button" data-paint-source-mode="noise" type="button" aria-label="Cell noise" title="Cell noise"><span aria-hidden="true">✦</span></button>
           </div>
         </div>
         <div class="tool-group">
           <p class="mini-label">Shape</p>
           <div class="mode-tabs brush-shape-tabs" aria-label="Brush shape">
-            <button class="mode-tab active" data-map-shape-mode="single" type="button">Single <kbd>1</kbd></button>
-            <button class="mode-tab" data-map-shape-mode="rect" type="button">Rect <kbd>2</kbd></button>
-            <button class="mode-tab" data-map-shape-mode="rectOutline" type="button">Rect Outline <kbd>4</kbd></button>
-            <button class="mode-tab" data-map-shape-mode="circle" type="button">Circle <kbd>3</kbd></button>
+            <button class="mode-tab brush-icon-button active" data-map-shape-mode="single" type="button" aria-label="Single cell" title="Single cell (1)"><span aria-hidden="true">▪</span><kbd>1</kbd></button>
+            <button class="mode-tab brush-icon-button" data-map-shape-mode="rect" type="button" aria-label="Rectangle" title="Rectangle (2)"><span aria-hidden="true">■</span><kbd>2</kbd></button>
+            <button class="mode-tab brush-icon-button" data-map-shape-mode="rectOutline" type="button" aria-label="Rectangle outline" title="Rectangle outline (4)"><span aria-hidden="true">□</span><kbd>4</kbd></button>
+            <button class="mode-tab brush-icon-button" data-map-shape-mode="circle" type="button" aria-label="Circle" title="Circle (3)"><span aria-hidden="true">●</span><kbd>3</kbd></button>
           </div>
         </div>
         <div class="layer-sidebar-card">
@@ -112,23 +112,23 @@
         <div class="tool-group">
           <p class="mini-label">Transform</p>
           <div class="toggle-grid">
-            <label class="toggle-pill"><input id="mirrorXInput" type="checkbox"><span class="toggle-pill-label">Mirror X</span><kbd>X</kbd></label>
-            <label class="toggle-pill"><input id="mirrorYInput" type="checkbox"><span class="toggle-pill-label">Mirror Y</span><kbd>Y</kbd></label>
-            <label class="toggle-pill"><input id="brushMirrorXInput" type="checkbox"><span class="toggle-pill-label">Brush Mirror X</span></label>
-            <label class="toggle-pill"><input id="brushMirrorYInput" type="checkbox"><span class="toggle-pill-label">Brush Mirror Y</span></label>
-            <label class="toggle-pill toggle-pill-wide"><input id="showGridInput" type="checkbox" checked><span class="toggle-pill-label">Grid</span><kbd>G</kbd></label>
+            <label class="toggle-pill" aria-label="Mirror map horizontally" title="Mirror map horizontally (X)"><input id="mirrorXInput" type="checkbox"><span class="toggle-pill-icon" aria-hidden="true">↔</span><kbd>X</kbd></label>
+            <label class="toggle-pill" aria-label="Mirror map vertically" title="Mirror map vertically (Y)"><input id="mirrorYInput" type="checkbox"><span class="toggle-pill-icon" aria-hidden="true">↕</span><kbd>Y</kbd></label>
+            <label class="toggle-pill" aria-label="Mirror brush horizontally" title="Mirror brush horizontally"><input id="brushMirrorXInput" type="checkbox"><span class="toggle-pill-icon" aria-hidden="true">⇄</span></label>
+            <label class="toggle-pill" aria-label="Mirror brush vertically" title="Mirror brush vertically"><input id="brushMirrorYInput" type="checkbox"><span class="toggle-pill-icon" aria-hidden="true">⇅</span></label>
+            <label class="toggle-pill toggle-pill-wide" aria-label="Show grid" title="Show grid (G)"><input id="showGridInput" type="checkbox" checked><span class="toggle-pill-icon" aria-hidden="true">#</span><kbd>G</kbd></label>
           </div>
           <div class="field-grid">
-            <button id="flipBrushXButton" type="button">Flip Brush X</button>
-            <button id="flipBrushYButton" type="button">Flip Brush Y</button>
+            <button id="flipBrushXButton" class="brush-icon-button" type="button" aria-label="Flip brush horizontally" title="Flip brush horizontally"><span aria-hidden="true">⇄</span></button>
+            <button id="flipBrushYButton" class="brush-icon-button" type="button" aria-label="Flip brush vertically" title="Flip brush vertically"><span aria-hidden="true">⇅</span></button>
           </div>
         </div>
         <div class="tool-group">
           <p class="mini-label">Selection</p>
           <div class="field-grid selection-actions">
-            <button id="selectAllMapButton" type="button">Select All <kbd>Ctrl+A</kbd></button>
-            <button id="flipSelectionXButton" type="button">Flip Selection X</button>
-            <button id="flipSelectionYButton" type="button">Flip Selection Y</button>
+            <button id="selectAllMapButton" class="brush-icon-button" type="button" aria-label="Select all" title="Select all (Ctrl+A)"><span aria-hidden="true">▣</span><kbd>Ctrl+A</kbd></button>
+            <button id="flipSelectionXButton" class="brush-icon-button" type="button" aria-label="Flip selection horizontally" title="Flip selection horizontally"><span aria-hidden="true">⇄</span></button>
+            <button id="flipSelectionYButton" class="brush-icon-button" type="button" aria-label="Flip selection vertically" title="Flip selection vertically"><span aria-hidden="true">⇅</span></button>
           </div>
         </div>
         <p class="hint">Choose an action and combine it with Single, Rect, Rect Outline, or Circle. Hold Ctrl to draw a perfect straight line. Ctrl+A selects the map, or the whole tileset while hovering it.</p>

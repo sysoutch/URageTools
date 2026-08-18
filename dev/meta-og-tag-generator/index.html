@@ -41,6 +41,8 @@
             gap: 30px;
         }
 
+        *, *::before, *::after { box-sizing: border-box; }
+
         body[data-dashboard-sidebar-externalized] .container {
             grid-template-columns: minmax(0, 1fr);
         }
@@ -179,7 +181,7 @@
             <div class="card-site-name">Website Preview</div>
             <div class="card-title" id="previewTitle">Page Title Goes Here</div>
             <div class="card-desc" id="previewDesc">Your site description will appear here when you share your link on Discord, Slack, or Facebook. Make it catchy!</div>
-            <img src="https://via.placeholder.com/600x315/202225/5865f2?text=OG+Image+Preview" id="previewImg" class="card-image">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='315' viewBox='0 0 600 315'%3E%3Crect width='600' height='315' fill='%23202225'/%3E%3Ctext x='300' y='160' text-anchor='middle' fill='%235865f2' font-family='sans-serif' font-size='28'%3EOG Image Preview%3C/text%3E%3C/svg%3E" id="previewImg" class="card-image">
         </div>
 
         <div class="code-container">
@@ -198,7 +200,7 @@
         const title = document.getElementById('metaTitle').value || 'Page Title Goes Here';
         const desc = document.getElementById('metaDesc').value || 'Your site description will appear here when you share your link on Discord, Slack, or Facebook. Make it catchy!';
         const url = document.getElementById('metaUrl').value || 'https://yoursite.com';
-        const img = document.getElementById('metaImg').value || 'https://via.placeholder.com/600x315/202225/5865f2?text=OG+Image+Preview';
+        const img = document.getElementById('metaImg').value || document.getElementById('previewImg').src;
 
         // Update Preview
         document.getElementById('previewTitle').textContent = title;

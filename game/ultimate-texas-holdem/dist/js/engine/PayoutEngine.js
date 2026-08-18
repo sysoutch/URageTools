@@ -188,12 +188,15 @@ export class PayoutEngine {
         });
       }
     } else if (options.pushMainBetsWhenDealerDisqualified && !dealerQualifies) {
-      result.antePayout += anteBet;
+      const paysWinningAnte = options.dealerDisqualifiedAnteMode === 'PAY_ON_PLAYER_WIN' && comparison > 0;
+      result.antePayout += paysWinningAnte ? anteBet * 2 : anteBet;
       result.blindPayout += blindBet;
       result.playPayout += playBet;
       result.details.push({
-        type: 'push',
-        message: 'Dealer does not qualify - Ante, Blind, and Play are returned. Trips settles independently.',
+        type: paysWinningAnte ? 'ante' : 'push',
+        message: paysWinningAnte
+          ? "Dealer didn't qualify - winning Ante pays 1 to 1; Blind and Play are returned. Trips settles independently."
+          : "Dealer didn't qualify - Ante, Blind, and Play are returned. Trips settles independently.",
       });
     } else if (comparison < 0) {
       result.details.push({

@@ -5,6 +5,8 @@ import {
     OLLAMA_TAGS_PATH
 } from '../shared.js';
 
+const hasWordleServerProxy = !window.location.pathname.startsWith('/tools/');
+
 export function installGameManagerModelUIMethods(GameManager) {
     class ModelUIMethods {
         getFallbackModelNames() {
@@ -156,6 +158,14 @@ export function installGameManagerModelUIMethods(GameManager) {
             const wordCustomInput = document.getElementById('custom-word-model');
             const previousWordModel = this.getSelectedModel('word-model', 'custom-word-model', DEFAULT_WORD_MODEL);
             const previousAIModels = this.getSelectedAIModels();
+
+            if (!hasWordleServerProxy) {
+                this.availableModelNames = this.getFallbackModelNames();
+                this.configureModelSelect(wordModelSelect, wordCustomInput, previousWordModel, DEFAULT_WORD_MODEL);
+                this.toggleCustomModelInput('word-model', 'custom-word-model');
+                this.renderAIModelControls(previousAIModels);
+                return;
+            }
 
             try {
                 const response = await fetch(OLLAMA_TAGS_PATH);

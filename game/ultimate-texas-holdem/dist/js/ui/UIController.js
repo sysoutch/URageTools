@@ -275,7 +275,9 @@ export class UIController {
     const playAmountEl = document.getElementById('play-amount');
     const tripsAmountEl = document.getElementById('trips-amount');
     const handsPlayedEl = document.getElementById('hands-played-display');
-    const selectedPlayMultiplier = gameState.selectedPlayMultiplier || 3;
+    const selectedPlayMultiplier = gameState.preflopRaiseMode === 'THREE_ONLY'
+      ? 3
+      : gameState.selectedPlayMultiplier || 3;
     const playDisplayAmount = gameState.playBet > 0
       ? gameState.playBet
       : (gameState.round === 'ante' || gameState.round === 'preflop') && (gameState.anteBet || 0) > 0
@@ -411,7 +413,13 @@ export class UIController {
 
     const lastResultEl = document.getElementById('last-result-display');
     if (lastResultEl) {
-      lastResultEl.textContent = outcomeText === 'LOSE' ? 'Lose' : outcomeText.charAt(0) + outcomeText.slice(1).toLowerCase();
+      const shortOutcomeLabels = {
+        WIN: 'Win',
+        LOSE: 'Lose',
+        "Dealer didn't qualify": "Dealer didn't qualify",
+        'Dealer has the same hand as you': 'Tie with dealer',
+      };
+      lastResultEl.textContent = shortOutcomeLabels[outcomeText] || outcomeText;
     }
   }
 
@@ -632,13 +640,14 @@ export class UIController {
     const canAdjustPreflopMultiplier =
       (gameState.round === 'ante' && gameState.anteBet > 0)
       || gameState.round === 'preflop';
-    const selectedPlayMultiplier = gameState.selectedPlayMultiplier || 3;
+    const allowsFourX = gameState.preflopRaiseMode !== 'THREE_ONLY';
+    const selectedPlayMultiplier = allowsFourX ? gameState.selectedPlayMultiplier || 3 : 3;
     if (playMinus) playMinus.disabled = !canAdjustPreflopMultiplier || selectedPlayMultiplier <= 3;
-    if (playPlus) playPlus.disabled = !canAdjustPreflopMultiplier || selectedPlayMultiplier >= 4;
+    if (playPlus) playPlus.disabled = !canAdjustPreflopMultiplier || !allowsFourX || selectedPlayMultiplier >= 4;
     if (playInput) {
       playInput.disabled = !canAdjustPreflopMultiplier;
       playInput.min = String((gameState.anteBet || 0) * 3);
-      playInput.max = String((gameState.anteBet || 0) * 4);
+      playInput.max = String((gameState.anteBet || 0) * (allowsFourX ? 4 : 3));
       playInput.step = String(gameState.anteBet || 5);
     }
 
@@ -779,7 +788,8 @@ export class UIController {
     const gameState = state.get();
     if (!['ante', 'preflop'].includes(gameState.round) || gameState.anteBet === 0) return;
 
-    const nextMultiplier = Math.max(3, Math.min(4, (gameState.selectedPlayMultiplier || 3) + delta));
+    const maximumMultiplier = gameState.preflopRaiseMode === 'THREE_ONLY' ? 3 : 4;
+    const nextMultiplier = Math.max(3, Math.min(maximumMultiplier, (gameState.selectedPlayMultiplier || 3) + delta));
     state.set({ selectedPlayMultiplier: nextMultiplier });
   }
 
@@ -871,7 +881,11 @@ export class UIController {
     if (!['preflop', 'flop', 'river'].includes(gameState.round)) return;
 
     const amount = gameState.round === 'preflop'
-      ? gameState.anteBet * (gameState.selectedPlayMultiplier || 3)
+      ? gameState.anteBet * (
+          gameState.preflopRaiseMode === 'THREE_ONLY'
+            ? 3
+            : gameState.selectedPlayMultiplier || 3
+        )
       : gameState.round === 'flop'
         ? gameState.anteBet * 2
         : gameState.anteBet;
@@ -978,6 +992,10 @@ export class UIController {
    * Resolve a typed play amount to the nearest legal preflop multiplier.
    */
   #resolvePlayMultiplierFromAmount(amount, anteBet) {
+    if (state.get('preflopRaiseMode') === 'THREE_ONLY') {
+      return 3;
+    }
+
     const threeX = anteBet * 3;
     const fourX = anteBet * 4;
     return Math.abs(amount - threeX) <= Math.abs(amount - fourX) ? 3 : 4;
@@ -1478,7 +1496,7 @@ export class UIController {
     modal.innerHTML = `
       <form id="hand-warning-settings-form">
         <div class="modal__header">
-          <h2 class="modal__header-title">Hand Protection</h2>
+          <h2 class="modal__header-title">Table Settings</h2>
           <button class="modal__header-close" type="button" aria-label="Close">&times;</button>
         </div>
         <div class="modal__body settings-modal__body">
@@ -1504,12 +1522,28 @@ export class UIController {
           </label>
           <label class="settings-modal__toggle">
             <input type="checkbox" name="dealerQualificationEnabled" ${settings.dealerQualificationEnabled !== false ? 'checked' : ''} />
-            <span>Require the dealer to qualify; otherwise return Ante, Blind, and Play</span>
+            <span>Require the dealer to qualify and apply the settlement rule below</span>
           </label>
           <label class="settings-modal__field">
             <span>Minimum dealer hand</span>
             <select name="dealerQualificationMinimum">${dealerQualificationMarkup}</select>
           </label>
+          <label class="settings-modal__field">
+            <span>When the dealer does not qualify</span>
+            <select name="dealerDisqualifiedAnteMode">
+              <option value="PUSH" ${settings.dealerDisqualifiedAnteMode !== 'PAY_ON_PLAYER_WIN' ? 'selected' : ''}>Push Ante, Blind, and Play</option>
+              <option value="PAY_ON_PLAYER_WIN" ${settings.dealerDisqualifiedAnteMode === 'PAY_ON_PLAYER_WIN' ? 'selected' : ''}>Pay winning Ante; push Blind and Play</option>
+            </select>
+          </label>
+          <p class="settings-modal__hint">The winning-Ante option returns the Ante plus a 1:1 win when your hand beats the dealer. Trips still settles independently.</p>
+          <label class="settings-modal__field">
+            <span>Before-flop Play wager</span>
+            <select name="preflopRaiseMode">
+              <option value="THREE_ONLY" ${settings.preflopRaiseMode === 'THREE_ONLY' ? 'selected' : ''}>3x only</option>
+              <option value="THREE_OR_FOUR" ${settings.preflopRaiseMode !== 'THREE_ONLY' ? 'selected' : ''}>3x or 4x</option>
+            </select>
+          </label>
+          <p class="settings-modal__hint">Choose whether the player may raise 3x only or choose between 3x and 4x before the flop.</p>
           <p class="settings-modal__hint">Default: pair of fours. Trips always settles from the player's hand, even when the dealer does not qualify.</p>
           <p class="settings-modal__hint">Warnings use made hands only. Draws do not trigger a confirmation.</p>
         </div>
@@ -1534,6 +1568,11 @@ export class UIController {
         debugRevealDealerCards: formData.has('debugRevealDealerCards'),
         dealerQualificationEnabled: formData.has('dealerQualificationEnabled'),
         dealerQualificationMinimum: formData.get('dealerQualificationMinimum'),
+        dealerDisqualifiedAnteMode: formData.get('dealerDisqualifiedAnteMode'),
+        preflopRaiseMode: formData.get('preflopRaiseMode'),
+        selectedPlayMultiplier: formData.get('preflopRaiseMode') === 'THREE_ONLY'
+          ? 3
+          : state.get('selectedPlayMultiplier'),
       });
       close();
     });

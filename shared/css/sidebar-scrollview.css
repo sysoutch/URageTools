@@ -36,6 +36,38 @@ body[data-dashboard-theme] {
   overflow: hidden !important;
 }
 
+/* Dashboard workspaces externalize a tool's control rail. In that mode the
+   iframe, not the document, defines the viewport; content must be allowed to
+   grow and scroll instead of being clipped by the normal standalone 100vh shell. */
+body[data-dashboard-theme][data-dashboard-sidebar-externalized="true"] {
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  overflow: auto !important;
+  scrollbar-gutter: stable;
+}
+
+body[data-dashboard-theme][data-dashboard-sidebar-externalized="true"] :where(.tool-layout, .tool-shell) {
+  height: auto !important;
+  min-height: 100% !important;
+}
+
+/* Dashboard workspaces externalize a tool's control rail. In that mode the
+   iframe, not the document, defines the viewport; content must be allowed to
+   grow and scroll instead of being clipped by the normal standalone 100vh shell. */
+body[data-dashboard-theme][data-dashboard-sidebar-externalized="true"] {
+  height: auto !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  overflow: auto !important;
+  scrollbar-gutter: stable;
+}
+
+body[data-dashboard-theme][data-dashboard-sidebar-externalized="true"] :where(.tool-layout, .tool-shell) {
+  height: auto !important;
+  min-height: 100% !important;
+}
+
 html:has(body[data-dashboard-scroll-document]),
 body[data-dashboard-theme][data-dashboard-scroll-document] {
   height: auto !important;

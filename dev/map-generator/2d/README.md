@@ -339,7 +339,7 @@ Use `tools/dev/map-generator/3d` when you want:
 * No backend required.
 * No external dependencies beyond included local libraries.
 * Supports animated rendering loops.
-* Syncs dashboard theme tokens when opened inside URage Studio.
+* Syncs dashboard theme tokens when opened inside URage NOW.
 * Optimized for rapid experimentation.
 * Built for extensibility.
 

@@ -2,6 +2,14 @@
 
 A powerful browser-based 2D tilemap editor designed for fast level building, layered environment painting, procedural workflows, and game-ready export pipelines.
 
+## Compact Brush Controls
+
+The Brush foldout is designed to remain usable inside the dashboard's narrow tool sidebar. Brush action, source mode, shape, transforms, and selection operations use icon-first controls with accessible labels and hover tooltips; keyboard shortcuts remain available without forcing long text into tiny buttons.
+
+## Compact Brush Controls
+
+The Brush foldout is designed to remain usable inside the dashboard's narrow tool sidebar. Brush action, source mode, shape, transforms, and selection operations use icon-first controls with accessible labels and hover tooltips; keyboard shortcuts remain available without forcing long text into tiny buttons.
+
 Unity package source for an EditorWindow version now lives in `unity-package/com.urage.tilemap-creator/`.
 
 Built for indie developers, pixel artists, level designers, RPG creators, sandbox builders, and rapid prototyping workflows.
@@ -436,7 +444,7 @@ The first loaded tileset starts at `0`, and additional tilesets continue indexin
 * Optimized for large maps.
 * Designed for extensibility.
 * Compatible with external pipelines.
-* Syncs dashboard theme tokens when opened inside URage Studio.
+* Syncs dashboard theme tokens when opened inside URage NOW.
 
 ---
 

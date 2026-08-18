@@ -30,6 +30,7 @@ import { HandEvaluator, HAND_RANKINGS as EVALUATOR_RANKINGS } from '../poker/Han
 import { dealerMeetsQualification } from '../poker/DealerQualification.js';
 import { BettingEngine } from './BettingEngine.js';
 import { PayoutEngine } from './PayoutEngine.js';
+import { resolveMainHandOutcome } from './MainHandOutcome.js';
 import { EVENTS, MIN_ANTE, ANIMATION_DURATIONS } from '../config/constants.js';
 
 export class GameEngine {
@@ -179,7 +180,9 @@ export class GameEngine {
     const previousAnteBet = previousState.anteBet || 0;
     const usesOfficialRules = this.#usesOfficialRules(previousState.tableRulePreset);
     const previousTripsBet = previousState.tripsBet || 0;
-    const previousPlayMultiplier = previousState.selectedPlayMultiplier || 3;
+    const previousPlayMultiplier = previousState.preflopRaiseMode === 'THREE_ONLY'
+      ? 3
+      : previousState.selectedPlayMultiplier || 3;
 
     this.#isProcessing = true;
     this.#communityCards = [];
@@ -565,6 +568,7 @@ export class GameEngine {
         blindBet,
         tableRulePreset: state.get('tableRulePreset'),
         pushMainBetsWhenDealerDisqualified: state.get('dealerQualificationEnabled') !== false,
+        dealerDisqualifiedAnteMode: state.get('dealerDisqualifiedAnteMode'),
       }
     );
 
@@ -587,9 +591,11 @@ export class GameEngine {
       timestamp: Date.now(),
     });
 
-    const mainHandOutcome = this.#getMainHandOutcomeLabel({
+    const mainHandOutcome = resolveMainHandOutcome({
       comparison,
       isFolded: this.#humanPlayer.isFolded,
+      dealerQualifies,
+      dealerQualificationEnabled: state.get('dealerQualificationEnabled') !== false,
     });
 
     bus.emit(EVENTS.PAYOUT_COMPLETE, {
@@ -836,25 +842,4 @@ export class GameEngine {
       && this.#humanPlayer.bankroll >= amount;
   }
 
-  /**
-   * Resolve the headline outcome from the main hand only.
-   * Side bets can change net profit, but they should not rename a lost hand to a win.
-   * @param {Object} outcomeData - Main-hand outcome inputs.
-   * @param {number} outcomeData.comparison - Hand comparison result.
-   * @param {boolean} outcomeData.isFolded - Whether the player folded.
-   * @returns {'WIN'|'LOSE'|'PUSH'}
-   */
-  #getMainHandOutcomeLabel(outcomeData) {
-    const { comparison, isFolded } = outcomeData;
-
-    if (isFolded || comparison < 0) {
-      return 'LOSE';
-    }
-
-    if (comparison === 0) {
-      return 'PUSH';
-    }
-
-    return 'WIN';
-  }
 }

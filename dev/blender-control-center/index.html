@@ -22,21 +22,44 @@ html, body {
     cursor: none;
     user-select: none;
 }
+
+#stream-status {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    padding: 28px;
+    color: #f6f1ee;
+    font: 600 16px/1.5 system-ui, sans-serif;
+    text-align: center;
+    background: radial-gradient(circle at top, rgba(255, 138, 77, 0.2), transparent 44%), #111;
+}
+
+#stream-status p { max-width: 34rem; margin: 0; }
 </style>
 </head>
 
 <body data-dashboard-theme="dark">
 <img id="screen" draggable="false">
+<div id="stream-status"><p>Blender Browser Stream is not connected. Start the local Blender stream service to control its desktop session; this dashboard page cannot create that service.</p></div>
 
 <script>
 const img = document.getElementById("screen");
-const ws = new WebSocket("ws://127.0.0.1:8765");
+const status = document.getElementById("stream-status");
+const canUseLocalStream = !window.location.pathname.startsWith("/tools/");
+let ws = null;
 
-ws.binaryType = "arraybuffer";
+if (canUseLocalStream) {
+    ws = new WebSocket("ws://127.0.0.1:8765");
+} else {
+    status.style.display = "grid";
+}
+
+if (ws) ws.binaryType = "arraybuffer";
 
 let lastUrl = null;
 
-ws.onmessage = (event) => {
+if (ws) ws.onmessage = (event) => {
     const blob = new Blob([event.data], { type: "image/jpeg" });
     const url = URL.createObjectURL(blob);
 
@@ -50,7 +73,7 @@ ws.onmessage = (event) => {
 };
 
 function send(data) {
-    if (ws.readyState === WebSocket.OPEN) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify(data));
     }
 }
