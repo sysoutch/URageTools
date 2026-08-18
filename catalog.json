@@ -1,0 +1,537 @@
+{
+  "categories": [
+    {
+      "id": "art",
+      "label": "Art & 3D",
+      "icon": "palette",
+      "description": "Visual art, texture, animation, and 3D utilities."
+    },
+    {
+      "id": "audio",
+      "label": "Audio",
+      "icon": "soundwave",
+      "description": "Audio editing, synthesis, and analysis tools."
+    },
+    {
+      "id": "dev",
+      "label": "Development",
+      "icon": "code-slash",
+      "description": "Developer utilities and content-authoring helpers."
+    },
+    {
+      "id": "game",
+      "label": "Games",
+      "icon": "controller",
+      "description": "Playable experiments and game-development tools."
+    },
+    {
+      "id": "plan",
+      "label": "Planning",
+      "icon": "kanban",
+      "description": "Planning, inspection, and project-organization tools."
+    },
+    {
+      "id": "video",
+      "label": "Video",
+      "icon": "film",
+      "description": "Video conversion, inspection, and production tools."
+    }
+  ],
+  "tools": [
+    {
+      "id": "art__3d-model-viewer",
+      "category": "art",
+      "slug": "3d-model-viewer",
+      "title": "3D Model Viewer",
+      "description": "A feature-rich 3D model viewer built with Three.js that supports GLB, GLTF, and OBJ formats with comprehensive controls.",
+      "href": "/art/3d-model-viewer/",
+      "thumbnail": "/art/3d-model-viewer/thumbnail.png"
+    },
+    {
+      "id": "art__albedo-tools",
+      "category": "art",
+      "slug": "albedo-tools",
+      "title": "Albedo Tools",
+      "description": "This package contains:",
+      "href": "/art/albedo-tools/",
+      "thumbnail": ""
+    },
+    {
+      "id": "art__color-palette-extractor",
+      "category": "art",
+      "slug": "color-palette-extractor",
+      "title": "Color Palette Extractor",
+      "description": "A powerful tool for extracting color palettes from images with accessibility analysis and WCAG compliance checking.",
+      "href": "/art/color-palette-extractor/",
+      "thumbnail": "/art/color-palette-extractor/thumbnail.png"
+    },
+    {
+      "id": "art__color-swapper",
+      "category": "art",
+      "slug": "color-swapper",
+      "title": "Color Swapper",
+      "description": "A powerful web-based tool for swapping and modifying colors in images. This tool allows you to select colors from an image and swap them with new colors, as well as apply hardware-style color palettes to your images.",
+      "href": "/art/color-swapper/",
+      "thumbnail": "/art/color-swapper/thumbnail.png"
+    },
+    {
+      "id": "art__favicon-creator",
+      "category": "art",
+      "slug": "favicon-creator",
+      "title": "Favicon Creator",
+      "description": "A powerful, easy-to-use tool for generating production-ready favicon bundles from any image. This tool creates all necessary favicon formats including 16x16, 32x32, 180x180, 192x192, and 512x512 pixel icons, along with a Web App Manifest file for modern web applications.",
+      "href": "/art/favicon-creator/",
+      "thumbnail": "/art/favicon-creator/thumbnail.png"
+    },
+    {
+      "id": "art__gif-viewer",
+      "category": "art",
+      "slug": "gif-viewer",
+      "title": "Gif Viewer",
+      "description": "Complete fixed standalone version.",
+      "href": "/art/gif-viewer/",
+      "thumbnail": "/art/gif-viewer/thumbnail.png"
+    },
+    {
+      "id": "art__image-crop-and-scale",
+      "category": "art",
+      "slug": "image-crop-and-scale",
+      "title": "Image Crop And Scale",
+      "description": "A powerful image cropping and scaling tool designed for game developers and digital artists. Automatically calculates platform-specific dimensions and provides precise control over image processing for multiple platforms and custom requirements.",
+      "href": "/art/image-crop-and-scale/",
+      "thumbnail": "/art/image-crop-and-scale/thumbnail.png"
+    },
+    {
+      "id": "art__image-split-and-combine",
+      "category": "art",
+      "slug": "image-split-and-combine",
+      "title": "Image Split And Combine",
+      "description": "This tool allows you to split images into smaller pieces and combine them back together. It's useful for creating image puzzles, tile-based graphics, or preparing images for specific applications.",
+      "href": "/art/image-split-and-combine/",
+      "thumbnail": "/art/image-split-and-combine/thumbnail.png"
+    },
+    {
+      "id": "art__image-to-svg-converter",
+      "category": "art",
+      "slug": "image-to-svg-converter",
+      "title": "Image To Svg Converter",
+      "description": "A powerful, client-side tool for converting raster images to scalable vector graphics (SVG) directly in your browser. This tool uses the ImageTracer.js library to transform pixel-based images into clean, editable SVG vector graphics without any server processing.",
+      "href": "/art/image-to-svg-converter/",
+      "thumbnail": "/art/image-to-svg-converter/thumbnail.png"
+    },
+    {
+      "id": "art__image-transparency-tool",
+      "category": "art",
+      "slug": "image-transparency-tool",
+      "title": "Image Transparency Tool",
+      "description": "A simple and intuitive web-based tool for adjusting image transparency and downloading transparent PNG files.",
+      "href": "/art/image-transparency-tool/",
+      "thumbnail": "/art/image-transparency-tool/thumbnail.png"
+    },
+    {
+      "id": "art__normalmap-maker",
+      "category": "art",
+      "slug": "normalmap-maker",
+      "title": "Normalmap Maker",
+      "description": "Browser-based tool for creating tangent-space normal maps from image textures, sprites, height maps, alpha masks, or batches of source images.",
+      "href": "/art/normalmap-maker/",
+      "thumbnail": ""
+    },
+    {
+      "id": "art__pixel-art-converter",
+      "category": "art",
+      "slug": "pixel-art-converter",
+      "title": "Pixel Art Converter",
+      "description": "A web-based tool for converting images into pixel art with customizable settings and high-quality output.",
+      "href": "/art/pixel-art-converter/",
+      "thumbnail": "/art/pixel-art-converter/thumbnail.png"
+    },
+    {
+      "id": "art__seamless-texture-maker",
+      "category": "art",
+      "slug": "seamless-texture-maker",
+      "title": "Seamless Texture Maker",
+      "description": "Create professional, tiling seamless textures for 3D models, web designs, and more with this powerful online tool.",
+      "href": "/art/seamless-texture-maker/",
+      "thumbnail": "/art/seamless-texture-maker/thumbnail.png"
+    },
+    {
+      "id": "art__spritesheet-utility",
+      "category": "art",
+      "slug": "spritesheet-utility",
+      "title": "Spritesheet Utility",
+      "description": "SpriteForge AI is a local-first spritesheet utility for quick grid slicing and AI-assisted sprite detection.",
+      "href": "/art/spritesheet-utility/",
+      "thumbnail": ""
+    },
+    {
+      "id": "art__svg-editor",
+      "category": "art",
+      "slug": "svg-editor",
+      "title": "Svg Editor",
+      "description": "A powerful browser-based SVG editor for creating and modifying vector graphics.",
+      "href": "/art/svg-editor/",
+      "thumbnail": "/art/svg-editor/thumbnail.png"
+    },
+    {
+      "id": "art__texture_map_painter",
+      "category": "art",
+      "slug": "texture_map_painter",
+      "title": "Texture Map Painter",
+      "description": "Paint and preview a compact material texture set containing albedo, height, tangent-space normal, roughness, and smoothness maps.",
+      "href": "/art/texture_map_painter/",
+      "thumbnail": ""
+    },
+    {
+      "id": "art__toon-image-shader",
+      "category": "art",
+      "slug": "toon-image-shader",
+      "title": "Toon Image Shader",
+      "description": "A browser-based image processing tool that converts photos and images into cel-shaded, comic-style toon art with customizable parameters. Uses HTML5 Canvas API for local, real-time processing — no server uploads required.",
+      "href": "/art/toon-image-shader/",
+      "thumbnail": ""
+    },
+    {
+      "id": "audio__audio-cutter",
+      "category": "audio",
+      "slug": "audio-cutter",
+      "title": "Audio Cutter",
+      "description": "Open this URage tool in your browser.",
+      "href": "/audio/audio-cutter/",
+      "thumbnail": ""
+    },
+    {
+      "id": "audio__audio-recorder",
+      "category": "audio",
+      "slug": "audio-recorder",
+      "title": "Audio Recorder",
+      "description": "Records microphone audio, shared tab/system audio, or both mixed together. The latest recording is exposed through `describeCurrentAssets` so the dashboard Tools workspace can send it to other tools or import flows.",
+      "href": "/audio/audio-recorder/",
+      "thumbnail": ""
+    },
+    {
+      "id": "audio__beat-maker",
+      "category": "audio",
+      "slug": "beat-maker",
+      "title": "Beat Maker",
+      "description": "Offline browser sequencer for sketching simple beats and musical loops inside the dashboard tools workspace.",
+      "href": "/audio/beat-maker/",
+      "thumbnail": "/audio/beat-maker/thumbnail.png"
+    },
+    {
+      "id": "audio__music-visualizer",
+      "category": "audio",
+      "slug": "music-visualizer",
+      "title": "Music Visualizer",
+      "description": "A retro-inspired, interactive music visualizer with multiple visualization modes and customizable display options. Built with vanilla JavaScript and the Web Audio API.",
+      "href": "/audio/music-visualizer/",
+      "thumbnail": "/audio/music-visualizer/thumbnail.png"
+    },
+    {
+      "id": "audio__sfx-generator",
+      "category": "audio",
+      "slug": "sfx-generator",
+      "title": "Sfx Generator",
+      "description": "A powerful Web Audio API-based sound effects generator that allows you to create custom audio samples with various waveforms, parameters, and presets.",
+      "href": "/audio/sfx-generator/",
+      "thumbnail": "/audio/sfx-generator/thumbnail.png"
+    },
+    {
+      "id": "dev__3d-model-sharer",
+      "category": "dev",
+      "slug": "3d-model-sharer",
+      "title": "3D Model Sharer",
+      "description": "Single-file static web tool for previewing, importing, and uploading Sketchfab 3D models.",
+      "href": "/dev/3d-model-sharer/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__blender-control-center",
+      "category": "dev",
+      "slug": "blender-control-center",
+      "title": "Blender Control Center",
+      "description": "Open this URage tool in your browser.",
+      "href": "/dev/blender-control-center/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__business-card-generator",
+      "category": "dev",
+      "slug": "business-card-generator",
+      "title": "Business Card Generator",
+      "description": "A self-contained dashboard tool for designing front and back business-card faces with Fabric.js. It supports text, uploaded logos, QR codes, solid or gradient backgrounds, and high-resolution PNG export.",
+      "href": "/dev/business-card-generator/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__csharp-class-extractor",
+      "category": "dev",
+      "slug": "csharp-class-extractor",
+      "title": "Csharp Class Extractor",
+      "description": "A developer utility to extract C# classes, structs, and enums from a single script file into separate files.",
+      "href": "/dev/csharp-class-extractor/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__css-background-generator",
+      "category": "dev",
+      "slug": "css-background-generator",
+      "title": "Css Background Generator",
+      "description": "A tool for creating beautiful and customizable CSS background styles with gradients, patterns, and effects.",
+      "href": "/dev/css-background-generator/",
+      "thumbnail": "/dev/css-background-generator/thumbnail.png"
+    },
+    {
+      "id": "dev__css-to-scss",
+      "category": "dev",
+      "slug": "css-to-scss",
+      "title": "Css To Scss",
+      "description": "A professional-grade utility to refactor monolithic CSS into modular SCSS partials with built-in compilation support.",
+      "href": "/dev/css-to-scss/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__dialogue-tree-visualizer",
+      "category": "dev",
+      "slug": "dialogue-tree-visualizer",
+      "title": "Dialogue Tree Visualizer",
+      "description": "This tool helps visualize dialogue trees for games, interactive stories, or any application that requires branching narrative structures. It allows you to create, edit, and visualize complex dialogue systems.",
+      "href": "/dev/dialogue-tree-visualizer/",
+      "thumbnail": "/dev/dialogue-tree-visualizer/thumbnail.png"
+    },
+    {
+      "id": "dev__electron-app-icon-generator",
+      "category": "dev",
+      "slug": "electron-app-icon-generator",
+      "title": "Electron App Icon Generator",
+      "description": "Easily generate icon files for your Electron applications from a single source image.",
+      "href": "/dev/electron-app-icon-generator/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__gamejuice-generator",
+      "category": "dev",
+      "slug": "gamejuice-generator",
+      "title": "Gamejuice Generator",
+      "description": "An interactive HTML5 dashboard for prototyping and previewing game \"juice\" — the visual and audio feedback effects that make games feel satisfying. Generate particles, screenshake, easing animations, sound timing, sprite animations, and export ready-to-use code snippets for popular game engines.",
+      "href": "/dev/gamejuice-generator/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__html-button-generator",
+      "category": "dev",
+      "slug": "html-button-generator",
+      "title": "Html Button Generator",
+      "description": "A tool that generates customizable HTML buttons with CSS styles and animations.",
+      "href": "/dev/html-button-generator/",
+      "thumbnail": "/dev/html-button-generator/thumbnail.png"
+    },
+    {
+      "id": "dev__html-separator-and-combiner",
+      "category": "dev",
+      "slug": "html-separator-and-combiner",
+      "title": "Html Separator And Combiner",
+      "description": "A tool that allows you to separate HTML elements into individual files and combine them back into a single HTML document.",
+      "href": "/dev/html-separator-and-combiner/",
+      "thumbnail": "/dev/html-separator-and-combiner/thumbnail.png"
+    },
+    {
+      "id": "dev__html-viewer",
+      "category": "dev",
+      "slug": "html-viewer",
+      "title": "Html Viewer",
+      "description": "A simple tool to view and preview HTML files directly in your browser with live reloading capabilities.",
+      "href": "/dev/html-viewer/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__image-metadata-remover",
+      "category": "dev",
+      "slug": "image-metadata-remover",
+      "title": "Image Metadata Remover",
+      "description": "Open this URage tool in your browser.",
+      "href": "/dev/image-metadata-remover/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__interactive-book",
+      "category": "dev",
+      "slug": "interactive-book",
+      "title": "Interactive Book",
+      "description": "Dashboard tool for assembling image, GIF, and video pages into a themed flip-book preview.",
+      "href": "/dev/interactive-book/",
+      "thumbnail": "/dev/interactive-book/thumbnail.png"
+    },
+    {
+      "id": "dev__map-generator",
+      "category": "dev",
+      "slug": "map-generator",
+      "title": "Map Generator",
+      "description": "A combined 2D and 3D map generator tool with a unified interface. Accessible via tabs: **2D** and **3D**.",
+      "href": "/dev/map-generator/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__markdown-viewer",
+      "category": "dev",
+      "slug": "markdown-viewer",
+      "title": "Markdown Viewer",
+      "description": "This tool allows you to view and preview Markdown or other text files in various formats. It's useful for quickly checking documentation or previewing markdown content.",
+      "href": "/dev/markdown-viewer/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__meta-og-tag-generator",
+      "category": "dev",
+      "slug": "meta-og-tag-generator",
+      "title": "Meta Og Tag Generator",
+      "description": "This tool generates Open Graph (OG) tags for web pages to improve social media sharing. It helps create rich previews when links are shared on platforms like Facebook, Twitter, and LinkedIn.",
+      "href": "/dev/meta-og-tag-generator/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__qr-code-creator",
+      "category": "dev",
+      "slug": "qr-code-creator",
+      "title": "Qr Code Creator",
+      "description": "This tool generates QR codes from text, URLs, or other data. It's useful for creating shareable links, contact information, or any data that can be encoded in a QR code.",
+      "href": "/dev/qr-code-creator/",
+      "thumbnail": "/dev/qr-code-creator/thumbnail.png"
+    },
+    {
+      "id": "dev__tetris",
+      "category": "dev",
+      "slug": "tetris",
+      "title": "tetris",
+      "description": "Tetris Clone",
+      "href": "/dev/tetris/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__tilemap-creator",
+      "category": "dev",
+      "slug": "tilemap-creator",
+      "title": "Tilemap Creator",
+      "description": "A powerful browser-based 2D tilemap editor designed for fast level building, layered environment painting, procedural workflows, and game-ready export pipelines.",
+      "href": "/dev/tilemap-creator/",
+      "thumbnail": "/dev/tilemap-creator/thumbnail.png"
+    },
+    {
+      "id": "dev__wave-animation",
+      "category": "dev",
+      "slug": "wave-animation",
+      "title": "Wave Animation",
+      "description": "Create beautiful, animated wave effects for your web pages using CSS and JavaScript.",
+      "href": "/dev/wave-animation/",
+      "thumbnail": "/dev/wave-animation/thumbnail.png"
+    },
+    {
+      "id": "dev__website-builder",
+      "category": "dev",
+      "slug": "website-builder",
+      "title": "Website Builder",
+      "description": "This tool provides a simple interface for building basic websites. It allows you to create and customize web pages without needing to write code.",
+      "href": "/dev/website-builder/",
+      "thumbnail": "/dev/website-builder/thumbnail.png"
+    },
+    {
+      "id": "game__html-game-51",
+      "category": "game",
+      "slug": "html-game-51",
+      "title": "Html Game 51",
+      "description": "A browser implementation of the regional dice game often known as \"5\", \"1\" or \"Sand\".",
+      "href": "/game/html-game-51/",
+      "thumbnail": ""
+    },
+    {
+      "id": "game__ultimate-texas-holdem",
+      "category": "game",
+      "slug": "ultimate-texas-holdem",
+      "title": "Ultimate Texas Holdem",
+      "description": "Static browser implementation of Ultimate Texas Hold'em for the URage Studio Games catalog.",
+      "href": "/game/ultimate-texas-holdem/",
+      "thumbnail": ""
+    },
+    {
+      "id": "game__WordleVS",
+      "category": "game",
+      "slug": "WordleVS",
+      "title": "WordleVS",
+      "description": "Open this URage tool in your browser.",
+      "href": "/game/WordleVS/",
+      "thumbnail": ""
+    },
+    {
+      "id": "plan__ai-legit-matrix",
+      "category": "plan",
+      "slug": "ai-legit-matrix",
+      "title": "Ai Legit Matrix",
+      "description": "An editable planning matrix for assessing AI use cases across source ownership, permission, protected-expression copying, transformation, and disclosure.",
+      "href": "/plan/ai-legit-matrix/",
+      "thumbnail": ""
+    },
+    {
+      "id": "plan__filer",
+      "category": "plan",
+      "slug": "filer",
+      "title": "Filer",
+      "description": "Dashboard-themed project analytics and data browsing tool for reviewing structured project information in sortable tables and charts.",
+      "href": "/plan/filer/",
+      "thumbnail": ""
+    },
+    {
+      "id": "plan__game-idea-generator",
+      "category": "plan",
+      "slug": "game-idea-generator",
+      "title": "Game Idea Generator",
+      "description": "This tool helps generate creative game ideas and concepts. It's perfect for game developers, designers, or anyone looking for inspiration for their next project.",
+      "href": "/plan/game-idea-generator/",
+      "thumbnail": "/plan/game-idea-generator/thumbnail.png"
+    },
+    {
+      "id": "plan__kanban",
+      "category": "plan",
+      "slug": "kanban",
+      "title": "Kanban",
+      "description": "A simple, privacy-focused Kanban board for managing your tasks and projects.",
+      "href": "/plan/kanban/",
+      "thumbnail": ""
+    },
+    {
+      "id": "plan__roadmap-builder",
+      "category": "plan",
+      "slug": "roadmap-builder",
+      "title": "Roadmap Builder",
+      "description": "This tool helps you create and visualize project roadmaps. It's useful for planning software development, game projects, or any multi-phase initiative.",
+      "href": "/plan/roadmap-builder/",
+      "thumbnail": "/plan/roadmap-builder/thumbnail.png"
+    },
+    {
+      "id": "video__media-converter",
+      "category": "video",
+      "slug": "media-converter",
+      "title": "Media Converter",
+      "description": "Browser-based converter for turning uploaded videos or animated GIFs into GIF output or PNG frame sequences.",
+      "href": "/video/media-converter/",
+      "thumbnail": ""
+    },
+    {
+      "id": "video__video-recorder",
+      "category": "video",
+      "slug": "video-recorder",
+      "title": "Video Recorder",
+      "description": "Records webcam video with optional microphone audio. The latest recording is exposed through `describeCurrentAssets` so it can be sent from the dashboard Tools workspace.",
+      "href": "/video/video-recorder/",
+      "thumbnail": ""
+    },
+    {
+      "id": "video__video-transcriber",
+      "category": "video",
+      "slug": "video-transcriber",
+      "title": "Video Transcriber",
+      "description": "This is a browser-only HTML5 tool for:",
+      "href": "/video/video-transcriber/",
+      "thumbnail": ""
+    }
+  ]
+}

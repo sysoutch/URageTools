@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en" data-dashboard-theme="fire">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Free, privacy-focused browser tools for developers and digital artists.">
+    <title>URage Tools</title>
+    <link rel="icon" type="image/png" href="/images/urage-logo.png">
+    <link rel="apple-touch-icon" href="/images/urage-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+    <style>
+        :root { --bg:#120d0d; --surface:rgba(24,14,14,.92); --text:#f6f1ee; --muted:#c8b6ae; --accent:#ff8a4d; --line:rgba(255,180,128,.2); }
+        * { box-sizing:border-box; }
+        body { min-height:100vh; margin:0; color:var(--text); background:radial-gradient(circle at 15% 0%,rgba(255,97,54,.22),transparent 34rem), radial-gradient(circle at 90% 15%,rgba(194,124,255,.14),transparent 28rem), var(--bg); font-family:'Space Grotesk',system-ui,sans-serif; }
+        a { color:inherit; }
+        .shell { width:min(1200px,calc(100% - 2rem)); margin:auto; }
+        .tools-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.25rem 0; border-bottom:1px solid var(--line); }
+        .brand { display:inline-flex; align-items:center; gap:.75rem; text-decoration:none; font-size:clamp(1.5rem,3vw,1.9rem); font-weight:700; letter-spacing:-.04em; }
+        .brand-mark { display:grid; width:2.75rem; height:2.75rem; place-items:center; flex:0 0 auto; }
+        .brand-mark img { display:block; width:100%; height:100%; object-fit:contain; }
+        .fire-word { background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 38%,white) 0%,color-mix(in srgb,var(--accent) 72%,#ffd06d) 28%,var(--accent) 62%,color-mix(in srgb,var(--accent) 72%,#5b1610) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--accent); }
+        .metal-letter { background:linear-gradient(180deg,#fff 0%,#d9dddf 35%,#9da3a5 65%,#f4f4f4 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:#e4e4e4; }
+        .brand-word { display:inline-flex; gap:.18em; align-items:baseline; }
+        .tools-word { display:inline-flex; }
+        .site-link { color:var(--muted); text-decoration:none; font-size:.9rem; }
+        .tools-page-hero { display:grid; min-height:170px; margin-top:calc(var(--nav-height) + var(--ticker-height)); place-items:center; overflow:hidden; border-bottom:1px solid var(--border); background:color-mix(in srgb,var(--card-bg) 62%,var(--bg)); text-align:center; }
+        .tools-page-hero h1 { margin:0; font-size:clamp(2.1rem,6.4vw,3.6rem); line-height:1.04; }
+        .tools-page-hero-search { width:min(100% - 2rem,480px); margin-top:1rem; }
+        .eyebrow { margin:0 0 .85rem; color:var(--accent); font:500 .78rem/1 'DM Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
+        h1 { margin:0; font-size:clamp(2.5rem,7vw,5rem); line-height:.98; letter-spacing:-.06em; }
+        .tools-title { display:inline-flex; letter-spacing:-.075em; }
+        .hero p:last-child { max-width:640px; color:var(--muted); font-size:1.15rem; line-height:1.7; }
+        .controls { display:flex; flex-wrap:wrap; gap:.75rem; margin:1.25rem 0 2.25rem; }
+        .tool-tabs { display:flex; gap:1.4rem; margin:0 0 1.25rem; }
+        .tool-tab, #filters button { position:relative; padding:.65rem 0; border:0; border-radius:0; color:var(--muted); background:transparent; font-weight:700; }
+        .tool-tab::after, #filters button::after { position:absolute; right:0; bottom:0; left:0; height:2px; content:""; background:var(--accent); transform:scaleX(0); transform-origin:center; transition:transform .18s ease; }
+        .tool-tab:hover, .tool-tab:focus-visible, .tool-tab[aria-selected="true"], #filters button:hover, #filters button:focus-visible, #filters button[aria-pressed="true"] { color:var(--text); }
+        .tool-tab:hover::after, .tool-tab:focus-visible::after, .tool-tab[aria-selected="true"]::after, #filters button:hover::after, #filters button:focus-visible::after, #filters button[aria-pressed="true"]::after { transform:scaleX(1); }
+        #filters { display:flex; flex-wrap:wrap; gap:1.15rem; }
+        #filters button { font-weight:600; }
+        input { border:1px solid var(--line); color:var(--text); background:var(--surface); font:inherit; }
+        input { min-width:min(100%,320px); padding:.8rem 1rem; border-radius:.7rem; outline:none; }
+        input:focus { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent); }
+        button { cursor:pointer; font:inherit; }
+        .summary { margin:0 0 1.25rem; color:var(--muted); font:400 .82rem/1.4 'DM Mono',monospace; }
+        .tool-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(245px,1fr)); gap:1rem; padding-bottom:4rem; }
+        .tool-card { display:flex; min-height:210px; flex-direction:column; justify-content:space-between; gap:1.25rem; padding:1.2rem; border:1px solid var(--line); border-radius:1rem; background:linear-gradient(145deg,rgba(255,255,255,.04),transparent),var(--surface); text-decoration:none; transition:transform .18s ease,border-color .18s ease; }
+        .tool-card:hover { transform:translateY(-4px); border-color:var(--accent); }
+        .tool-thumbnail { width:calc(100% + 2.4rem); aspect-ratio:16/9; margin:-1.2rem -1.2rem -0.1rem; border-radius:1rem 1rem 0 0; object-fit:cover; border-bottom:1px solid var(--line); }
+        .tool-category { margin:0 0 .55rem; color:var(--accent); font:500 .7rem/1 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; }
+        .tool-card h2 { margin:0; font-size:1.25rem; line-height:1.1; }
+        .tool-card p { margin:.75rem 0 0; color:var(--muted); font-size:.92rem; line-height:1.5; }
+        .open { font:500 .78rem/1 'DM Mono',monospace; }
+        .empty { grid-column:1/-1; padding:2rem; border:1px dashed var(--line); border-radius:1rem; color:var(--muted); text-align:center; }
+        .desktop-note { margin:0 0 1.25rem; color:var(--muted); line-height:1.6; }
+        footer { padding:1.5rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+        @media (max-width:600px) { .tools-header { align-items:flex-start; flex-direction:column; } }
+    </style>
+</head>
+<body>
+    <div class="ticker"><div class="ticker-content">ASSETS: Blender add-ons and Unity tools forged with rage • GAMES: Experiments, prototypes, and worlds in progress • TOOLS: Free utilities for developers and artists • COMMUNITY: Join us on Discord •</div></div>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo" style="text-decoration:none;color:inherit;"><span><img class="site-logo-image" src="/images/urage-logo.png" alt="URage flame logo" width="48" height="48"></span> <span class="site-brand-name"><span class="brand-metal-letter">U</span><span class="brand-fire-letters">Rage</span></span></a>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false"><span class="mobile-menu-icon" aria-hidden="true"></span></button>
+            <div class="nav-menu"><a href="https://urage.net/assets/" class="chip" aria-label="Assets"><i class="bi bi-box-seam" aria-hidden="true"></i><span class="nav-label">Assets</span></a><a href="https://urage.net/addons/" class="chip" aria-label="Addons"><i class="bi bi-plugin" aria-hidden="true"></i><span class="nav-label">Addons</span></a><a href="https://urage.net/3d-models/" class="chip" aria-label="3D Models"><i class="bi bi-box" aria-hidden="true"></i><span class="nav-label">3D Models</span></a><a href="https://urage.net/images/" class="chip" aria-label="Images"><i class="bi bi-image" aria-hidden="true"></i><span class="nav-label">Images</span></a><a href="https://urage.net/games/" class="chip" aria-label="Games"><i class="bi bi-controller" aria-hidden="true"></i><span class="nav-label">Games</span></a><a href="https://urage.net/tools/" class="chip active is-current" aria-current="page" aria-label="Tools"><i class="bi bi-tools" aria-hidden="true"></i><span class="nav-label">Tools</span></a><a href="https://urage.net/blog/" class="chip" aria-label="Blog"><i class="bi bi-journal-text" aria-hidden="true"></i><span class="nav-label">Blog</span></a><a href="https://urage.net/social/" class="chip" aria-label="Social"><i class="bi bi-people" aria-hidden="true"></i><span class="nav-label">Social</span></a></div>
+            <div class="nav-actions"><select id="themeSelect" class="theme-select" aria-label="Theme selector"><option value="modern-dark">Modern Dark</option><option value="modern-light">Modern Light</option><option value="mario">Mario World</option><option value="crash">Crash Bandicoot</option><option value="spyro">Spyro Realm</option><option value="cyberpunk">Cyberpunk</option><option value="gb-green">GameBoy Green</option><option value="gb-blue">GameBoy Blue</option></select></div>
+        </div>
+    </nav>
+    <header class="tools-page-hero"><h1><span class="page-hero-metal">OUR</span> <span class="page-hero-accent">TOOLS</span></h1><input id="search" class="tools-page-hero-search" type="search" placeholder="Search web tools" aria-label="Search web tools"></header>
+    <div class="shell">
+        <header class="tools-header">
+            <a class="brand" href="/"><span class="brand-mark"><img src="./urage-logo.png" alt="URage flame logo" width="40" height="40"></span><span class="brand-word"><span class="tools-word"><span class="metal-letter">T</span><span class="fire-word">OOLS</span></span></span></a>
+            <div style="display:flex; flex-wrap:wrap; gap:1rem;">
+                <a class="site-link" href="https://github.com/sysoutch/URageTools" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a class="site-link" href="https://urage.net/">← urage.net</a>
+            </div>
+        </header>
+        <main>
+            <section aria-label="Tool catalog">
+                <div class="tool-tabs" role="tablist" aria-label="Tool type">
+                    <button id="webTab" class="tool-tab" type="button" role="tab" aria-controls="webTools" aria-selected="true">Web</button>
+                    <button id="desktopTab" class="tool-tab" type="button" role="tab" aria-controls="desktopTools" aria-selected="false">Desktop</button>
+                    <button id="mobileTab" class="tool-tab" type="button" role="tab" aria-controls="mobileTools" aria-selected="false">Mobile</button>
+                </div>
+                <div id="webTools" role="tabpanel" aria-labelledby="webTab">
+                    <div class="controls"><div id="filters" aria-label="Filter by category"></div></div>
+                <p id="summary" class="summary">Loading tools…</p>
+                    <div id="tools" class="tool-grid"></div>
+                </div>
+                <div id="desktopTools" role="tabpanel" aria-labelledby="desktopTab" hidden>
+                    <p class="desktop-note">Desktop utilities from URage. Each project opens on GitHub for downloads, releases, and source code.</p>
+                    <div class="tool-grid">
+                        <a class="tool-card" href="https://github.com/sysoutch/VoiceInputter" target="_blank" rel="noopener noreferrer"><div><p class="tool-category">Desktop</p><h2>VoiceInputter</h2><p>Voice-input utility for desktop workflows.</p></div><span class="open">Open on GitHub ↗</span></a>
+                        <a class="tool-card" href="https://github.com/sysoutch/ScreenGify" target="_blank" rel="noopener noreferrer"><div><p class="tool-category">Desktop</p><h2>ScreenGify</h2><p>Desktop screen capture and GIF workflow utility.</p></div><span class="open">Open on GitHub ↗</span></a>
+                        <a class="tool-card" href="https://github.com/sysoutch/MatrixClient" target="_blank" rel="noopener noreferrer"><div><p class="tool-category">Desktop</p><h2>MatrixClient</h2><p>Desktop client for Matrix-based communication workflows.</p></div><span class="open">Open on GitHub ↗</span></a>
+                    </div>
+                </div>
+                <div id="mobileTools" role="tabpanel" aria-labelledby="mobileTab" hidden>
+                    <p class="desktop-note">Mobile companion projects from URage. Each project opens on GitHub for source code, releases, and installation details.</p>
+                    <div class="tool-grid">
+                        <a class="tool-card" href="https://github.com/sysoutch/urage-now-android-companion" target="_blank" rel="noopener noreferrer"><div><p class="tool-category">Mobile</p><h2>URage Now Android Companion</h2><p>Android companion app for connecting to and extending the URage Now creative workspace on the go.</p></div><span class="open">Open on GitHub â†—</span></a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <footer><div class="container"><div class="footer-grid"><div><div class="logo" style="margin-bottom:1.5rem;"><span><img class="site-logo-image" src="/images/urage-logo.png" alt="URage flame logo" width="128" height="128" loading="lazy"></span> <span class="site-brand-name"><span class="brand-metal-letter">U</span><span class="brand-fire-letters">Rage</span></span></div><p style="color:var(--text-dim);">Assets, games, and tools for developers and digital artists.</p></div><div class="footer-links"><h3>Explore</h3><a href="/studio/">URage Now</a><a href="/assets/">Assets</a><a href="/3d-models/">3D Models</a><a href="/images/">Images</a><a href="/games/">Games</a><a href="/tools/">Tools</a></div><div class="footer-links"><h3>Community</h3><a href="https://urage.net/discord/" target="_blank" rel="noopener noreferrer">Discord</a><a href="https://github.com/sysoutch/URageTools" target="_blank" rel="noopener noreferrer">GitHub</a></div></div><div style="margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);color:var(--text-dim);font-size:.8rem;display:flex;justify-content:space-between;"><p>© 2026 URage Project. All rights reserved.</p><p>sysout.ch</p></div></div></footer>
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'modern-dark';
+        const themeAccents = {
+            'modern-dark': '#ff8a4d',
+            'modern-light': '#b83b20',
+            mario: '#e60012',
+            crash: '#ff6a00',
+            spyro: '#ffb000',
+            cyberpunk: '#ff2bd6',
+            'gb-green': '#9bbc0f',
+            'gb-blue': '#00aaff'
+        };
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (themeAccents[savedTheme]) document.documentElement.style.setProperty('--accent', themeAccents[savedTheme]);
+        const themeSelect = document.getElementById('themeSelect');
+        themeSelect.value = savedTheme;
+        themeSelect.addEventListener('change', () => { localStorage.setItem('theme', themeSelect.value); document.documentElement.setAttribute('data-theme', themeSelect.value); if (themeAccents[themeSelect.value]) document.documentElement.style.setProperty('--accent', themeAccents[themeSelect.value]); });
+        document.getElementById('mobileMenuToggle').addEventListener('click', () => { const open = document.body.classList.toggle('menu-open'); document.getElementById('mobileMenuToggle').setAttribute('aria-expanded', String(open)); });
+
+        const grid = document.getElementById('tools');
+        const search = document.getElementById('search');
+        const filters = document.getElementById('filters');
+        const summary = document.getElementById('summary');
+        const webTab = document.getElementById('webTab');
+        const desktopTab = document.getElementById('desktopTab');
+        const mobileTab = document.getElementById('mobileTab');
+        const webTools = document.getElementById('webTools');
+        const desktopTools = document.getElementById('desktopTools');
+        const mobileTools = document.getElementById('mobileTools');
+        let catalog = { categories: [], tools: [] };
+        let activeCategory = 'all';
+
+        function selectToolType(type) {
+            const showAll = type === 'all';
+            webTools.hidden = type !== 'web' && !showAll;
+            desktopTools.hidden = type !== 'desktop' && !showAll;
+            mobileTools.hidden = type !== 'mobile' && !showAll;
+            webTab.setAttribute('aria-selected', String(type === 'web'));
+            desktopTab.setAttribute('aria-selected', String(type === 'desktop'));
+            mobileTab.setAttribute('aria-selected', String(type === 'mobile'));
+            if (!showAll) window.history.replaceState({}, '', toolTypePath(type));
+        }
+
+        function toolTypePath(type) {
+            const local = ['localhost', '127.0.0.1', '::1'].includes(String(window.location.hostname || '').toLowerCase());
+            const base = local ? '/tools' : '';
+            return `${base}/${type}/`;
+        }
+
+        const escapeHtml = (value) => String(value || '').replace(/[&<>'"]/g, (char) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' }[char]));
+        const labelFor = (id) => catalog.categories.find((category) => category.id === id)?.label || id;
+
+        function render() {
+            const query = search.value.trim().toLowerCase();
+            const items = catalog.tools.filter((tool) => {
+                const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
+                const searchable = `${tool.title} ${tool.description} ${tool.category}`.toLowerCase();
+                return matchesCategory && (!query || searchable.includes(query));
+            });
+            summary.textContent = `${items.length} ${items.length === 1 ? 'tool' : 'tools'} available${activeCategory === 'all' ? '' : ` in ${labelFor(activeCategory)}`}.`;
+            grid.innerHTML = items.length ? items.map((tool) => `<a class="tool-card" href="${escapeHtml(tool.href)}">${tool.thumbnail ? `<img class="tool-thumbnail" src="${escapeHtml(tool.thumbnail)}" alt="" loading="lazy">` : ''}<div><p class="tool-category">${escapeHtml(labelFor(tool.category))}</p><h2>${escapeHtml(tool.title)}</h2><p>${escapeHtml(tool.description)}</p></div><span class="open">Open tool →</span></a>`).join('') : '<div class="empty">No tools match that search.</div>';
+        }
+
+        function renderFilters() {
+            const items = [{ id: 'all', label: 'All' }, ...catalog.categories];
+            filters.innerHTML = items.map((category) => `<button type="button" data-category="${escapeHtml(category.id)}" aria-pressed="${category.id === activeCategory}">${escapeHtml(category.label)}</button>`).join('');
+            filters.querySelectorAll('button').forEach((button) => button.addEventListener('click', () => { activeCategory = button.dataset.category; renderFilters(); render(); }));
+        }
+
+        fetch('./catalog.json').then((response) => response.ok ? response.json() : Promise.reject(new Error('Catalog unavailable'))).then((data) => { catalog = data; renderFilters(); render(); }).catch(() => { summary.textContent = 'The tool catalog could not be loaded.'; grid.innerHTML = '<div class="empty">Please refresh the page or try again shortly.</div>'; });
+        search.addEventListener('input', render);
+        webTab.addEventListener('click', () => selectToolType('web'));
+        desktopTab.addEventListener('click', () => selectToolType('desktop'));
+        mobileTab.addEventListener('click', () => selectToolType('mobile'));
+        const toolPathType = window.location.pathname.split('/').filter(Boolean).pop().toLowerCase();
+        if (['web', 'desktop', 'mobile'].includes(toolPathType)) selectToolType(toolPathType);
+        else if (window.location.hash.slice(1).toLowerCase() === 'desktop') selectToolType('desktop');
+        else if (window.location.hash.slice(1).toLowerCase() === 'mobile') selectToolType('mobile');
+    </script>
+</body>
+</html>

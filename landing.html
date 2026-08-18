@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="canonical" href="https://urage.net/tools/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://urage.net/tools/">
+    <meta property="og:title" content="Tools | URage">
+    <meta property="og:description" content="Free browser and desktop utilities for developers and digital artists.">
+    <meta property="og:image" content="https://urage.net/images/og/tools.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tools | URage">
+    <meta name="twitter:description" content="Free browser and desktop utilities for developers and digital artists.">
+    <meta name="twitter:image" content="https://urage.net/images/og/tools.jpg">
+    <meta name="description" content="URage Tools — browser and desktop utilities for developers and digital artists.">
+    <title>URage Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+    <style>
+        :root { --bg:#120d0d; --surface:rgba(24,14,14,.92); --text:#f6f1ee; --muted:#c8b6ae; --accent:#ff8a4d; --line:rgba(255,180,128,.2); }
+        * { box-sizing:border-box; }
+        body { min-height:100vh; margin:0; color:var(--text); background:radial-gradient(circle at 15% 0%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 34rem),radial-gradient(circle at 90% 15%,rgba(194,124,255,.14),transparent 28rem),var(--bg); font-family:'Space Grotesk',system-ui,sans-serif; }
+        a { color:inherit; }
+        .shell { width:min(1100px,calc(100% - 2rem)); margin:auto; }
+        .tools-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.25rem 0; border-bottom:1px solid var(--line); }
+        .brand { display:inline-flex; align-items:center; gap:.75rem; font-size:clamp(1.5rem,3vw,1.9rem); font-weight:700; letter-spacing:-.04em; text-decoration:none; }
+        .brand img { width:2.75rem; height:2.75rem; object-fit:contain; }
+        .metal-letter,.fire-word { -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+        .metal-letter { background-image:linear-gradient(180deg,#fff 0%,#d9dddf 35%,#9da3a5 65%,#f4f4f4 100%); }
+        .fire-word { background-image:linear-gradient(180deg,color-mix(in srgb,var(--accent) 38%,white) 0%,color-mix(in srgb,var(--accent) 72%,#ffd06d) 28%,var(--accent) 62%,color-mix(in srgb,var(--accent) 72%,#5b1610) 100%); }
+        .brand-word { display:inline-flex; }
+        .site-link { color:var(--muted); font-size:.9rem; text-decoration:none; }
+        .tools-page-hero { display:grid; min-height:170px; margin-top:calc(var(--nav-height) + var(--ticker-height)); place-items:center; overflow:hidden; border-bottom:1px solid var(--border); background:color-mix(in srgb,var(--card-bg) 62%,var(--bg)); text-align:center; }
+        .tools-page-hero h1 { margin:0; font-size:clamp(2.1rem,6.4vw,3.6rem); line-height:1.04; }
+        main { display:grid; min-height:calc(100vh - 86px); place-items:center; padding:4rem 0; }
+        .hero { max-width:780px; text-align:center; }
+        .eyebrow { margin:0 0 1rem; color:var(--accent); font:500 .78rem/1 'DM Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
+        h1 { margin:0; font-size:clamp(3rem,8vw,6rem); letter-spacing:-.075em; line-height:.9; }
+        .hero p:last-of-type { max-width:620px; margin:1.5rem auto 0; color:var(--muted); font-size:1.12rem; line-height:1.7; }
+        .hero h2 { margin:0; font-size:clamp(2.2rem,5vw,3.7rem); letter-spacing:-.06em; line-height:.98; }
+        .choices { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:2.3rem 0 1rem; }
+        .choice { display:block; min-height:175px; padding:1.4rem; border:1px solid var(--line); border-radius:1rem; background:linear-gradient(145deg,rgba(255,255,255,.04),transparent),var(--surface); text-align:left; text-decoration:none; transition:transform .18s ease,border-color .18s ease; }
+        .choice:hover { border-color:var(--accent); transform:translateY(-4px); }
+        .choice small { color:var(--accent); font:500 .72rem/1 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; }
+        .choice strong { display:block; margin-top:.7rem; font-size:1.45rem; }
+        .choice span { display:block; margin-top:.55rem; color:var(--muted); line-height:1.5; }
+        .all-tools { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:.8rem 1.2rem; border:1px solid var(--accent); border-radius:.75rem; background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 74%,white),var(--accent)); color:#210f0a; font-weight:800; text-decoration:none; }
+        @media (max-width:620px) { .tools-header { align-items:flex-start; flex-direction:column; } main { padding:3rem 0; } .choices { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ticker"><div class="ticker-content">ASSETS: Blender add-ons and Unity tools forged with rage • GAMES: Experiments, prototypes, and worlds in progress • TOOLS: Free utilities for developers and artists • COMMUNITY: Join us on Discord •</div></div>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo" style="text-decoration:none;color:inherit;"><span><img class="site-logo-image" src="/images/urage-logo.png" alt="URage flame logo" width="48" height="48"></span> <span class="site-brand-name"><span class="brand-metal-letter">U</span><span class="brand-fire-letters">Rage</span></span></a>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false"><span class="mobile-menu-icon" aria-hidden="true"></span></button>
+            <div class="nav-menu">
+                <a href="https://urage.net/assets/" class="chip" aria-label="Assets"><i class="bi bi-box-seam" aria-hidden="true"></i><span class="nav-label">Assets</span></a>
+                <a href="https://urage.net/addons/" class="chip" aria-label="Addons"><i class="bi bi-plugin" aria-hidden="true"></i><span class="nav-label">Addons</span></a>
+                <a href="https://urage.net/3d-models/" class="chip" aria-label="3D Models"><i class="bi bi-box" aria-hidden="true"></i><span class="nav-label">3D Models</span></a>
+                <a href="https://urage.net/images/" class="chip" aria-label="Images"><i class="bi bi-image" aria-hidden="true"></i><span class="nav-label">Images</span></a>
+                <a href="https://urage.net/games/" class="chip" aria-label="Games"><i class="bi bi-controller" aria-hidden="true"></i><span class="nav-label">Games</span></a>
+                <a href="/" class="chip active is-current" aria-current="page" aria-label="Tools"><i class="bi bi-tools" aria-hidden="true"></i><span class="nav-label">Tools</span></a>
+                <a href="https://urage.net/blog/" class="chip" aria-label="Blog"><i class="bi bi-journal-text" aria-hidden="true"></i><span class="nav-label">Blog</span></a>
+                <a href="https://urage.net/social/" class="chip" aria-label="Social"><i class="bi bi-people" aria-hidden="true"></i><span class="nav-label">Social</span></a>
+            </div>
+            <div class="nav-actions"><select id="themeSelect" class="theme-select" aria-label="Theme selector"><option value="modern-dark">Modern Dark</option><option value="modern-light">Modern Light</option><option value="mario">Mario World</option><option value="crash">Crash Bandicoot</option><option value="spyro">Spyro Realm</option><option value="cyberpunk">Cyberpunk</option><option value="gb-green">GameBoy Green</option><option value="gb-blue">GameBoy Blue</option></select></div>
+        </div>
+    </nav>
+    <header class="tools-page-hero"><h1><span class="page-hero-metal">OUR</span> <span class="page-hero-accent">TOOLS</span></h1></header>
+    <div class="shell">
+        <header class="tools-header" hidden>
+            <a class="brand" href="./" aria-label="URage Tools home"><img src="./urage-logo.png" alt="URage flame logo"><span class="brand-word"><span class="metal-letter">T</span><span class="fire-word">OOLS</span></span></a>
+            <div><a class="site-link" href="https://github.com/sysoutch/URageTools" target="_blank" rel="noopener noreferrer">GitHub ↗</a> <span aria-hidden="true">·</span> <a class="site-link" href="https://urage.net/">urage.net</a></div>
+        </header>
+        <main>
+            <section class="hero">
+                <p class="eyebrow">URage tool collection</p>
+                <h2>Choose your workspace.</h2>
+                <p>Open browser-based creative utilities, discover desktop applications, or explore what is coming to mobile.</p>
+                <div class="choices">
+                    <a class="choice" href="./web/"><small>In your browser</small><strong>Web tools</strong><span>Fast, privacy-focused utilities for art, audio, development, games, planning, and video.</span></a>
+                    <a class="choice" href="./desktop/"><small>Installable apps</small><strong>Desktop tools</strong><span>Projects for voice input, screen capture, communication, and more.</span></a>
+                    <a class="choice" href="./mobile/"><small>On the go</small><strong>Mobile tools</strong><span>A dedicated space for future URage mobile tools and companion apps.</span></a>
+                </div>
+                <a class="all-tools" href="./web/">Browse all tools</a>
+            </section>
+        </main>
+    </div>
+    <footer>
+        <div class="container"><div class="footer-grid"><div><div class="logo" style="margin-bottom:1.5rem;"><span><img class="site-logo-image" src="/images/urage-logo.png" alt="URage flame logo" width="128" height="128" loading="lazy"></span> <span class="site-brand-name"><span class="brand-metal-letter">U</span><span class="brand-fire-letters">Rage</span></span></div><p style="color:var(--text-dim);">Assets, games, and tools for developers and digital artists.</p></div><div class="footer-links"><h3>Explore</h3><a href="/studio/">URage Now</a><a href="/assets/">Assets</a><a href="/3d-models/">3D Models</a><a href="/images/">Images</a><a href="/games/">Games</a><a href="/tools/">Tools</a></div><div class="footer-links"><h3>Community</h3><a href="https://urage.net/discord/" target="_blank" rel="noopener noreferrer">Discord</a><a href="https://github.com/sysoutch/URageTools" target="_blank" rel="noopener noreferrer">GitHub</a></div></div><div style="margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);color:var(--text-dim);font-size:.8rem;display:flex;justify-content:space-between;"><p>© 2026 URage Project. All rights reserved.</p><p>sysout.ch</p></div></div>
+    </footer>
+    <script>
+        const accents = { 'modern-dark':'#ff8a4d', 'modern-light':'#b83b20', mario:'#e60012', crash:'#ff6a00', spyro:'#ffb000', cyberpunk:'#ff2bd6', 'gb-green':'#9bbc0f', 'gb-blue':'#00aaff' };
+        const savedTheme = localStorage.getItem('theme') || 'modern-dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (accents[savedTheme]) document.documentElement.style.setProperty('--accent', accents[savedTheme]);
+        const themeSelect = document.getElementById('themeSelect');
+        themeSelect.value = savedTheme;
+        themeSelect.addEventListener('change', () => { localStorage.setItem('theme', themeSelect.value); document.documentElement.setAttribute('data-theme', themeSelect.value); if (accents[themeSelect.value]) document.documentElement.style.setProperty('--accent', accents[themeSelect.value]); });
+        document.getElementById('mobileMenuToggle').addEventListener('click', () => { const open = document.body.classList.toggle('menu-open'); document.getElementById('mobileMenuToggle').setAttribute('aria-expanded', String(open)); });
+    </script>
+</body>
+</html>
