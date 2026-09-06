@@ -312,6 +312,9 @@ function drawChip(canvas, chip) {
 
     /* k-means palette quantization */
     chip.palette = quantizeChip(canvas, chip);
+
+    /* enforce pixel-exact mirror symmetry on both axes */
+    symmetrize(canvas, "xy");
 }
 
 /* =========================================================
@@ -461,24 +464,33 @@ function drawChipDiagonal(canvas, chip) {
     ctx.fill();
 
     /* edge stripes on the visible rim — exact mirror pairs */
-    for (let i = 0; i <= chip.notches / 4; i++) {
+    const stripe = notchLength(chip, m.R);
 
-        const a = Math.PI * 2 * i / chip.notches;
+    if (stripe > 0) {
 
-        if (Math.sin(a) <= .15) continue;
+        for (let i = 0; i <= chip.notches / 4; i++) {
 
-        ctx.fillStyle = chip.accent;
+            const a = Math.PI * 2 * i / chip.notches;
 
-        const dx = symRound(Math.cos(a) * m.R);
-        const dy = Math.round(Math.sin(a) * m.ry);
+            if (Math.sin(a) <= .15) continue;
 
-        if (dx === 0) {
-            /* self-mirror center stripe — even width */
-            ctx.fillRect(cx - 1, cyTop + dy, 2, m.T);
-        } else {
-            const x = cx + dx - 1;
-            ctx.fillRect(x, cyTop + dy, 3, m.T);
-            ctx.fillRect(m.size - x - 3, cyTop + dy, 3, m.T);
+            ctx.fillStyle = chip.accent;
+
+            const dx = symRound(Math.cos(a) * m.R);
+            const dy = Math.round(Math.sin(a) * m.ry);
+
+            if (dx === 0) {
+                /* self-mirror center stripe — even width */
+                const w = stripe % 2 ? stripe + 1 : stripe;
+                ctx.fillRect(cx - w / 2, cyTop + dy, w, m.T);
+            } else {
+                /* odd width centered on the notch column keeps the
+                   mirror pair exact */
+                const w = stripe % 2 ? stripe : Math.max(1, stripe - 1);
+                const x = cx + dx - (w - 1) / 2;
+                ctx.fillRect(x, cyTop + dy, w, m.T);
+                ctx.fillRect(m.size - x - w, cyTop + dy, w, m.T);
+            }
         }
     }
 
@@ -493,6 +505,9 @@ function drawChipDiagonal(canvas, chip) {
     ctx.restore();
 
     quantizeChip(canvas, chip);
+
+    /* keep the perspective view mirrored on its vertical axis */
+    symmetrize(canvas, "x");
 }
 
 function drawChipFront(canvas, chip) {
@@ -520,27 +535,39 @@ function drawChipFront(canvas, chip) {
     /* edge stripes facing the viewer — exact mirror pairs */
     const cx = Math.floor(m.size / 2);
 
-    for (let i = 0; i <= chip.notches / 4; i++) {
+    const stripe = notchLength(chip, m.R);
 
-        const a = Math.PI * 2 * i / chip.notches;
+    if (stripe > 0) {
 
-        if (Math.sin(a) <= .15) continue;
+        for (let i = 0; i <= chip.notches / 4; i++) {
 
-        ctx.fillStyle = chip.accent;
+            const a = Math.PI * 2 * i / chip.notches;
 
-        const dx = symRound(Math.cos(a) * m.R);
+            if (Math.sin(a) <= .15) continue;
 
-        if (dx === 0) {
-            /* self-mirror center stripe — even width */
-            ctx.fillRect(cx - 1, 0, 2, m.T);
-        } else {
-            const x = cx + dx - 1;
-            ctx.fillRect(x, 0, 3, m.T);
-            ctx.fillRect(m.size - x - 3, 0, 3, m.T);
+            ctx.fillStyle = chip.accent;
+
+            const dx = symRound(Math.cos(a) * m.R);
+
+            if (dx === 0) {
+                /* self-mirror center stripe — even width */
+                const w = stripe % 2 ? stripe + 1 : stripe;
+                ctx.fillRect(cx - w / 2, 0, w, m.T);
+            } else {
+                /* odd width centered on the notch column keeps the
+                   mirror pair exact */
+                const w = stripe % 2 ? stripe : Math.max(1, stripe - 1);
+                const x = cx + dx - (w - 1) / 2;
+                ctx.fillRect(x, 0, w, m.T);
+                ctx.fillRect(m.size - x - w, 0, w, m.T);
+            }
         }
     }
 
     quantizeChip(canvas, chip);
+
+    /* keep the edge-on slab mirrored on its vertical axis */
+    symmetrize(canvas, "x");
 }
 
 /* =========================================================
@@ -571,12 +598,41 @@ function symRound(v) {
    EDGE NOTCHES
    ========================================================= */
 
+/* tangential length (px) of each edge notch from the slider.
+   0 = off; 100% fills the arc slot between two adjacent notches,
+   leaving only ~1px of rim between them */
+function notchLength(chip, R) {
+
+    const pct = parseInt(
+        document.getElementById("notchThickness").value, 10
+    );
+
+    if (!pct || pct <= 0) return 0;
+
+    /* chord between two adjacent notch anchors on the R-1 orbit */
+    const chord =
+        2 * (R - 1) * Math.sin(Math.PI / chip.notches);
+
+    const maxL = Math.max(1, Math.floor(chord) - 1);
+
+    return Math.min(
+        maxL,
+        Math.max(1, Math.round((pct / 100) * maxL))
+    );
+}
+
 function drawNotches(ctx, chip, cx, cy, R) {
 
     const count = chip.notches;
 
+    const len = notchLength(chip, R);
+
+    if (!count || len <= 0) return;
+
     /* place each notch orbit from a single trig eval so the marks are
-       mirrored exactly on both axes */
+       mirrored exactly on both axes — mirror copies use true
+       reflections (scale -1), never rotations, so x and y symmetry
+       stays pixel-exact */
     const seen = new Set();
 
     for (let i = 0; i <= count / 4; i++) {
@@ -591,11 +647,11 @@ function drawNotches(ctx, chip, cx, cy, R) {
             Math.sin(a) * (R - 1)
         );
 
-        for (const [mx, my, rot] of [
-            [dx, dy, a],
-            [-dx, dy, Math.PI - a],
-            [dx, -dy, -a],
-            [-dx, -dy, Math.PI + a]
+        for (const [mx, my, sx, sy] of [
+            [dx, dy, 1, 1],
+            [-dx, dy, -1, 1],
+            [dx, -dy, 1, -1],
+            [-dx, -dy, -1, -1]
         ]) {
 
             const key = mx + "," + my;
@@ -606,16 +662,22 @@ function drawNotches(ctx, chip, cx, cy, R) {
 
             ctx.save();
 
+            /* translate → reflect → rotate: local x runs radially,
+               local y along the rim */
             ctx.translate(cx + mx, cy + my);
-            ctx.rotate(rot);
+            ctx.scale(sx, sy);
+            ctx.rotate(a);
 
             ctx.fillStyle = chip.accent;
 
+            /* 4px radial band centered on R-1, `len` px wide along
+               the rim and centered on the tangent so odd lengths
+               stay exactly symmetric */
             ctx.fillRect(
                 -2,
-                -1,
+                -len / 2,
                 4,
-                2
+                len
             );
 
             ctx.restore();
@@ -1295,6 +1357,73 @@ function quantizeChip(canvas, chip) {
    PALETTE UI HELPERS
    ========================================================= */
 
+/* =========================================================
+    MIRROR SYMMETRIZATION
+    Guarantees the finished chip is mirrored pixel-exactly on its
+    axes: every pixel becomes identical to its mirror partners.
+    Runs after quantization so anti-aliased fringe and palette
+    snapping can never break the symmetry. The more opaque pixel
+    of each pair wins, keeping flat colors flat and edges crisp.
+    ========================================================= */
+
+function symmetrize(canvas, axes) {
+
+    const w = canvas.width;
+    const h = canvas.height;
+
+    if (axes.includes("x") && w % 2) return;
+    if (axes.includes("y") && h % 2) return;
+
+    const ctx = canvas.getContext("2d");
+
+    const img = ctx.getImageData(0, 0, w, h);
+
+    const d = img.data;
+
+    const idx = (x, y) => (y * w + x) << 2;
+
+    const mergePair = (a, b) => {
+
+        if (d[a + 3] >= d[b + 3]) {
+            d[b] = d[a];
+            d[b + 1] = d[a + 1];
+            d[b + 2] = d[a + 2];
+            d[b + 3] = d[a + 3];
+        } else {
+            d[a] = d[b];
+            d[a + 1] = d[b + 1];
+            d[a + 2] = d[b + 2];
+            d[a + 3] = d[b + 3];
+        }
+    };
+
+    /* mirror about the horizontal axis: row y <-> h-1-y */
+    if (axes.includes("y")) {
+
+        for (let y = 0; y < h / 2; y++) {
+
+            const y2 = h - 1 - y;
+
+            for (let x = 0; x < w; x++) {
+                mergePair(idx(x, y), idx(x, y2));
+            }
+        }
+    }
+
+    /* mirror about the vertical axis: column x <-> w-1-x */
+    if (axes.includes("x")) {
+
+        for (let y = 0; y < h; y++) {
+
+            for (let x = 0; x < w / 2; x++) {
+                mergePair(idx(x, y), idx(w - 1 - x, y));
+            }
+        }
+    }
+
+    ctx.putImageData(img, 0, 0);
+}
+
 function styleLabel(chip) {
     return `${chip.style} • ${chip.pattern}` +
         (chip.palette ? ` • ${chip.palette.used} colors` : "");
@@ -1328,6 +1457,19 @@ function renderPaletteRow(chip) {
 /* =========================================================
    UI
    ========================================================= */
+
+function updateNotchLabel() {
+
+    const input = document.getElementById("notchThickness");
+    const label = document.getElementById("notchThicknessLabel");
+
+    if (!input || !label) return;
+
+    const v = parseInt(input.value, 10);
+
+    label.textContent =
+        "Notch Thickness" + (v ? ` · ${v}%` : " · Off");
+}
 
 function generateAll() {
 
@@ -1650,6 +1792,7 @@ const CONTROL_IDS = [
     ["resolution", "value"],
     ["style", "value"],
     ["pattern", "value"],
+    ["notchThickness", "value"],
     ["values", "value"],
     ["palette", "value"],
     ["sheetScale", "value"],
@@ -1915,6 +2058,19 @@ function renderSwatches() {
         "change",
         onPaletteFileChange
     );
+
+    const notchInput = document.getElementById("notchThickness");
+
+    if (notchInput) {
+
+        updateNotchLabel();
+
+        /* live feedback: redraw the set while dragging */
+        notchInput.addEventListener("input", () => {
+            updateNotchLabel();
+            generateAll();
+        });
+    }
 
     renderSwatches();
     generateAll();

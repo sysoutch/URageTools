@@ -14,6 +14,8 @@ Just open the HTML file in a browser and start generating chips.
 - 🎨 Procedurally generated colors and designs
 - 🔀 Randomized chip styles
 - 🧩 Multiple pixel-art patterns
+- 🎚️ Adjustable edge-notch thickness (from a 1px mark to a near-solid rim with only ~1px gaps, or off)
+- 🪞 Pixel-exact mirror symmetry on both axes for rings and patterns
 - 🌈 Several visual themes
 - 🔢 Pixel-art value lettering
 - 🎯 Seed-based generation

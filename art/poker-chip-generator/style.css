@@ -238,6 +238,14 @@ input[type="checkbox"] {
     align-self: center;
 }
 
+input[type="range"] {
+    min-height: auto;
+    width: 100%;
+    padding: 6px 8px;
+    align-self: center;
+    accent-color: #ffd84a;
+}
+
 .status {
     text-align: center;
     color: #7d8798;
