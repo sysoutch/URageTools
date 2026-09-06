@@ -1,0 +1,352 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        linear-gradient(45deg, #10131a 25%, transparent 25%),
+        linear-gradient(-45deg, #10131a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #10131a 75%),
+        linear-gradient(-45deg, transparent 75%, #10131a 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    background-color: #181c25;
+    color: #fff;
+    font-family: system-ui, sans-serif;
+}
+
+header {
+    padding: 28px 20px 18px;
+    text-align: center;
+    background: rgba(10, 12, 17, .95);
+    border-bottom: 3px solid #3c4352;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(25px, 5vw, 44px);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ffd84a;
+    text-shadow: 4px 4px #000;
+}
+
+header p {
+    margin: 8px 0 0;
+    color: #9da6b7;
+}
+
+.app {
+    width: min(1300px, 94%);
+    margin: 25px auto;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    padding: 18px;
+    background: #202531;
+    border: 3px solid #414957;
+    box-shadow: 8px 8px #080a0e;
+}
+
+.control {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #aeb7c7;
+    text-transform: uppercase;
+}
+
+input,
+select,
+button {
+    min-height: 42px;
+    border: 2px solid #4a5364;
+    background: #11151c;
+    color: white;
+    padding: 8px 11px;
+    font: inherit;
+    border-radius: 2px;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #ffd84a;
+}
+
+button {
+    cursor: pointer;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #343c4b;
+    border-color: #697386;
+}
+
+button:hover {
+    background: #485264;
+    transform: translate(-1px, -1px);
+}
+
+button.primary {
+    color: #151515;
+    background: #ffd84a;
+    border-color: #ffe98b;
+}
+
+button.primary:hover {
+    background: #ffe276;
+}
+
+.actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.actions button {
+    flex: 1 1 180px;
+}
+
+.chips {
+    margin-top: 28px;
+    padding: 25px;
+    min-height: 400px;
+    background: rgba(13, 16, 22, .9);
+    border: 3px solid #343b49;
+    box-shadow: 8px 8px #080a0e;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 35px;
+    align-items: center;
+    justify-items: center;
+}
+
+.chip-card {
+    width: 190px;
+    text-align: center;
+}
+
+.chip-wrap {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: auto;
+}
+
+canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
+}
+
+.chip-wrap canvas {
+    width: 180px;
+    height: 180px;
+}
+
+.views-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.view {
+    text-align: center;
+}
+
+.view canvas {
+    width: 84px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.view-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.view-label {
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #7d8798;
+}
+
+.view-foot button {
+    min-height: auto;
+    padding: 2px 6px;
+    font-size: 8px;
+}
+
+.chip-buttons {
+    display: flex;
+    gap: 5px;
+    margin-top: 9px;
+}
+
+.chip-buttons button {
+    min-height: 31px;
+    padding: 3px 6px;
+    font-size: 9px;
+    flex: 1;
+}
+
+.style-name {
+    margin-top: 8px;
+    color: #858fa1;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.palette-row {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    margin-top: 8px;
+    min-height: 14px;
+}
+
+.palette-row span {
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(255, 255, 255, .3);
+}
+
+input[type="checkbox"] {
+    min-height: auto;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    align-self: center;
+}
+
+.status {
+    text-align: center;
+    color: #7d8798;
+    font-size: 12px;
+    margin-top: 16px;
+}
+
+.legend {
+    margin-top: 22px;
+    padding: 15px;
+    background: #202531;
+    border: 2px solid #3d4554;
+    color: #9fa8b8;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .chips {
+        padding: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px 8px;
+    }
+
+    .chip-card {
+        width: 145px;
+    }
+
+    .chip-wrap,
+    .chip-wrap canvas {
+        width: 145px;
+        height: 145px;
+    }
+
+    .view canvas {
+        width: 66px;
+    }
+}
+
+/* --- UI/UX polish --- */
+
+.chip-card {
+    transition: transform .15s ease;
+}
+
+.chip-card:hover {
+    transform: translateY(-4px);
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+    outline: 3px solid #ffd84a;
+    outline-offset: 2px;
+}
+
+select:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.palette-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 8px;
+    background: #11151c;
+    border: 2px dashed #4a5364;
+}
+
+.palette-bar[hidden] {
+    display: none;
+}
+
+.palette-bar .swatch {
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255, 255, 255, .35);
+}
+
+.clear-btn {
+    min-height: 30px;
+    margin-left: auto;
+    padding: 4px 10px;
+    font-size: 10px;
+}
+
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%) translateY(20px);
+    background: #ffd84a;
+    color: #151515;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border: 3px solid #ffe98b;
+    box-shadow: 6px 6px #080a0e;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    z-index: 10;
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

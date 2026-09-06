@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "id": "art__poker-chip-generator",
+  "title": "Pixel Poker Chip Generator",
+  "description": "Procedural pixel-art poker chips with K-Means palette quantization, image color extraction, seeded reproducibility and shareable links."
+}

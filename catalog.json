@@ -48,6 +48,15 @@
       "thumbnail": "/art/3d-model-viewer/thumbnail.png"
     },
     {
+      "id": "art__ai-image-naturalizer",
+      "category": "art",
+      "slug": "ai-image-naturalizer",
+      "title": "Ai Image Naturalizer",
+      "description": "A lightweight, browser-based HTML5 tool for making overly-clean AI-generated images feel more natural.",
+      "href": "/art/ai-image-naturalizer/",
+      "thumbnail": ""
+    },
+    {
       "id": "art__albedo-tools",
       "category": "art",
       "slug": "albedo-tools",
@@ -147,6 +156,15 @@
       "thumbnail": "/art/pixel-art-converter/thumbnail.png"
     },
     {
+      "id": "art__poker-chip-generator",
+      "category": "art",
+      "slug": "poker-chip-generator",
+      "title": "Pixel Poker Chip Generator",
+      "description": "Procedural pixel-art poker chips with K-Means palette quantization, image color extraction, seeded reproducibility and shareable links.",
+      "href": "/art/poker-chip-generator/",
+      "thumbnail": ""
+    },
+    {
       "id": "art__seamless-texture-maker",
       "category": "art",
       "slug": "seamless-texture-maker",
@@ -243,6 +261,15 @@
       "title": "3D Model Sharer",
       "description": "Single-file static web tool for previewing, importing, and uploading Sketchfab 3D models.",
       "href": "/dev/3d-model-sharer/",
+      "thumbnail": ""
+    },
+    {
+      "id": "dev__base64-converter",
+      "category": "dev",
+      "slug": "base64-converter",
+      "title": "Base64 Converter",
+      "description": "A browser-based Base64 encoder and decoder with **Data URL support, image previews, binary detection, file conversion, and downloads**.",
+      "href": "/dev/base64-converter/",
       "thumbnail": ""
     },
     {
@@ -435,6 +462,15 @@
       "thumbnail": "/dev/website-builder/thumbnail.png"
     },
     {
+      "id": "game__billards",
+      "category": "game",
+      "slug": "billards",
+      "title": "Billards",
+      "description": "A browser-based billiards game designed to start as a **local, single-player game against bots**, while keeping the architecture ready for **local multiplayer, LAN multiplayer, and eventually online multiplayer**.",
+      "href": "/game/billards/",
+      "thumbnail": ""
+    },
+    {
       "id": "game__html-game-51",
       "category": "game",
       "slug": "html-game-51",
@@ -444,11 +480,29 @@
       "thumbnail": ""
     },
     {
+      "id": "game__poker-blindlevel-manager",
+      "category": "game",
+      "slug": "poker-blindlevel-manager",
+      "title": "Poker Blindlevel Manager",
+      "description": "Manage blinds and levels for your home poker tournaments.",
+      "href": "/game/poker-blindlevel-manager/",
+      "thumbnail": ""
+    },
+    {
+      "id": "game__snake",
+      "category": "game",
+      "slug": "snake",
+      "title": "Snake",
+      "description": "A retro Snake game with multiple AI strategies ranging from simple greedy behavior to a mathematically perfect solution.",
+      "href": "/game/snake/",
+      "thumbnail": ""
+    },
+    {
       "id": "game__ultimate-texas-holdem",
       "category": "game",
       "slug": "ultimate-texas-holdem",
       "title": "Ultimate Texas Holdem",
-      "description": "Static browser implementation of Ultimate Texas Hold'em for the URage Studio Games catalog.",
+      "description": "Static browser implementation of Ultimate Texas Hold'em for the URage NOW Games catalog.",
       "href": "/game/ultimate-texas-holdem/",
       "thumbnail": ""
     },
@@ -477,6 +531,15 @@
       "title": "Filer",
       "description": "Dashboard-themed project analytics and data browsing tool for reviewing structured project information in sortable tables and charts.",
       "href": "/plan/filer/",
+      "thumbnail": ""
+    },
+    {
+      "id": "plan__flowchart-builder",
+      "category": "plan",
+      "slug": "flowchart-builder",
+      "title": "Flowchart Builder",
+      "description": "Open this URage tool in your browser.",
+      "href": "/plan/flowchart-builder/",
       "thumbnail": ""
     },
     {
