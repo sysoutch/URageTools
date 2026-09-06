@@ -313,8 +313,21 @@ function drawChip(canvas, chip) {
     /* k-means palette quantization */
     chip.palette = quantizeChip(canvas, chip);
 
-    /* enforce pixel-exact mirror symmetry on both axes */
-    symmetrize(canvas, "xy");
+    /* enforce pixel-exact mirror symmetry on both axes — the value
+       text is masked out so the denomination stays readable */
+    symmetrize(
+        canvas,
+        "xy",
+        valueTextMask(size, size, tctx => drawPixelText(
+            tctx,
+            chip.value,
+            cx,
+            cy,
+            "#fff",
+            size,
+            fm.scale
+        ))
+    );
 }
 
 /* =========================================================
@@ -494,6 +507,8 @@ function drawChipDiagonal(canvas, chip) {
         }
     }
 
+    const fm = chipFaceMetrics(chip, size);
+
     /* top face — exact circle under vertical squash */
     ctx.save();
 
@@ -506,8 +521,19 @@ function drawChipDiagonal(canvas, chip) {
 
     quantizeChip(canvas, chip);
 
-    /* keep the perspective view mirrored on its vertical axis */
-    symmetrize(canvas, "x");
+    /* keep the perspective view mirrored on its vertical axis — the
+       value text is masked out so it stays readable */
+    symmetrize(
+        canvas,
+        "x",
+        valueTextMask(m.size, canvas.height, tctx => {
+            tctx.save();
+            tctx.translate(cx, cyTop);
+            tctx.scale(1, m.ry / m.R);
+            drawPixelText(tctx, chip.value, 0, 0, "#fff", size, fm.scale);
+            tctx.restore();
+        })
+    );
 }
 
 function drawChipFront(canvas, chip) {
@@ -1364,9 +1390,33 @@ function quantizeChip(canvas, chip) {
     Runs after quantization so anti-aliased fringe and palette
     snapping can never break the symmetry. The more opaque pixel
     of each pair wins, keeping flat colors flat and edges crisp.
+    The value text is excluded via an alpha mask — it must stay
+    readable, never mirrored.
     ========================================================= */
 
-function symmetrize(canvas, axes) {
+/* render the chip's value text to an offscreen buffer so that
+   symmetrize() can skip those pixels; `draw` receives a 2d ctx of
+   exactly w x h and draws the text (with any transforms) opaque */
+function valueTextMask(w, h, draw) {
+
+    const tmp = document.createElement("canvas");
+
+    tmp.width = w;
+    tmp.height = h;
+
+    const tctx = tmp.getContext(
+        "2d",
+        { willReadFrequently: true }
+    );
+
+    tctx.imageSmoothingEnabled = false;
+
+    draw(tctx);
+
+    return tctx.getImageData(0, 0, w, h).data;
+}
+
+function symmetrize(canvas, axes, mask) {
 
     const w = canvas.width;
     const h = canvas.height;
@@ -1383,6 +1433,9 @@ function symmetrize(canvas, axes) {
     const idx = (x, y) => (y * w + x) << 2;
 
     const mergePair = (a, b) => {
+
+        /* never mirror the value text — keep it readable */
+        if (mask && (mask[a + 3] > 0 || mask[b + 3] > 0)) return;
 
         if (d[a + 3] >= d[b + 3]) {
             d[b] = d[a];
