@@ -22,7 +22,9 @@ export const state = {
   mirrorRepeatY: 0,
   propDensity: 18,
   palette: "ruins",
-  map: []
+  map: [],
+  showSprites: true,
+  spriteLayers: []
 };
 
 export function readNumber(id, fallback) {

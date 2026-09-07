@@ -251,6 +251,24 @@ function createPropMesh(asset, tile, config) {
   return model;
 }
 
+const spriteTextureCache = new Map();
+
+function createSpriteBillboard(layer, config) {
+  if (!layer || !layer.src) return null;
+  let texture = spriteTextureCache.get(layer.src);
+  if (!texture) {
+    texture = new THREE.TextureLoader().load(layer.src, () => { _needsRender = true; });
+    texture.colorSpace = THREE.SRGBColorSpace;
+    spriteTextureCache.set(layer.src, texture);
+  }
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+  const tile = config.map[layer.z] && config.map[layer.z][layer.x];
+  const height = Math.max(0.72, (tile && tile.height || 0) + 0.72);
+  sprite.position.set(layer.x + 0.5, height, layer.z + 0.5);
+  sprite.scale.set(layer.player ? 1.15 : 0.95, layer.player ? 1.15 : 0.95, 1);
+  sprite.renderOrder = 2;
+  return sprite;
+}
 function createMapRoot(config) {
   const palette = palettes[config.palette] || palettes.ruins;
   const mode = config.renderMode || config.mode;
@@ -282,6 +300,12 @@ function createMapRoot(config) {
     }
     root.add(createTileMesh(tile, materials, config));
   });
+  let spriteBillboards = 0;
+  if (config.showSprites !== false && (config.spriteLayers || []).length) {
+    (config.spriteLayers || []).forEach(layer => { const sprite = createSpriteBillboard(layer, config); if (sprite) { root.add(sprite); spriteBillboards++; } });
+  }
+  // Expose live counts so tooling can verify what the scene actually contains.
+  root.userData.spriteCount = spriteBillboards;
   const propModels = getPropModels();
   if (propModels.length) {
     config.map.flat().filter(Boolean).forEach((tile, index) => {
@@ -377,6 +401,12 @@ export function renderMap(canvas, config) {
     }
     _needsRender = true;
   });
+}
+
+// Live contents of the current map scene (used by debug/verification tooling).
+export function getSceneStats() {
+  const root = rendererState.mapRoot;
+  return root ? { sprites: root.userData.spriteCount || 0, nodes: root.children.length } : null;
 }
 
 export function setupScrollZoom(canvas) {

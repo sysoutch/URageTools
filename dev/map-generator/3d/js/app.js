@@ -1,6 +1,6 @@
 import { generateMap } from "./generator.js";
 import { getModelAssets, importModelFiles } from "./model-assets.js";
-import { exportRendererPng, renderMap, setupScrollZoom } from "./renderer.js";
+import { exportRendererPng, getSceneStats, renderMap, setupScrollZoom } from "./renderer.js";
 import { state, syncStateFromControls } from "./state.js";
 import { registerToolTheme } from "./theme.js";
 import { setCanvasReference, exportZip as doExportZip, buildZipBlob } from "./export-zip.js";
@@ -28,7 +28,8 @@ function updateUiText() {
   const projectionLabel = state.projection === "perspective" ? "Perspective" : "Orthographic";
   titleNode.textContent = `${modeLabel} ${projectionLabel} Blockout`;
   const tiles = state.map.flat().filter(tile => tile && tile.kind !== "empty").length;
-  statsNode.textContent = `${tiles} solid tiles`;
+  const sprites = (state.spriteLayers || []).length;
+  statsNode.textContent = `${tiles} solid tiles${sprites ? ` · ${sprites} sprites` : ""}`;
 }
 
 function updateAssetList() {
@@ -210,10 +211,12 @@ function bindControls() {
       return;
     }
     if (button.id === "generateButton") {
+      state.spriteLayers = [];
       refresh({ forceNewSeed: true });
       return;
     }
     if (button.id === "randomizeSeedButton") {
+      state.spriteLayers = [];
       refresh({ forceNewSeed: true });
       return;
     }
@@ -237,6 +240,12 @@ function bindControls() {
   document.addEventListener("change", event => {
     if (!event.target.matches("input, select")) return;
     if (event.target.id === "modelFileInput") return;
+    if (event.target.id === "spriteToggleInput") {
+      state.showSprites = event.target.checked;
+      renderMap(canvas, state);
+      updateUiText();
+      return;
+    }
     refresh();
   });
 
@@ -277,3 +286,56 @@ if (typeof window.registerDashboardToolBridge === "function") {
   window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
   window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets().then(descriptors => descriptors[0] || null);
 }
+
+function sharedSnapshot() {
+  return { version: 1, mode: state.mode, seed: String(state.seed), map: state.map.map(row => row.map(tile => tile && tile.kind === "block" ? "platform" : "hole")), items: [], players: [], sprites: [] };
+}
+
+function resolveSpriteSrc(sprite) {
+  return (sprite && (sprite.dataUrl || sprite.src)) || "";
+}
+
+function applySharedMap(snapshot) {
+  if (!snapshot || !Array.isArray(snapshot.map)) return;
+  const rows = snapshot.map.filter(Array.isArray);
+  const width = Math.max(1, ...rows.map(row => row.length));
+  const spritesById = new Map((snapshot.sprites || []).filter(sprite => sprite && sprite.id).map(sprite => [sprite.id, sprite]));
+  state.mode = snapshot.mode === "sidescroller" ? "sidescroller" : snapshot.mode === "isometric" ? "isometric" : "topdown-flat";
+  state.seed = Math.max(1, Number(snapshot.seed) || state.seed);
+  state.width = width;
+  state.depth = Math.max(1, rows.length);
+  state.map = rows.map((row, z) => Array.from({ length: width }, (_, x) => ({ x, z, y: 0, height: row[x] === "platform" ? 1 : 0.04, kind: row[x] === "platform" ? "block" : "ground" })));
+  // Sprites + players from the shared map, drawn as upright game-space billboards.
+  state.spriteLayers = [];
+  (snapshot.items || []).forEach((row, z) => (row || []).forEach((itemId, x) => { const src = resolveSpriteSrc(spritesById.get(itemId)); if (src) state.spriteLayers.push({ x, z, src }); }));
+  const playerSprites = Array.isArray(snapshot.playerSprites) ? snapshot.playerSprites : [];
+  (snapshot.players || []).forEach(player => {
+    const sprite = playerSprites.length ? playerSprites[(player.variantIndex || 0) % playerSprites.length] : null;
+    const src = resolveSpriteSrc(sprite) || resolveSpriteSrc({ src: snapshot.playerSprite });
+    if (src) state.spriteLayers.push({ x: player.col, z: player.row, src, player: true });
+  });
+  ["seedInput", "widthInput", "depthInput"].forEach((id, index) => { const control = getControl(id); if (control) control.value = String([state.seed, state.width, state.depth][index]); });
+  updateButtons("[data-mode]", "data-mode", state.mode);
+  lastControlSignature = controlSignature();
+  renderMap(canvas, state);
+  updateUiText();
+}
+
+window.__urageGetSharedMap = sharedSnapshot;
+window.__urageApplySharedMap = applySharedMap;
+window.__urageMapGeneratorBecameVisible = () => renderMap(canvas, state);
+
+const existingGenerateButton = getControl("generateButton");
+existingGenerateButton?.addEventListener("click", () => {
+  requestAnimationFrame(() => window.parent.postMessage({ type: "urage-map-generator-snapshot", source: "3d", snapshot: sharedSnapshot() }, "*"));
+});
+
+// Reset the orbit camera back to the configured yaw/pitch/zoom by re-rendering.
+getControl("resetViewButton")?.addEventListener("click", () => renderMap(canvas, state));
+
+// Debug/verification accessor (used by automated checks). Reports what the live scene
+// actually contains when available, falling back to pending state before first render.
+window.__urageDebugScene = () => {
+  const scene = getSceneStats();
+  return { tiles: (state.map || []).flat().filter(Boolean).length, spriteLayers: scene ? scene.sprites : (state.spriteLayers || []).length, mode: state.mode, showSprites: state.showSprites !== false };
+};
