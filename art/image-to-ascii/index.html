@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Image → ASCII HTML</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b0d10;
+  --panel: #13171c;
+  --border: #2a3038;
+  --text: #e8edf2;
+  --muted: #8b949e;
+  --accent: #58a6ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.app {
+  max-width: 1200px;
+  margin: auto;
+  padding: 32px 20px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  font-size: 14px;
+  color: var(--muted);
+}
+
+select,
+button,
+.upload {
+  width: 100%;
+
+  background: #1b2128;
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 7px;
+
+  padding: 9px 12px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.upload {
+  cursor: pointer;
+  text-align: center;
+}
+
+.upload:hover,
+button:hover {
+  border-color: var(--accent);
+}
+
+.remove-settings {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px;
+}
+
+.hint {
+  grid-column: 1 / -1;
+
+  color: #6e7781;
+  font-size: 12px;
+
+  margin-top: -6px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  margin-bottom: 20px;
+}
+
+button {
+  width: auto;
+  cursor: pointer;
+}
+
+.preview {
+  background:
+    linear-gradient(45deg, #111 25%, transparent 25%),
+    linear-gradient(-45deg, #111 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #111 75%),
+    linear-gradient(-45deg, transparent 75%, #111 75%);
+
+  background-size: 20px 20px;
+
+  background-position:
+    0 0,
+    0 10px,
+    10px -10px,
+    -10px 0;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  overflow: auto;
+  min-height: 300px;
+
+  padding: 20px;
+}
+
+#ascii {
+  margin: 0;
+
+  font-family:
+    "Courier New",
+    Courier,
+    monospace;
+
+  font-size: 8px;
+  line-height: 8px;
+
+  white-space: pre;
+
+  display: inline-block;
+
+  min-width: 100%;
+}
+
+.empty {
+  color: #555;
+
+  text-align: center;
+
+  padding: 120px 20px;
+
+  font-family: system-ui, sans-serif;
+}
+
+.stats {
+  margin-top: 10px;
+
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.discord-hint {
+  margin-top: 12px;
+
+  color: #6e7781;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .remove-settings {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .hint {
+    grid-column: auto;
+  }
+
+  #ascii {
+    font-size: 6px;
+    line-height: 6px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <h1>Image → ASCII HTML</h1>
+
+  <div class="subtitle">
+    Convert images to ASCII art with manual or automatic background removal.
+  </div>
+
+
+  <div class="controls">
+
+    <!-- IMAGE -->
+
+    <label>
+      Image
+
+      <label class="upload">
+        Choose image
+
+        <input
+          id="file"
+          type="file"
+          accept="image/*"
+        >
+      </label>
+    </label>
+
+
+    <!-- WIDTH -->
+
+    <label>
+      Width:
+      <span id="widthValue">100</span>
+
+      <input
+        id="width"
+        type="range"
+        min="30"
+        max="250"
+        value="100"
+      >
+    </label>
+
+
+    <!-- CHARACTER SET -->
+
+    <label>
+      Character set
+
+      <select id="charset">
+
+        <option value="@%#*+=-:. ">
+          Dense
+        </option>
+
+        <option value="█▓▒░ ">
+          Blocks
+        </option>
+
+        <option value="MWNXK0Okxdolc:,. ">
+          Detailed
+        </option>
+
+        <option value="@#S%?*+;:,.' ">
+          Classic
+        </option>
+
+      </select>
+    </label>
+
+
+    <!-- CONTRAST -->
+
+    <label>
+      Contrast:
+      <span id="contrastValue">1.0</span>
+
+      <input
+        id="contrast"
+        type="range"
+        min="0.5"
+        max="2.5"
+        step="0.1"
+        value="1"
+      >
+    </label>
+
+
+    <!-- BRIGHTNESS -->
+
+    <label>
+      Brightness:
+      <span id="brightnessValue">0</span>
+
+      <input
+        id="brightness"
+        type="range"
+        min="-100"
+        max="100"
+        value="0"
+      >
+    </label>
+
+
+    <!-- COLOR -->
+
+    <label>
+      Color mode
+
+      <select id="color">
+
+        <option value="mono">
+          Monochrome
+        </option>
+
+        <option value="color">
+          Original colors
+        </option>
+
+        <option value="green">
+          Terminal green
+        </option>
+
+      </select>
+    </label>
+
+
+    <!-- REMOVE -->
+
+    <label>
+      Remove
+
+      <select id="remove">
+
+        <option value="none">
+          Nothing
+        </option>
+
+        <option value="white">
+          White
+        </option>
+
+        <option value="black">
+          Black
+        </option>
+
+        <option value="transparent">
+          Transparent
+        </option>
+
+        <option value="dominant">
+          Auto — dominant ASCII
+        </option>
+
+        <option value="edge">
+          Auto — edge ASCII
+        </option>
+
+      </select>
+    </label>
+
+
+    <!-- EMPTY CHARACTER -->
+
+    <label>
+      Empty character
+
+      <select id="emptyChar">
+
+        <option value="braille">
+          Invisible — Discord safe
+        </option>
+
+        <option value="space">
+          Normal space
+        </option>
+
+        <option value="dot">
+          Visible dot
+        </option>
+
+      </select>
+    </label>
+
+
+    <!-- REMOVAL SETTINGS -->
+
+    <div
+      id="removeSettings"
+      class="remove-settings hidden"
+    >
+
+      <label>
+        Tolerance:
+        <span id="toleranceValue">30</span>
+
+        <input
+          id="tolerance"
+          type="range"
+          min="0"
+          max="150"
+          value="30"
+        >
+      </label>
+
+
+      <label>
+        Edge softness:
+        <span id="softnessValue">10</span>
+
+        <input
+          id="softness"
+          type="range"
+          min="0"
+          max="60"
+          value="10"
+        >
+      </label>
+
+    </div>
+
+
+    <div
+      id="autoHint"
+      class="hint hidden"
+    >
+      Automatic modes detect the background from the generated ASCII.
+      Edge mode is usually more reliable when the subject occupies the center.
+    </div>
+
+  </div>
+
+
+  <!-- BUTTONS -->
+
+  <div class="buttons">
+
+    <button id="copy">
+      Copy ASCII
+    </button>
+
+    <button id="copyHtml">
+      Copy HTML
+    </button>
+
+    <button id="download">
+      Download HTML
+    </button>
+
+  </div>
+
+
+  <!-- PREVIEW -->
+
+  <div class="preview">
+
+    <div
+      id="empty"
+      class="empty"
+    >
+      Upload an image to generate ASCII art.
+    </div>
+
+    <pre id="ascii"></pre>
+
+  </div>
+
+
+  <div
+    id="stats"
+    class="stats"
+  ></div>
+
+
+  <div class="discord-hint">
+    Tip: for best alignment in Discord, paste the ASCII inside a code block
+    using triple backticks.
+  </div>
+
+</div>
+
+
+<canvas
+  id="canvas"
+  hidden
+></canvas>
+
+
+<script>
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const fileInput =
+  document.getElementById("file");
+
+const widthInput =
+  document.getElementById("width");
+
+const widthValue =
+  document.getElementById("widthValue");
+
+const charsetInput =
+  document.getElementById("charset");
+
+const contrastInput =
+  document.getElementById("contrast");
+
+const contrastValue =
+  document.getElementById("contrastValue");
+
+const brightnessInput =
+  document.getElementById("brightness");
+
+const brightnessValue =
+  document.getElementById("brightnessValue");
+
+const colorInput =
+  document.getElementById("color");
+
+const removeInput =
+  document.getElementById("remove");
+
+const emptyCharInput =
+  document.getElementById("emptyChar");
+
+const removeSettings =
+  document.getElementById("removeSettings");
+
+const autoHint =
+  document.getElementById("autoHint");
+
+const toleranceInput =
+  document.getElementById("tolerance");
+
+const toleranceValue =
+  document.getElementById("toleranceValue");
+
+const softnessInput =
+  document.getElementById("softness");
+
+const softnessValue =
+  document.getElementById("softnessValue");
+
+const canvas =
+  document.getElementById("canvas");
+
+const ctx =
+  canvas.getContext(
+    "2d",
+    {
+      willReadFrequently: true
+    }
+  );
+
+const ascii =
+  document.getElementById("ascii");
+
+const empty =
+  document.getElementById("empty");
+
+const stats =
+  document.getElementById("stats");
+
+
+let image = null;
+
+
+/* =========================================
+   EMPTY CHARACTERS
+
+   U+2800 BRAILLE PATTERN BLANK
+
+   Looks empty but is a real Unicode
+   character, so it survives copy/paste
+   much better than ordinary spaces.
+========================================= */
+
+const EMPTY_BRAILLE =
+  "\u2800";
+
+const EMPTY_SPACE =
+  " ";
+
+const EMPTY_DOT =
+  "·";
+
+
+function getEmptyCharacter() {
+
+  switch (
+    emptyCharInput.value
+  ) {
+
+    case "space":
+      return EMPTY_SPACE;
+
+    case "dot":
+      return EMPTY_DOT;
+
+    case "braille":
+    default:
+      return EMPTY_BRAILLE;
+  }
+}
+
+
+/* =========================================
+   CONTROLS
+========================================= */
+
+widthInput.addEventListener(
+  "input",
+  () => {
+
+    widthValue.textContent =
+      widthInput.value;
+
+    render();
+  }
+);
+
+
+contrastInput.addEventListener(
+  "input",
+  () => {
+
+    contrastValue.textContent =
+      contrastInput.value;
+
+    render();
+  }
+);
+
+
+brightnessInput.addEventListener(
+  "input",
+  () => {
+
+    brightnessValue.textContent =
+      brightnessInput.value;
+
+    render();
+  }
+);
+
+
+charsetInput.addEventListener(
+  "change",
+  render
+);
+
+
+colorInput.addEventListener(
+  "change",
+  render
+);
+
+
+emptyCharInput.addEventListener(
+  "change",
+  render
+);
+
+
+removeInput.addEventListener(
+  "change",
+  updateRemoveUI
+);
+
+
+toleranceInput.addEventListener(
+  "input",
+  () => {
+
+    toleranceValue.textContent =
+      toleranceInput.value;
+
+    render();
+  }
+);
+
+
+softnessInput.addEventListener(
+  "input",
+  () => {
+
+    softnessValue.textContent =
+      softnessInput.value;
+
+    render();
+  }
+);
+
+
+function updateRemoveUI() {
+
+  const mode =
+    removeInput.value;
+
+  const active =
+    mode !== "none";
+
+  const automatic =
+    mode === "dominant" ||
+    mode === "edge";
+
+
+  removeSettings.classList.toggle(
+    "hidden",
+    !active || automatic
+  );
+
+
+  autoHint.classList.toggle(
+    "hidden",
+    !automatic
+  );
+
+
+  render();
+}
+
+
+/* =========================================
+   IMAGE LOADING
+========================================= */
+
+fileInput.addEventListener(
+  "change",
+  event => {
+
+    const file =
+      event.target.files[0];
+
+    if (!file)
+      return;
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      event => {
+
+        const img =
+          new Image();
+
+
+        img.onload =
+          () => {
+
+            image = img;
+
+            render();
+          };
+
+
+        img.src =
+          event.target.result;
+      };
+
+
+    reader.readAsDataURL(file);
+  }
+);
+
+
+/* =========================================
+   GENERATE ASCII CHARACTER
+========================================= */
+
+function getCharacter(
+  r,
+  g,
+  b,
+  alpha,
+  charset,
+  contrast,
+  brightness
+) {
+
+  /*
+    Transparent pixels are treated
+    as WHITE when Remove = Nothing.
+
+    This means they are converted into
+    the light/background part of the
+    ASCII instead of disappearing.
+  */
+
+  let gray;
+
+
+  if (
+    alpha === 0
+  ) {
+
+    gray = 255;
+
+  } else {
+
+    gray =
+      0.2126 * r +
+      0.7152 * g +
+      0.0722 * b;
+  }
+
+
+  gray +=
+    brightness;
+
+
+  gray =
+    (
+      (gray - 128) *
+      contrast
+    ) + 128;
+
+
+  gray =
+    Math.max(
+      0,
+      Math.min(
+        255,
+        gray
+      )
+    );
+
+
+  const index =
+    Math.floor(
+      (
+        255 - gray
+      ) /
+      255 *
+      (
+        charset.length - 1
+      )
+    );
+
+
+  return charset[index];
+}
+
+
+/* =========================================
+   AUTOMATIC BACKGROUND CHARACTER
+========================================= */
+
+function getBackgroundCharacter(
+  chars,
+  width,
+  height,
+  mode,
+  emptyCharacter
+) {
+
+  const counts =
+    new Map();
+
+
+  function addChar(char) {
+
+    if (
+      char === undefined ||
+      char === "\n"
+    )
+      return;
+
+
+    /*
+      Treat the actual empty character
+      as a normal candidate.
+    */
+
+    counts.set(
+      char,
+      (counts.get(char) || 0) + 1
+    );
+  }
+
+
+  /*
+    DOMINANT:
+
+    Count every generated character.
+  */
+
+  if (
+    mode === "dominant"
+  ) {
+
+    for (
+      const char of chars
+    ) {
+
+      addChar(char);
+    }
+  }
+
+
+  /*
+    EDGE:
+
+    Count only the outer border.
+  */
+
+  else {
+
+    // Top edge
+
+    for (
+      let x = 0;
+      x < width;
+      x++
+    ) {
+
+      addChar(
+        chars[x]
+      );
+    }
+
+
+    // Bottom edge
+
+    const bottom =
+      (
+        height - 1
+      ) * width;
+
+
+    for (
+      let x = 0;
+      x < width;
+      x++
+    ) {
+
+      addChar(
+        chars[
+          bottom + x
+        ]
+      );
+    }
+
+
+    // Left and right edges
+
+    for (
+      let y = 1;
+      y < height - 1;
+      y++
+    ) {
+
+      addChar(
+        chars[
+          y * width
+        ]
+      );
+
+
+      addChar(
+        chars[
+          y * width +
+          width - 1
+        ]
+      );
+    }
+  }
+
+
+  /*
+    If nothing was found, use the
+    selected empty character.
+  */
+
+  let bestChar =
+    emptyCharacter;
+
+  let bestCount =
+    -1;
+
+
+  for (
+    const [
+      char,
+      count
+    ] of counts
+  ) {
+
+    if (
+      count >
+      bestCount
+    ) {
+
+      bestChar =
+        char;
+
+      bestCount =
+        count;
+    }
+  }
+
+
+  return bestChar;
+}
+
+
+/* =========================================
+   COLOR DISTANCE
+========================================= */
+
+function colorDistance(
+  r,
+  g,
+  b,
+  target
+) {
+
+  const dr =
+    r - target[0];
+
+  const dg =
+    g - target[1];
+
+  const db =
+    b - target[2];
+
+
+  return Math.sqrt(
+    dr * dr +
+    dg * dg +
+    db * db
+  );
+}
+
+
+/* =========================================
+   MANUAL REMOVAL
+========================================= */
+
+function calculateManualAlpha(
+  r,
+  g,
+  b,
+  originalAlpha
+) {
+
+  const mode =
+    removeInput.value;
+
+
+  /*
+    NOTHING
+
+    Don't remove anything.
+  */
+
+  if (
+    mode === "none"
+  ) {
+
+    return 255;
+  }
+
+
+  /*
+    TRANSPARENT
+
+    Remove actual transparent pixels.
+  */
+
+  if (
+    mode === "transparent"
+  ) {
+
+    return originalAlpha;
+  }
+
+
+  let target;
+
+
+  /*
+    WHITE
+  */
+
+  if (
+    mode === "white"
+  ) {
+
+    target =
+      [255, 255, 255];
+  }
+
+
+  /*
+    BLACK
+  */
+
+  else if (
+    mode === "black"
+  ) {
+
+    target =
+      [0, 0, 0];
+  }
+
+
+  else {
+
+    return 255;
+  }
+
+
+  const distance =
+    colorDistance(
+      r,
+      g,
+      b,
+      target
+    );
+
+
+  const tolerance =
+    Number(
+      toleranceInput.value
+    );
+
+
+  const softness =
+    Number(
+      softnessInput.value
+    );
+
+
+  /*
+    Fully remove.
+  */
+
+  if (
+    distance <=
+    tolerance
+  ) {
+
+    return 0;
+  }
+
+
+  /*
+    Soft transition.
+  */
+
+  if (
+    softness > 0 &&
+    distance <
+      tolerance + softness
+  ) {
+
+    return Math.round(
+      (
+        (distance - tolerance) /
+        softness
+      ) * 255
+    );
+  }
+
+
+  return 255;
+}
+
+
+/* =========================================
+   RENDER
+========================================= */
+
+function render() {
+
+  if (!image)
+    return;
+
+
+  empty.style.display =
+    "none";
+
+
+  const targetWidth =
+    Number(
+      widthInput.value
+    );
+
+
+  /*
+    Monospace characters are generally
+    taller than they are wide.
+
+    This compensates for that ratio.
+  */
+
+  const charAspect =
+    0.5;
+
+
+  const targetHeight =
+    Math.max(
+      1,
+      Math.round(
+        image.height /
+        image.width *
+        targetWidth *
+        charAspect
+      )
+    );
+
+
+  canvas.width =
+    targetWidth;
+
+  canvas.height =
+    targetHeight;
+
+
+  ctx.clearRect(
+    0,
+    0,
+    targetWidth,
+    targetHeight
+  );
+
+
+  /*
+    Preserve source transparency.
+  */
+
+  ctx.drawImage(
+    image,
+    0,
+    0,
+    targetWidth,
+    targetHeight
+  );
+
+
+  const pixels =
+    ctx.getImageData(
+      0,
+      0,
+      targetWidth,
+      targetHeight
+    ).data;
+
+
+  const charset =
+    charsetInput.value;
+
+
+  const contrast =
+    Number(
+      contrastInput.value
+    );
+
+
+  const brightness =
+    Number(
+      brightnessInput.value
+    );
+
+
+  const colorMode =
+    colorInput.value;
+
+
+  const removeMode =
+    removeInput.value;
+
+
+  const emptyCharacter =
+    getEmptyCharacter();
+
+
+  /*
+    ---------------------------------------
+    FIRST PASS
+    ---------------------------------------
+
+    Generate the raw ASCII characters.
+  */
+
+  const plainChars =
+    new Array(
+      targetWidth *
+      targetHeight
+    );
+
+
+  for (
+    let y = 0;
+    y < targetHeight;
+    y++
+  ) {
+
+    for (
+      let x = 0;
+      x < targetWidth;
+      x++
+    ) {
+
+      const position =
+        y * targetWidth +
+        x;
+
+
+      const i =
+        position * 4;
+
+
+      const r =
+        pixels[i];
+
+      const g =
+        pixels[i + 1];
+
+      const b =
+        pixels[i + 2];
+
+      const alpha =
+        pixels[i + 3];
+
+
+      plainChars[position] =
+        getCharacter(
+          r,
+          g,
+          b,
+          alpha,
+          charset,
+          contrast,
+          brightness
+        );
+    }
+  }
+
+
+  /*
+    ---------------------------------------
+    AUTOMATIC BACKGROUND
+    ---------------------------------------
+  */
+
+  let automaticBackground =
+    null;
+
+
+  if (
+    removeMode === "dominant" ||
+    removeMode === "edge"
+  ) {
+
+    automaticBackground =
+      getBackgroundCharacter(
+        plainChars,
+        targetWidth,
+        targetHeight,
+        removeMode,
+        emptyCharacter
+      );
+  }
+
+
+  /*
+    ---------------------------------------
+    SECOND PASS
+    ---------------------------------------
+  */
+
+  let output =
+    "";
+
+
+  for (
+    let y = 0;
+    y < targetHeight;
+    y++
+  ) {
+
+    for (
+      let x = 0;
+      x < targetWidth;
+      x++
+    ) {
+
+      const position =
+        y * targetWidth +
+        x;
+
+
+      const i =
+        position * 4;
+
+
+      const r =
+        pixels[i];
+
+      const g =
+        pixels[i + 1];
+
+      const b =
+        pixels[i + 2];
+
+      const originalAlpha =
+        pixels[i + 3];
+
+
+      let alpha =
+        255;
+
+
+      /*
+        MANUAL REMOVAL
+      */
+
+      if (
+        removeMode === "white" ||
+        removeMode === "black" ||
+        removeMode === "transparent"
+      ) {
+
+        alpha =
+          calculateManualAlpha(
+            r,
+            g,
+            b,
+            originalAlpha
+          );
+      }
+
+
+      /*
+        AUTOMATIC REMOVAL
+      */
+
+      else if (
+        removeMode === "dominant" ||
+        removeMode === "edge"
+      ) {
+
+        if (
+          plainChars[position] ===
+          automaticBackground
+        ) {
+
+          alpha = 0;
+        }
+      }
+
+
+      /*
+        The generated character.
+      */
+
+      const char =
+        plainChars[position];
+
+
+      /*
+        REMOVED PIXEL
+
+        Use the selected invisible/empty
+        Unicode character instead of a
+        normal ASCII space.
+      */
+
+      if (
+        alpha <= 0
+      ) {
+
+        output +=
+          emptyCharacter;
+
+        continue;
+      }
+
+
+      /*
+        COLOR MODE
+      */
+
+      if (
+        colorMode === "color"
+      ) {
+
+        output +=
+          `<span style="color:rgba(${r},${g},${b},${(
+            alpha / 255
+          ).toFixed(2)})">${escapeHtml(char)}</span>`;
+      }
+
+
+      /*
+        GREEN MODE
+      */
+
+      else if (
+        colorMode === "green"
+      ) {
+
+        output +=
+          `<span style="color:rgba(0,255,102,${(
+            alpha / 255
+          ).toFixed(2)})">${escapeHtml(char)}</span>`;
+      }
+
+
+      /*
+        MONOCHROME
+      */
+
+      else {
+
+        /*
+          If the generated character is the
+          actual ASCII space from the charset,
+          replace it with the selected
+          Discord-safe empty character.
+
+          This is important because otherwise
+          large light areas would still contain
+          ordinary spaces.
+        */
+
+        if (
+          char === " "
+        ) {
+
+          output +=
+            emptyCharacter;
+
+        } else {
+
+          output +=
+            escapeHtml(char);
+        }
+      }
+    }
+
+
+    /*
+      Keep the actual line break.
+
+      The line break itself is not replaced.
+    */
+
+    output +=
+      "\n";
+  }
+
+
+  /*
+    Put result into preview.
+  */
+
+  ascii.innerHTML =
+    output;
+
+
+  /*
+    Status
+  */
+
+  let status =
+    `${targetWidth} × ${targetHeight} characters`;
+
+
+  if (
+    removeMode === "dominant" ||
+    removeMode === "edge"
+  ) {
+
+    const readable =
+      automaticBackground === " "
+        ? "space"
+        : automaticBackground;
+
+
+    status +=
+      ` • detected background: "${readable}"`;
+  }
+
+
+  else if (
+    removeMode !== "none"
+  ) {
+
+    status +=
+      ` • removing ${removeMode}`;
+  }
+
+
+  if (
+    emptyCharInput.value ===
+    "braille"
+  ) {
+
+    status +=
+      ` • empty: U+2800`;
+  }
+
+
+  stats.textContent =
+    status;
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(text) {
+
+  return text
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    );
+}
+
+
+/* =========================================
+   GET PLAIN ASCII
+========================================= */
+
+function getPlainAscii() {
+
+  /*
+    textContent gives us exactly what
+    is visually represented, including
+    the invisible Unicode characters.
+  */
+
+  return ascii.textContent;
+}
+
+
+/* =========================================
+   EXPORTED HTML
+========================================= */
+
+function getHtml() {
+
+  return `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>ASCII Art</title>
+
+<style>
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #000;
+}
+
+pre {
+  margin: 20px;
+
+  font-family:
+    "Courier New",
+    Courier,
+    monospace;
+
+  font-size: 8px;
+  line-height: 8px;
+
+  white-space: pre;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<pre>${ascii.innerHTML}</pre>
+
+</body>
+
+</html>`;
+}
+
+
+/* =========================================
+   COPY ASCII
+========================================= */
+
+document
+  .getElementById("copy")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const text =
+        getPlainAscii();
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          text
+        );
+
+      } catch (error) {
+
+        /*
+          Fallback for browsers where
+          clipboard API isn't available.
+        */
+
+        const textarea =
+          document.createElement(
+            "textarea"
+          );
+
+
+        textarea.value =
+          text;
+
+
+        textarea.style.position =
+          "fixed";
+
+        textarea.style.opacity =
+          "0";
+
+
+        document.body.appendChild(
+          textarea
+        );
+
+
+        textarea.select();
+
+
+        document.execCommand(
+          "copy"
+        );
+
+
+        textarea.remove();
+      }
+    }
+  );
+
+
+/* =========================================
+   COPY HTML
+========================================= */
+
+document
+  .getElementById("copyHtml")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const html =
+        getHtml();
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          html
+        );
+
+      } catch (error) {
+
+        const textarea =
+          document.createElement(
+            "textarea"
+          );
+
+
+        textarea.value =
+          html;
+
+
+        textarea.style.position =
+          "fixed";
+
+        textarea.style.opacity =
+          "0";
+
+
+        document.body.appendChild(
+          textarea
+        );
+
+
+        textarea.select();
+
+
+        document.execCommand(
+          "copy"
+        );
+
+
+        textarea.remove();
+      }
+    }
+  );
+
+
+/* =========================================
+   DOWNLOAD HTML
+========================================= */
+
+document
+  .getElementById("download")
+  .addEventListener(
+    "click",
+    () => {
+
+      const blob =
+        new Blob(
+          [getHtml()],
+          {
+            type: "text/html;charset=utf-8"
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const a =
+        document.createElement(
+          "a"
+        );
+
+
+      a.href =
+        url;
+
+      a.download =
+        "ascii-art.html";
+
+
+      document.body.appendChild(
+        a
+      );
+
+
+      a.click();
+
+
+      a.remove();
+
+
+      setTimeout(
+        () => {
+          URL.revokeObjectURL(
+            url
+          );
+        },
+        100
+      );
+    }
+  );
+
+
+/* =========================================
+   INITIAL UI
+========================================= */
+
+updateRemoveUI();
+
+</script>
+
+</body>
+</html>
