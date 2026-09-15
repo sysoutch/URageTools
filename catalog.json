@@ -120,6 +120,15 @@
       "thumbnail": "/art/image-split-and-combine/thumbnail.png"
     },
     {
+      "id": "art__image-to-ascii",
+      "category": "art",
+      "slug": "image-to-ascii",
+      "title": "Image To Ascii",
+      "description": "Convert a single image — or an entire sequence of frames (animated GIFs included) — into ASCII art, with animated HTML export and manual or automatic background removal. Built for pasting into Discord, terminals, and any plain-text context.",
+      "href": "/art/image-to-ascii/",
+      "thumbnail": ""
+    },
+    {
       "id": "art__image-to-svg-converter",
       "category": "art",
       "slug": "image-to-svg-converter",
@@ -538,7 +547,7 @@
       "category": "plan",
       "slug": "flowchart-builder",
       "title": "Flowchart Builder",
-      "description": "Open this URage tool in your browser.",
+      "description": "Create and export interactive architecture diagrams and flowcharts.",
       "href": "/plan/flowchart-builder/",
       "thumbnail": ""
     },

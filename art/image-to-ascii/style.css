@@ -1,0 +1,306 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b0d10;
+  --panel: #13171c;
+  --border: #2a3038;
+  --text: #e8edf2;
+  --muted: #8b949e;
+  --accent: #58a6ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.app {
+  max-width: 1200px;
+  margin: auto;
+  padding: 32px 20px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  font-size: 14px;
+  color: var(--muted);
+}
+
+select,
+button,
+.upload {
+  width: 100%;
+
+  background: #1b2128;
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 7px;
+
+  padding: 9px 12px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.upload {
+  cursor: pointer;
+  text-align: center;
+}
+
+.upload:hover,
+button:hover {
+  border-color: var(--accent);
+}
+
+.remove-settings {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px;
+}
+
+.hint {
+  grid-column: 1 / -1;
+
+  color: #6e7781;
+  font-size: 12px;
+
+  margin-top: -6px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  margin-bottom: 20px;
+}
+
+button {
+  width: auto;
+  cursor: pointer;
+}
+
+.preview {
+  background:
+    linear-gradient(45deg, #111 25%, transparent 25%),
+    linear-gradient(-45deg, #111 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #111 75%),
+    linear-gradient(-45deg, transparent 75%, #111 75%);
+
+  background-size: 20px 20px;
+
+  background-position:
+    0 0,
+    0 10px,
+    10px -10px,
+    -10px 0;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  overflow: auto;
+  min-height: 300px;
+
+  padding: 20px;
+}
+
+#ascii {
+  margin: 0;
+
+  font-family:
+    "Courier New",
+    Courier,
+    monospace;
+
+  font-size: 8px;
+  line-height: 8px;
+
+  white-space: pre;
+
+  display: inline-block;
+
+  min-width: 100%;
+}
+
+.empty {
+  color: #555;
+
+  text-align: center;
+
+  padding: 120px 20px;
+
+  font-family: system-ui, sans-serif;
+}
+
+.stats {
+  margin-top: 10px;
+
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.discord-hint {
+  margin-top: 12px;
+
+  color: #6e7781;
+  font-size: 12px;
+}
+
+.frames {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  padding: 10px 14px;
+  margin-bottom: 20px;
+}
+
+.frames-title {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.frame-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  flex: 1;
+}
+
+.frame-cell {
+  position: relative;
+
+  width: 44px;
+  height: 44px;
+
+  border: 2px solid var(--border);
+  border-radius: 8px;
+
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.frame-cell img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  background: #0d1116;
+}
+
+.frame-cell.active {
+  border-color: var(--accent);
+}
+
+.frame-num {
+  position: absolute;
+  left: 3px;
+  bottom: 2px;
+
+  font-size: 10px;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+}
+
+.frame-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: auto;
+  padding: 0 5px;
+
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--text);
+  border: none;
+  border-radius: 0 8px 0 4px;
+
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.frame-remove:hover {
+  background: rgba(255, 80, 80, 0.7);
+  border-color: transparent;
+}
+
+#clearFrames {
+  width: auto;
+}
+
+@media (max-width: 700px) {
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .remove-settings {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .hint {
+    grid-column: auto;
+  }
+
+  #ascii {
+    font-size: 6px;
+    line-height: 6px;
+  }
+}
