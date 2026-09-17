@@ -54,7 +54,7 @@
       "title": "Ai Image Naturalizer",
       "description": "A lightweight, browser-based HTML5 tool for making overly-clean AI-generated images feel more natural.",
       "href": "/art/ai-image-naturalizer/",
-      "thumbnail": ""
+      "thumbnail": "/art/ai-image-naturalizer/thumbnail.png"
     },
     {
       "id": "art__albedo-tools",
@@ -63,7 +63,7 @@
       "title": "Albedo Tools",
       "description": "This package contains:",
       "href": "/art/albedo-tools/",
-      "thumbnail": ""
+      "thumbnail": "/art/albedo-tools/thumbnail.png"
     },
     {
       "id": "art__color-palette-extractor",
@@ -126,7 +126,7 @@
       "title": "Image To Ascii",
       "description": "Convert a single image — or an entire sequence of frames (animated GIFs included) — into ASCII art, with animated HTML export and manual or automatic background removal. Built for pasting into Discord, terminals, and any plain-text context.",
       "href": "/art/image-to-ascii/",
-      "thumbnail": ""
+      "thumbnail": "/art/image-to-ascii/thumbnail.png"
     },
     {
       "id": "art__image-to-svg-converter",
@@ -153,7 +153,7 @@
       "title": "Normalmap Maker",
       "description": "Browser-based tool for creating tangent-space normal maps from image textures, sprites, height maps, alpha masks, or batches of source images.",
       "href": "/art/normalmap-maker/",
-      "thumbnail": ""
+      "thumbnail": "/art/normalmap-maker/thumbnail.png"
     },
     {
       "id": "art__pixel-art-converter",
@@ -171,7 +171,7 @@
       "title": "Pixel Poker Chip Generator",
       "description": "Procedural pixel-art poker chips with K-Means palette quantization, image color extraction, seeded reproducibility and shareable links.",
       "href": "/art/poker-chip-generator/",
-      "thumbnail": ""
+      "thumbnail": "/art/poker-chip-generator/thumbnail.png"
     },
     {
       "id": "art__seamless-texture-maker",
@@ -189,7 +189,7 @@
       "title": "Spritesheet Utility",
       "description": "SpriteForge AI is a local-first spritesheet utility for quick grid slicing and AI-assisted sprite detection.",
       "href": "/art/spritesheet-utility/",
-      "thumbnail": ""
+      "thumbnail": "/art/spritesheet-utility/thumbnail.png"
     },
     {
       "id": "art__svg-editor",
@@ -207,7 +207,7 @@
       "title": "Texture Map Painter",
       "description": "Paint and preview a compact material texture set containing albedo, height, tangent-space normal, roughness, and smoothness maps.",
       "href": "/art/texture_map_painter/",
-      "thumbnail": ""
+      "thumbnail": "/art/texture_map_painter/thumbnail.png"
     },
     {
       "id": "art__toon-image-shader",
@@ -216,7 +216,7 @@
       "title": "Toon Image Shader",
       "description": "A browser-based image processing tool that converts photos and images into cel-shaded, comic-style toon art with customizable parameters. Uses HTML5 Canvas API for local, real-time processing — no server uploads required.",
       "href": "/art/toon-image-shader/",
-      "thumbnail": ""
+      "thumbnail": "/art/toon-image-shader/thumbnail.png"
     },
     {
       "id": "audio__audio-cutter",
@@ -225,7 +225,7 @@
       "title": "Audio Cutter",
       "description": "Open this URage tool in your browser.",
       "href": "/audio/audio-cutter/",
-      "thumbnail": ""
+      "thumbnail": "/audio/audio-cutter/thumbnail.png"
     },
     {
       "id": "audio__audio-recorder",
@@ -234,7 +234,7 @@
       "title": "Audio Recorder",
       "description": "Records microphone audio, shared tab/system audio, or both mixed together. The latest recording is exposed through `describeCurrentAssets` so the dashboard Tools workspace can send it to other tools or import flows.",
       "href": "/audio/audio-recorder/",
-      "thumbnail": ""
+      "thumbnail": "/audio/audio-recorder/thumbnail.png"
     },
     {
       "id": "audio__beat-maker",
@@ -270,7 +270,7 @@
       "title": "3D Model Sharer",
       "description": "Single-file static web tool for previewing, importing, and uploading Sketchfab 3D models.",
       "href": "/dev/3d-model-sharer/",
-      "thumbnail": ""
+      "thumbnail": "/dev/3d-model-sharer/thumbnail.png"
     },
     {
       "id": "dev__base64-converter",
@@ -279,7 +279,7 @@
       "title": "Base64 Converter",
       "description": "A browser-based Base64 encoder and decoder with **Data URL support, image previews, binary detection, file conversion, and downloads**.",
       "href": "/dev/base64-converter/",
-      "thumbnail": ""
+      "thumbnail": "/dev/base64-converter/thumbnail.png"
     },
     {
       "id": "dev__blender-control-center",
@@ -288,7 +288,7 @@
       "title": "Blender Control Center",
       "description": "Open this URage tool in your browser.",
       "href": "/dev/blender-control-center/",
-      "thumbnail": ""
+      "thumbnail": "/dev/blender-control-center/thumbnail.png"
     },
     {
       "id": "dev__business-card-generator",
@@ -297,7 +297,7 @@
       "title": "Business Card Generator",
       "description": "A self-contained dashboard tool for designing front and back business-card faces with Fabric.js. It supports text, uploaded logos, QR codes, solid or gradient backgrounds, and high-resolution PNG export.",
       "href": "/dev/business-card-generator/",
-      "thumbnail": ""
+      "thumbnail": "/dev/business-card-generator/thumbnail.png"
     },
     {
       "id": "dev__csharp-class-extractor",
@@ -306,7 +306,7 @@
       "title": "Csharp Class Extractor",
       "description": "A developer utility to extract C# classes, structs, and enums from a single script file into separate files.",
       "href": "/dev/csharp-class-extractor/",
-      "thumbnail": ""
+      "thumbnail": "/dev/csharp-class-extractor/thumbnail.png"
     },
     {
       "id": "dev__css-background-generator",
@@ -324,7 +324,7 @@
       "title": "Css To Scss",
       "description": "A professional-grade utility to refactor monolithic CSS into modular SCSS partials with built-in compilation support.",
       "href": "/dev/css-to-scss/",
-      "thumbnail": ""
+      "thumbnail": "/dev/css-to-scss/thumbnail.png"
     },
     {
       "id": "dev__dialogue-tree-visualizer",
@@ -342,7 +342,7 @@
       "title": "Electron App Icon Generator",
       "description": "Easily generate icon files for your Electron applications from a single source image.",
       "href": "/dev/electron-app-icon-generator/",
-      "thumbnail": ""
+      "thumbnail": "/dev/electron-app-icon-generator/thumbnail.png"
     },
     {
       "id": "dev__gamejuice-generator",
@@ -351,7 +351,7 @@
       "title": "Gamejuice Generator",
       "description": "An interactive HTML5 dashboard for prototyping and previewing game \"juice\" — the visual and audio feedback effects that make games feel satisfying. Generate particles, screenshake, easing animations, sound timing, sprite animations, and export ready-to-use code snippets for popular game engines.",
       "href": "/dev/gamejuice-generator/",
-      "thumbnail": ""
+      "thumbnail": "/dev/gamejuice-generator/thumbnail.png"
     },
     {
       "id": "dev__html-button-generator",
@@ -378,7 +378,7 @@
       "title": "Html Viewer",
       "description": "A simple tool to view and preview HTML files directly in your browser with live reloading capabilities.",
       "href": "/dev/html-viewer/",
-      "thumbnail": ""
+      "thumbnail": "/dev/html-viewer/thumbnail.png"
     },
     {
       "id": "dev__image-metadata-remover",
@@ -387,7 +387,7 @@
       "title": "Image Metadata Remover",
       "description": "Open this URage tool in your browser.",
       "href": "/dev/image-metadata-remover/",
-      "thumbnail": ""
+      "thumbnail": "/dev/image-metadata-remover/thumbnail.png"
     },
     {
       "id": "dev__interactive-book",
@@ -405,7 +405,7 @@
       "title": "Map Generator",
       "description": "A combined 2D and 3D map generator tool with a unified interface. Accessible via tabs: **2D** and **3D**.",
       "href": "/dev/map-generator/",
-      "thumbnail": ""
+      "thumbnail": "/dev/map-generator/thumbnail.png"
     },
     {
       "id": "dev__markdown-viewer",
@@ -414,7 +414,7 @@
       "title": "Markdown Viewer",
       "description": "This tool allows you to view and preview Markdown or other text files in various formats. It's useful for quickly checking documentation or previewing markdown content.",
       "href": "/dev/markdown-viewer/",
-      "thumbnail": ""
+      "thumbnail": "/dev/markdown-viewer/thumbnail.png"
     },
     {
       "id": "dev__meta-og-tag-generator",
@@ -423,7 +423,7 @@
       "title": "Meta Og Tag Generator",
       "description": "This tool generates Open Graph (OG) tags for web pages to improve social media sharing. It helps create rich previews when links are shared on platforms like Facebook, Twitter, and LinkedIn.",
       "href": "/dev/meta-og-tag-generator/",
-      "thumbnail": ""
+      "thumbnail": "/dev/meta-og-tag-generator/thumbnail.png"
     },
     {
       "id": "dev__qr-code-creator",
@@ -441,7 +441,7 @@
       "title": "tetris",
       "description": "Tetris Clone",
       "href": "/dev/tetris/",
-      "thumbnail": ""
+      "thumbnail": "/dev/tetris/thumbnail.png"
     },
     {
       "id": "dev__tilemap-creator",
@@ -477,7 +477,7 @@
       "title": "Billards",
       "description": "A browser-based billiards game designed to start as a **local, single-player game against bots**, while keeping the architecture ready for **local multiplayer, LAN multiplayer, and eventually online multiplayer**.",
       "href": "/game/billards/",
-      "thumbnail": ""
+      "thumbnail": "/game/billards/thumbnail.png"
     },
     {
       "id": "game__html-game-51",
@@ -486,7 +486,7 @@
       "title": "Html Game 51",
       "description": "A browser implementation of the regional dice game often known as \"5\", \"1\" or \"Sand\".",
       "href": "/game/html-game-51/",
-      "thumbnail": ""
+      "thumbnail": "/game/html-game-51/thumbnail.png"
     },
     {
       "id": "game__poker-blindlevel-manager",
@@ -495,7 +495,7 @@
       "title": "Poker Blindlevel Manager",
       "description": "Manage blinds and levels for your home poker tournaments.",
       "href": "/game/poker-blindlevel-manager/",
-      "thumbnail": ""
+      "thumbnail": "/game/poker-blindlevel-manager/thumbnail.png"
     },
     {
       "id": "game__snake",
@@ -504,7 +504,7 @@
       "title": "Snake",
       "description": "A retro Snake game with multiple AI strategies ranging from simple greedy behavior to a mathematically perfect solution.",
       "href": "/game/snake/",
-      "thumbnail": ""
+      "thumbnail": "/game/snake/thumbnail.png"
     },
     {
       "id": "game__ultimate-texas-holdem",
@@ -513,7 +513,7 @@
       "title": "Ultimate Texas Holdem",
       "description": "Static browser implementation of Ultimate Texas Hold'em for the URage NOW Games catalog.",
       "href": "/game/ultimate-texas-holdem/",
-      "thumbnail": ""
+      "thumbnail": "/game/ultimate-texas-holdem/thumbnail.png"
     },
     {
       "id": "game__WordleVS",
@@ -522,7 +522,7 @@
       "title": "WordleVS",
       "description": "Open this URage tool in your browser.",
       "href": "/game/WordleVS/",
-      "thumbnail": ""
+      "thumbnail": "/game/WordleVS/thumbnail.png"
     },
     {
       "id": "plan__ai-legit-matrix",
@@ -531,7 +531,7 @@
       "title": "Ai Legit Matrix",
       "description": "An editable planning matrix for assessing AI use cases across source ownership, permission, protected-expression copying, transformation, and disclosure.",
       "href": "/plan/ai-legit-matrix/",
-      "thumbnail": ""
+      "thumbnail": "/plan/ai-legit-matrix/thumbnail.png"
     },
     {
       "id": "plan__filer",
@@ -540,7 +540,7 @@
       "title": "Filer",
       "description": "Dashboard-themed project analytics and data browsing tool for reviewing structured project information in sortable tables and charts.",
       "href": "/plan/filer/",
-      "thumbnail": ""
+      "thumbnail": "/plan/filer/thumbnail.png"
     },
     {
       "id": "plan__flowchart-builder",
@@ -549,7 +549,7 @@
       "title": "Flowchart Builder",
       "description": "Create and export interactive architecture diagrams and flowcharts.",
       "href": "/plan/flowchart-builder/",
-      "thumbnail": ""
+      "thumbnail": "/plan/flowchart-builder/thumbnail.png"
     },
     {
       "id": "plan__game-idea-generator",
@@ -567,7 +567,7 @@
       "title": "Kanban",
       "description": "A simple, privacy-focused Kanban board for managing your tasks and projects.",
       "href": "/plan/kanban/",
-      "thumbnail": ""
+      "thumbnail": "/plan/kanban/thumbnail.png"
     },
     {
       "id": "plan__roadmap-builder",
@@ -585,7 +585,7 @@
       "title": "Media Converter",
       "description": "Browser-based converter for turning uploaded videos or animated GIFs into GIF output or PNG frame sequences.",
       "href": "/video/media-converter/",
-      "thumbnail": ""
+      "thumbnail": "/video/media-converter/thumbnail.png"
     },
     {
       "id": "video__video-recorder",
@@ -594,7 +594,7 @@
       "title": "Video Recorder",
       "description": "Records webcam video with optional microphone audio. The latest recording is exposed through `describeCurrentAssets` so it can be sent from the dashboard Tools workspace.",
       "href": "/video/video-recorder/",
-      "thumbnail": ""
+      "thumbnail": "/video/video-recorder/thumbnail.png"
     },
     {
       "id": "video__video-transcriber",
@@ -603,7 +603,7 @@
       "title": "Video Transcriber",
       "description": "This is a browser-only HTML5 tool for:",
       "href": "/video/video-transcriber/",
-      "thumbnail": ""
+      "thumbnail": "/video/video-transcriber/thumbnail.png"
     }
   ]
 }
