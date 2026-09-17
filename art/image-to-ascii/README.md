@@ -1,18 +1,18 @@
 # Image → ASCII HTML
 
-Convert a single image — or an entire sequence of frames (animated GIFs included) — into ASCII art, with animated HTML export and manual or automatic background removal. Built for pasting into Discord, terminals, and any plain-text context.
+Convert a single image — or an entire sequence of frames (animated GIFs included) — into ASCII art, with animated HTML and GIF export and manual or automatic background removal. Built for pasting into Discord, terminals, and any plain-text context.
 
 ## Description
 
 Image → ASCII HTML is a standalone web tool that rasterizes an image on an offscreen canvas, maps each pixel's luminance to a character from a selectable charset, and renders the result as live-previewable monospace text. Load multiple images at once (or in successive picks) to build an animated sequence: every frame is converted onto one shared grid, played back with Play/Pause and FPS controls, and exported as a self-contained animated HTML page. Animated GIFs are decoded fully into their individual frames — disposal methods and transparency included — so they play correctly instead of showing only the first frame. Removed or empty areas can be filled with an invisible Unicode character (U+2800 Braille Pattern Blank) so the art keeps its alignment when pasted into chat apps that collapse ordinary spaces.
 
-Everything runs locally in the browser: no uploads, no server, and no network requests — the only third-party code is a small vendored MIT-licensed GIF decoder (`omggif.js`).
+Everything runs locally in the browser: no uploads, no server, and no network requests — the only third-party code is two small vendored MIT-licensed libraries (`omggif.js` for decoding animated GIF input, `gifenc.js` for encoding the Download GIF export).
 
 ## Features
 
 - **Live Preview**: The ASCII output re-renders instantly as you change any control
 - **Animated Sequences**: Load multiple images (or append more later) to build a frame sequence. All frames share one grid, so differing aspect ratios are letterboxed with empty characters and the animation stays stable between frames. Scrub by clicking thumbnails, pause/resume at will, and set 2–30 FPS
-- **Animated GIF Input**: Drop in an animated `.gif` and every frame is decoded into the sequence (partial frames, transparency, and disposal methods handled). The FPS slider is preset from the GIF's average frame delay so it plays at its native speed
+- **Animated GIF Input**: Drop in an animated `.gif` and every frame is decoded into the sequence (partial frames, transparency, and disposal methods handled). The FPS slider is preset from the GIF's average frame delay so it plays at its native speed. There is no frame cap — a 500-frame GIF loads all 500 frames
 - **Animated HTML Export**: With two or more frames, Copy/Download produces a self-contained page that plays the sequence on its own (frames embedded as JSON plus a tiny script); single images keep the original static export
 - **Width Control**: 30–250 characters wide; height is derived from the image aspect ratio with a monospace character-aspect correction (0.5)
 - **Four Character Sets**: Dense (`@%#*+=-:. `), Blocks (`█▓▒░ `), Detailed (`MWNXK0Okxdolc:,. `), Classic (`@#S%?*+;:,.'`)
@@ -21,7 +21,7 @@ Everything runs locally in the browser: no uploads, no server, and no network re
 - **Manual Background Removal**: Remove white, black, or transparent pixels with adjustable tolerance and a soft-edge ramp for gradual transitions
 - **Automatic Background Detection**: Detects the background character from the generated ASCII itself — either the dominant character across the whole grid or the most common character along the outer border (best when the subject is centered)
 - **Discord-Safe Empty Character**: Removed areas use U+2800 Braille Pattern Blank by default, a real invisible Unicode character that survives copy/paste far better than ordinary spaces; normal space and visible dot (`·`) are also available
-- **Four Export Options**: Copy plain ASCII text, copy a standalone HTML document, download it as `ascii-art.html`, or download the current frame rendered to an image (`ascii-art.png` — in multi-frame mode: `ascii-art-frame-N.png`) with colors matching the selected color mode
+- **Five Export Options**: Copy plain ASCII text, copy a standalone HTML document, download it as `ascii-art.html`, download the current frame rendered to an image (`ascii-art.png` — in multi-frame mode: `ascii-art-frame-N.png`), or download the whole sequence as an animated GIF (`ascii-art.gif`) with per-frame delay from the FPS slider (multi-frame exports loop forever; a single image produces a one-frame GIF) — all exports match the selected color mode
 
 ## How to Use
 
@@ -51,6 +51,7 @@ Everything runs locally in the browser: no uploads, no server, and no network re
    - **Copy ASCII**: copies the current frame's plain text to the clipboard
    - **Copy HTML / Download HTML**: produces a self-contained page with a black background and monospace `<pre>` — ideal for sharing colored output. With multiple frames it embeds all of them and plays the animation automatically; single images keep the static export
    - **Download PNG**: renders the current frame to an image (16px Courier New on black) honoring the selected color mode, so the art can be shared where monospace fonts don't render — `ascii-art.png` for a single frame, `ascii-art-frame-N.png` when several frames are loaded
+    - **Download GIF**: encodes every frame into an animated `ascii-art.gif` (16px Courier New on black, same rendering as the PNG export) with per-frame delay from the FPS slider — multi-frame exports loop forever; a single image produces a one-frame GIF
 
 > Tip: for best alignment in Discord, paste the ASCII inside a code block using triple backticks.
 
@@ -96,6 +97,7 @@ The conversion pipeline runs entirely on the HTML5 Canvas API:
 - Playback is driven by a `setInterval` timer at `1000 / FPS`; clicking a thumbnail pauses playback and jumps to that frame, and Play/Pause toggles the timer
 - Animated GIFs are decoded with the vendored `omggif.js` reader: each frame's LZW data is expanded into palette indices, transparent pixels keep alpha 0, and frames are composited onto a persistent canvas honoring the previous frame's disposal method (2 = clear its region, 3 = restore a snapshot taken before it was drawn). The FPS slider is preset from the average non-zero frame delay (centiseconds → `round(100 / avg)`, clamped to 2–30)
 - The animated export embeds all pre-rendered frames as a JSON array plus a ~10-line script that cycles them at the chosen interval — no external assets or network access needed by the exported page
+- The Download GIF export re-renders every frame onto an offscreen canvas with the exact settings of the PNG export, quantizes each frame to its own palette (the first frame's becomes the global color table), and writes a looping `.gif` via the vendored `gifenc.js` encoder — per-frame delay comes from the FPS slider
 
 ### Discord-Safe Output
 
@@ -110,6 +112,7 @@ Ordinary spaces are often collapsed or trimmed by chat clients, which breaks ASC
 
 - Pure JavaScript for all tool logic — no frameworks and no network requests
 - `omggif.js` (vendored, MIT) — GIF 87a/89a reader used only to decode animated GIF input
+- `gifenc.js` (vendored, MIT) — GIF encoder used only for the Download GIF export
 - HTML5 Canvas API for pixel access
 - Async Clipboard API (with legacy fallback)
 
@@ -118,8 +121,9 @@ Ordinary spaces are often collapsed or trimmed by chat clients, which breaks ASC
 | File | Purpose |
 | --- | --- |
 | `index.html` | Standalone entry point with all controls and the live preview |
-| `script.js` | Image/frame loading, GIF decoding, luminance/charset mapping, background removal, playback controls, clipboard, HTML export, and PNG rendering |
+| `script.js` | Image/frame loading, GIF decoding, luminance/charset mapping, background removal, playback controls, clipboard, HTML export, PNG rendering, and GIF encoding |
 | `omggif.js` | Vendored MIT-licensed GIF decoder (Dean McNamee's omggif) for animated GIF input |
+| `gifenc.js` | Vendored MIT-licensed GIF encoder (Matt DesLauriers' gifenc) for the Download GIF export |
 | `style.css` | Tool presentation (dark panel layout, preview typography) |
 
 Open `index.html` directly in a browser — no server or build step is required.

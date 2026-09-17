@@ -17,7 +17,7 @@
 
   <div class="subtitle">
     Convert a single image — or a whole sequence of frames (animated GIFs included) — into ASCII art,
-    with animated HTML export and manual or automatic background removal.
+    with animated HTML and GIF export and manual or automatic background removal.
   </div>
 
 
@@ -325,6 +325,10 @@
       Download PNG
     </button>
 
+    <button id="downloadGif">
+      Download GIF
+    </button>
+
   </div>
 
 
@@ -368,11 +372,10 @@
 <!-- Vendored GIF decoder (omggif, MIT) for animated GIF input. -->
 <script src="omggif.js"></script>
 
+<!-- Vendored GIF encoder (gifenc, MIT) for animated GIF export. -->
+<script src="gifenc.js"></script>
+
 <script src="script.js"></script>
 
-
-<script src="../../shared/dashboard-tool-bridge.js"></script>
-<script src="../../shared/dashboard-current-output-autodescribe.js"></script>
-<script src="../../shared/dashboard-generic-input-receiver.js"></script>
 </body>
 </html>

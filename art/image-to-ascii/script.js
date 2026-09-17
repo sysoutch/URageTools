@@ -1253,8 +1253,8 @@ document
    PNG matches the preview exactly.
 ========================================= */
 
-function getPngCanvas() {
-  const html = frameOutputs[currentFrame];
+function renderFrameToCanvas(frameIndex) {
+  const html = frameOutputs[frameIndex];
 
   if (html === undefined) return null;
 
@@ -1331,15 +1331,40 @@ function getPngCanvas() {
   for (let y = 0; y < lines.length; y++) {
     const line = lines[y];
 
-    for (let x = 0; x < line.length; x++) {
-      const cell = line[x];
+    /*
+      Draw runs of consecutive cells that share a color as one string.
+      With a monospace font this is pixel-identical to drawing each cell
+      separately, but far fewer fillText calls for wide frames (needed
+      when encoding whole sequences to GIF).
+    */
 
-      octx.fillStyle = cell.color || "#fff";
-      octx.fillText(cell.ch, pad + x * charW, pad + y * lineHeight);
+    let x = 0;
+
+    while (x < line.length) {
+      const color = line[x].color || "#fff";
+
+      let end = x + 1;
+
+      while (end < line.length && (line[end].color || "#fff") === color) {
+        end++;
+      }
+
+      octx.fillStyle = color;
+      octx.fillText(
+        line.slice(x, end).map(cell => cell.ch).join(""),
+        pad + x * charW,
+        pad + y * lineHeight
+      );
+
+      x = end;
     }
   }
 
   return out;
+}
+
+function getPngCanvas() {
+  return renderFrameToCanvas(currentFrame);
 }
 
 document
@@ -1373,6 +1398,101 @@ document
           URL.revokeObjectURL(url);
         }, 100);
       }, "image/png");
+    }
+  );
+
+/* =========================================
+   DOWNLOAD GIF
+   
+   Encodes every frame into an animated
+   .gif using the vendored gifenc encoder
+   (gifenc.js). Each frame is rendered to
+   a canvas exactly like the PNG export,
+   so colors match the selected color mode.
+   The per-frame delay comes from the FPS
+   slider; multi-frame exports loop forever.
+========================================= */
+
+document
+  .getElementById("downloadGif")
+  .addEventListener(
+    "click",
+    () => {
+      if (!frames.length || !frameOutputs.length) return;
+
+      const button = document.getElementById("downloadGif");
+      const originalLabel = button.textContent;
+
+      /*
+        Encoding is synchronous and can take a few seconds for long
+        sequences, so let the UI paint first.
+      */
+
+      button.disabled = true;
+      button.textContent = "Encoding GIF...";
+
+      setTimeout(() => {
+        try {
+          const fps = Number(fpsInput.value);
+          const delayMs = Math.max(10, Math.round(1000 / fps));
+
+          const encoder = window.gifenc.GIFEncoder();
+          let width = 0;
+          let height = 0;
+
+          for (let i = 0; i < frames.length; i++) {
+            const frameCanvas = renderFrameToCanvas(i);
+
+            if (!frameCanvas) continue;
+
+            width = frameCanvas.width;
+            height = frameCanvas.height;
+
+            const rgba = frameCanvas
+              .getContext("2d")
+              .getImageData(0, 0, width, height).data;
+
+            /*
+              Per-frame palette: the first frame's becomes the global color
+              table and later frames get their own local tables.
+            */
+
+            const palette = window.gifenc.quantize(rgba, 256);
+            const index = window.gifenc.applyPalette(rgba, palette);
+
+            encoder.writeFrame(index, width, height, {
+              palette: palette,
+              delay: delayMs,
+              repeat: i === 0 ? (frames.length > 1 ? 0 : -1) : undefined
+            });
+          }
+
+          if (!width || !height) return;
+
+          encoder.finish();
+
+          const blob = new Blob([encoder.bytes()], { type: "image/gif" });
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+
+          a.href = url;
+          a.download = "ascii-art.gif";
+
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          setTimeout(() => {
+            URL.revokeObjectURL(url);
+          }, 100);
+        } catch (error) {
+          console.error("Could not encode GIF:", error);
+        } finally {
+          button.disabled = false;
+          button.textContent = originalLabel;
+        }
+      }, 32);
     }
   );
 
