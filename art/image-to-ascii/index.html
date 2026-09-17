@@ -243,6 +243,14 @@
       Edge mode is usually more reliable when the subject occupies the center.
     </div>
 
+    <div class="remove-settings" id="partialSettings">
+      <label><input id="partialMode" type="checkbox"> Convert only one side</label>
+      <label>Split direction<select id="partialDirection"><option value="vertical">Vertical</option><option value="horizontal">Horizontal</option><option value="diagonal">Diagonal</option></select></label>
+      <label>Divider: <span id="partialPositionValue">50%</span><input id="partialPosition" type="range" min="0" max="100" value="50"></label>
+      <label>Transition: <span id="partialFeatherValue">6%</span><input id="partialFeather" type="range" min="0" max="30" value="6"></label>
+      <label><input id="partialGlow" type="checkbox" checked> Neon pixel transition</label>
+    </div>
+
 
     <!-- ANIMATION -->
 
@@ -332,6 +340,7 @@
     </div>
 
     <pre id="ascii"></pre>
+    <canvas id="splitPreview" class="hidden"></canvas>
 
   </div>
 

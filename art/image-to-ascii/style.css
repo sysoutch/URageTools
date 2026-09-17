@@ -117,6 +117,15 @@ button:hover {
   display: none !important;
 }
 
+#splitPreview {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  background: #05070b;
+  border-radius: 10px;
+}
+
 .buttons {
   display: flex;
   gap: 8px;

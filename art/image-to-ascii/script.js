@@ -47,6 +47,12 @@ const ctx = canvas.getContext(
 );
 
 const ascii = document.getElementById("ascii");
+const splitPreview = document.getElementById("splitPreview");
+const partialModeInput = document.getElementById("partialMode");
+const partialDirectionInput = document.getElementById("partialDirection");
+const partialPositionInput = document.getElementById("partialPosition");
+const partialFeatherInput = document.getElementById("partialFeather");
+const partialGlowInput = document.getElementById("partialGlow");
 const empty = document.getElementById("empty");
 const stats = document.getElementById("stats");
 
@@ -112,6 +118,8 @@ brightnessInput.addEventListener("input", () => {
 charsetInput.addEventListener("change", render);
 colorInput.addEventListener("change", render);
 emptyCharInput.addEventListener("change", render);
+function updatePartialLabels() { document.getElementById("partialPositionValue").textContent = partialPositionInput.value + "%"; document.getElementById("partialFeatherValue").textContent = partialFeatherInput.value + "%"; }
+[partialModeInput, partialDirectionInput, partialPositionInput, partialFeatherInput, partialGlowInput].forEach(input => input.addEventListener(input.type === "range" ? "input" : "change", () => { updatePartialLabels(); renderPartialPreview(); }));
 removeInput.addEventListener("change", updateRemoveUI);
 
 toleranceInput.addEventListener("input", () => {
@@ -909,8 +917,28 @@ function showFrame(index) {
     ascii.innerHTML = frameOutputs[currentFrame];
   }
 
+  renderPartialPreview();
+
   updateStats();
   markActiveFrame();
+}
+
+function renderPartialPreview() {
+  if (!partialModeInput.checked || !frames.length || !frameOutputs[currentFrame]) { splitPreview.classList.add("hidden"); ascii.classList.remove("hidden"); return; }
+  const asciiCanvas = getPngCanvas();
+  if (!asciiCanvas) return;
+  const out = splitPreview; out.width = asciiCanvas.width; out.height = asciiCanvas.height;
+  const c = out.getContext("2d"); c.clearRect(0,0,out.width,out.height);
+  c.drawImage(frames[currentFrame], 0, 0, out.width, out.height);
+  const layer = document.createElement("canvas"); layer.width=out.width; layer.height=out.height; const l=layer.getContext("2d"); l.drawImage(asciiCanvas,0,0);
+  const p=Number(partialPositionInput.value)/100, f=Number(partialFeatherInput.value)/100, d=partialDirectionInput.value;
+  let g;
+  if(d==="horizontal") g=l.createLinearGradient(0,out.height*(p-f),0,out.height*(p+f));
+  else if(d==="diagonal") g=l.createLinearGradient(out.width*(p-f)-out.height/2,out.height,out.width*(p+f)+out.height/2,0);
+  else g=l.createLinearGradient(out.width*(p-f),0,out.width*(p+f),0);
+  g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(.5,"rgba(0,0,0,1)");g.addColorStop(1,"rgba(0,0,0,1)"); l.globalCompositeOperation="destination-in";l.fillStyle=g;l.fillRect(0,0,out.width,out.height);c.drawImage(layer,0,0);
+  if(partialGlowInput.checked){c.save();c.strokeStyle="rgba(36,223,255,.95)";c.shadowColor="#20d9ff";c.shadowBlur=18;c.lineWidth=Math.max(2,out.width/360);c.beginPath();if(d==="horizontal"){const y=out.height*p;c.moveTo(0,y);c.lineTo(out.width,y)}else if(d==="diagonal"){const x=out.width*p;c.moveTo(x-out.height/2,out.height);c.lineTo(x+out.height/2,0)}else{const x=out.width*p;c.moveTo(x,0);c.lineTo(x,out.height)}c.stroke();c.restore();}
+  ascii.classList.add("hidden"); out.classList.remove("hidden");
 }
 
 function updateStats() {
@@ -1319,7 +1347,9 @@ document
   .addEventListener(
     "click",
     () => {
-      const pngCanvas = getPngCanvas();
+      const pngCanvas = partialModeInput.checked && !splitPreview.classList.contains("hidden")
+        ? splitPreview
+        : getPngCanvas();
 
       if (!pngCanvas) return;
 
