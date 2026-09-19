@@ -1,0 +1,16 @@
+{
+  "id": "dev__meta-og-tag-generator",
+  "title": "Meta Og Tag Generator",
+  "description": "Generate escaped Open Graph and Twitter card HTML meta tags for an HTTP(S) page.",
+  "action": "metaOg",
+  "inputSchema": {
+    "type": "object",
+    "required": ["title", "description", "url", "imageUrl"],
+    "properties": {
+      "title": { "type": "string" },
+      "description": { "type": "string" },
+      "url": { "type": "string", "format": "uri" },
+      "imageUrl": { "type": "string", "format": "uri" }
+    }
+  }
+}

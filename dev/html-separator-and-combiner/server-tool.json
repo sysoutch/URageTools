@@ -1,0 +1,7 @@
+{
+  "id": "dev__html-separator-and-combiner",
+  "title": "Html Separator And Combiner",
+  "description": "Separate inline HTML, CSS, and JavaScript or combine them into one document.",
+  "action": "htmlSeparateCombine",
+  "inputSchema": { "type": "object", "required": ["mode", "html"], "properties": { "mode": { "type": "string", "enum": ["separate", "combine"] }, "html": { "type": "string" }, "css": { "type": "string" }, "js": { "type": "string" } } }
+}

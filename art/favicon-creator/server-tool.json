@@ -1,0 +1,14 @@
+{
+  "id": "art__favicon-creator",
+  "title": "Favicon Creator",
+  "description": "Create downloadable 16, 32, 180, 192, and 512 pixel PNG favicon artifacts and a site.webmanifest from a URage image.",
+  "action": "favicon",
+  "inputSchema": {
+    "type": "object",
+    "required": ["imageId", "imageFileName"],
+    "properties": {
+      "imageId": { "type": "string" },
+      "imageFileName": { "type": "string" }
+    }
+  }
+}

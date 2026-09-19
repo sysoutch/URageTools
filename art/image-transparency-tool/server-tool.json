@@ -1,0 +1,1 @@
+{"id":"art__image-transparency-tool","title":"Image Transparency Tool","description":"Server action: transparency.","action":"transparency","inputSchema":{"type":"object","required":["imageId","imageFileName"],"properties":{"imageId":{"type":"string"},"imageFileName":{"type":"string"},"opacity":{"minimum":0,"maximum":100,"type":"number"}}}}

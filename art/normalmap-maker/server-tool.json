@@ -1,0 +1,1 @@
+{"id":"art__normalmap-maker","title":"Normalmap Maker","description":"Server action: normal-map.","action":"normal-map","inputSchema":{"type":"object","required":["imageId","imageFileName"],"properties":{"imageId":{"type":"string"},"imageFileName":{"type":"string"},"strength":{"minimum":0.1,"maximum":10,"type":"number"}}}}

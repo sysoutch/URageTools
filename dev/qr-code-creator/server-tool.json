@@ -1,0 +1,14 @@
+{
+  "id": "dev__qr-code-creator",
+  "title": "Qr Code Creator",
+  "description": "Generate a downloadable PNG QR code from text or a URL.",
+  "action": "qr",
+  "inputSchema": {
+    "type": "object",
+    "required": ["text"],
+    "properties": {
+      "text": { "type": "string", "description": "The text or URL to encode." },
+      "size": { "type": "number", "minimum": 64, "maximum": 2048, "default": 512 }
+    }
+  }
+}

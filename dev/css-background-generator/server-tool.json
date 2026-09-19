@@ -1,0 +1,7 @@
+{
+  "id": "dev__css-background-generator",
+  "title": "Css Background Generator",
+  "description": "Generate validated linear, radial, or conic gradient CSS.",
+  "action": "cssBackground",
+  "inputSchema": { "type": "object", "properties": { "gradientType": { "type": "string", "enum": ["linear", "radial", "conic"], "default": "linear" }, "color1": { "type": "string", "default": "#ff7eb3" }, "color2": { "type": "string", "default": "#2575fc" }, "angle": { "type": "number", "minimum": 0, "maximum": 360, "default": 45 }, "position": { "type": "string", "enum": ["center", "top", "bottom", "left", "right"], "default": "center" } } }
+}

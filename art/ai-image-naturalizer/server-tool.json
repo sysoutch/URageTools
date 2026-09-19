@@ -1,0 +1,1 @@
+{"id":"art__ai-image-naturalizer","title":"Ai Image Naturalizer","description":"Server action: naturalize.","action":"naturalize","inputSchema":{"type":"object","required":["imageId","imageFileName"],"properties":{"imageId":{"type":"string"},"imageFileName":{"type":"string"},"intensity":{"minimum":0,"maximum":32,"type":"number"},"seed":{"type":"number"}}}}

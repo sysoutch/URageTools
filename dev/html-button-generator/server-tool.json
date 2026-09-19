@@ -1,0 +1,25 @@
+{
+  "id": "dev__html-button-generator",
+  "title": "Html Button Generator",
+  "description": "Generate safe, customizable HTML button markup and CSS without browser automation.",
+  "action": "htmlButton",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "text": { "type": "string", "default": "Click Me" },
+      "colorType": { "type": "string", "enum": ["solid", "gradient"], "default": "solid" },
+      "color": { "type": "string", "default": "#3498db" },
+      "gradientColors": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 5 },
+      "gradientDirection": { "type": "string", "enum": ["45deg", "90deg", "180deg", "circle"], "default": "45deg" },
+      "size": { "type": "string", "enum": ["small", "medium", "large"], "default": "medium" },
+      "animation": { "type": "string", "enum": ["none", "pulse", "bounce", "glow"], "default": "none" },
+      "shape": { "type": "string", "enum": ["rounded", "square", "pill"], "default": "rounded" },
+      "borderStyle": { "type": "string", "enum": ["none", "solid", "dashed", "dotted"], "default": "none" },
+      "borderWidth": { "type": "integer", "minimum": 0, "maximum": 16, "default": 0 },
+      "borderColor": { "type": "string", "default": "#3498db" },
+      "shadow": { "type": "string", "enum": ["none", "small", "medium", "large"], "default": "medium" },
+      "glass": { "type": "boolean", "default": false },
+      "textShadow": { "type": "boolean", "default": false }
+    }
+  }
+}

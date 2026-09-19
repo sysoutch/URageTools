@@ -1,0 +1,1 @@
+{"id":"art__color-palette-extractor","title":"Color Palette Extractor","description":"Server action: palette.","action":"palette","inputSchema":{"type":"object","required":["imageId","imageFileName"],"properties":{"imageId":{"type":"string"},"imageFileName":{"type":"string"},"colorCount":{"minimum":2,"maximum":32,"type":"number"}}}}

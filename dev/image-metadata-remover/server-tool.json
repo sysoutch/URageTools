@@ -1,0 +1,16 @@
+{
+  "id": "dev__image-metadata-remover",
+  "title": "Image Metadata Remover",
+  "description": "Create a metadata-free PNG, JPEG, or WebP copy of an existing URage image.",
+  "action": "metadataStrip",
+  "inputSchema": {
+    "type": "object",
+    "required": ["imageId", "imageFileName"],
+    "properties": {
+      "imageId": { "type": "string" },
+      "imageFileName": { "type": "string" },
+      "format": { "type": "string", "enum": ["png", "jpeg", "webp"], "default": "png" },
+      "quality": { "type": "number", "minimum": 10, "maximum": 100, "default": 92 }
+    }
+  }
+}

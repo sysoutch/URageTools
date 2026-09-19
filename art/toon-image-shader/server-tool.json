@@ -1,0 +1,1 @@
+{"id":"art__toon-image-shader","title":"Toon Image Shader","description":"Server action: toon.","action":"toon","inputSchema":{"type":"object","required":["imageId","imageFileName"],"properties":{"imageId":{"type":"string"},"imageFileName":{"type":"string"},"levels":{"minimum":2,"maximum":32,"type":"number"}}}}

@@ -1,0 +1,23 @@
+{
+  "id": "art__albedo-tools",
+  "title": "Pseudo Albedo Tools",
+  "description": "Create a stylized pseudo-albedo PNG from a normal or height map. This is not physically recovered material color.",
+  "action": "pseudoAlbedo",
+  "inputSchema": {
+    "type": "object",
+    "required": ["imageId", "imageFileName"],
+    "properties": {
+      "imageId": { "type": "string" },
+      "imageFileName": { "type": "string" },
+      "sourceType": { "type": "string", "enum": ["normal", "height"], "default": "normal" },
+      "normalFormat": { "type": "string", "enum": ["opengl", "directx"], "default": "opengl" },
+      "strength": { "type": "number", "minimum": 0, "maximum": 3, "default": 1 },
+      "contrast": { "type": "number", "minimum": 0.2, "maximum": 3, "default": 1.15 },
+      "softness": { "type": "integer", "minimum": 0, "maximum": 6, "default": 1 },
+      "shadowColor": { "type": "string", "default": "#61523f" },
+      "midColor": { "type": "string", "default": "#9c8a6d" },
+      "highlightColor": { "type": "string", "default": "#d8c3a0" },
+      "invert": { "type": "boolean", "default": false }
+    }
+  }
+}

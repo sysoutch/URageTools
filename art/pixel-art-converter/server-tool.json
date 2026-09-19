@@ -1,0 +1,1 @@
+{"id":"art__pixel-art-converter","title":"Pixel Art Converter","description":"Server action: pixel-art.","action":"pixel-art","inputSchema":{"type":"object","required":["imageId","imageFileName"],"properties":{"imageId":{"type":"string"},"imageFileName":{"type":"string"},"pixelSize":{"minimum":2,"maximum":256,"type":"number"}}}}

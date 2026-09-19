@@ -1,0 +1,15 @@
+{
+  "id": "dev__base64-converter",
+  "title": "Base64 Converter",
+  "description": "Encode UTF-8 text to Base64 or decode Base64, Base64URL, or a Base64 data URL to UTF-8 text.",
+  "action": "base64",
+  "inputSchema": {
+    "type": "object",
+    "required": ["mode"],
+    "properties": {
+      "mode": { "type": "string", "enum": ["encode", "decode"] },
+      "text": { "type": "string", "description": "Required when mode is encode." },
+      "data": { "type": "string", "description": "Required when mode is decode." }
+    }
+  }
+}
