@@ -1,0 +1,1 @@
+{"id":"dev__csharp-class-extractor","title":"C# Class Extractor","description":"Extract C# classes, structs, and enums into separate source-file records.","action":"csharpExtract","inputSchema":{"type":"object","required":["code"],"properties":{"code":{"type":"string"}}}}
