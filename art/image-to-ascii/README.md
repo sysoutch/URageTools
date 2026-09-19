@@ -60,10 +60,10 @@ Everything runs locally in the browser: no uploads, no server, and no network re
 | Control | Options / Range | Default |
 | --- | --- | --- |
 | Width | 30–250 characters | 100 |
-| Character set | Dense · Blocks · Detailed · Classic | Dense |
+| Character set | Dense · Blocks · Detailed · Classic | Detailed |
 | Contrast | 0.5–2.5 (step 0.1) | 1.0 |
 | Brightness | −100 to +100 | 0 |
-| Color mode | Monochrome · Original colors · Terminal green | Monochrome |
+| Color mode | Monochrome · Original colors · Terminal green | Original colors |
 | Remove | Nothing · White · Black · Transparent · Auto — dominant · Auto — edge | Nothing |
 | Tolerance (manual removal) | 0–150 | 30 |
 | Edge softness (manual removal) | 0–60 | 10 |
