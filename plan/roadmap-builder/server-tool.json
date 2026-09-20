@@ -1,0 +1,23 @@
+{
+  "id": "plan__roadmap-builder",
+  "title": "Roadmap Builder",
+  "description": "Validate and export Roadmap Builder milestone JSON. This preserves the tool's native milestone format without simulating its browser editor.",
+  "action": "roadmap",
+  "inputSchema": {
+    "type": "object",
+    "required": ["milestones"],
+    "properties": {
+      "milestones": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 256,
+        "items": {
+          "type": "object",
+          "required": ["title", "desc"],
+          "properties": { "title": { "type": "string" }, "desc": { "type": "string" } }
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}

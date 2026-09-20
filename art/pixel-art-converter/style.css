@@ -727,3 +727,14 @@ body[data-dashboard-theme] .tool-layout > .main-content {
 }
 
 /* Dashboard theme overrides - these are now in the global sidebar-scrollview.css */
+
+/* The dashboard-theme rules below the base mobile styles previously reintroduced a fixed viewport and desktop sidebar. */
+@media (max-width: 800px) {
+    body[data-dashboard-theme] { height: auto; min-height: 100dvh; overflow: auto; }
+    body[data-dashboard-theme] .tool-layout { height: auto !important; min-height: 100dvh !important; flex-direction: column !important; overflow: visible !important; }
+    body[data-dashboard-theme] .sidebar { width: 100% !important; min-width: 0 !important; max-width: none !important; height: auto !important; max-height: none !important; overflow: visible !important; border-right: 0 !important; border-bottom: 1px solid var(--border) !important; }
+    body[data-dashboard-theme] .main-content { width: 100% !important; height: auto !important; min-height: 58dvh !important; overflow: visible !important; }
+}
+@media (max-width: 800px) {
+    body[data-dashboard-theme] .sidebar { max-height: 46dvh !important; overflow-y: auto !important; overscroll-behavior: contain; }
+}

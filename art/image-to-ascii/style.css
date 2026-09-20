@@ -313,3 +313,33 @@ button {
     line-height: 6px;
   }
 }
+
+/* Shared dashboard theme surface; ASCII output colors remain controlled by the chosen conversion mode. */
+body[data-dashboard-theme] {
+  --bg: var(--tool-bg, #0b0d10);
+  --panel: var(--tool-surface, #13171c);
+  --border: var(--tool-line, #2a3038);
+  --text: var(--tool-text, #e8edf2);
+  --muted: var(--tool-muted, #8b949e);
+  --accent: var(--tool-accent, #58a6ff);
+}
+
+select, .upload { background: var(--tool-surface-alt, #1b2128); }
+.preview { background-color: var(--tool-surface-strong, #05070b); }
+.frame-cell img, #splitPreview { background-color: var(--tool-surface-strong, #05070b); }
+
+@media (min-width: 1280px) {
+  .app { max-width: 1360px; padding: 40px 28px; }
+  .controls { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 22px; }
+}
+
+@media (max-width: 700px) {
+  .app { padding: 20px 14px; }
+  h1 { font-size: clamp(1.65rem, 9vw, 2.15rem); }
+  .controls, .frames { border-radius: 14px; padding: 14px; }
+  .buttons button, #clearFrames { width: 100%; min-height: 44px; }
+  .frame-strip { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .frame-cell { flex: 0 0 44px; }
+  .preview { min-height: 0; padding: 12px; }
+  .empty { padding: 72px 16px; }
+}

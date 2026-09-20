@@ -1,0 +1,505 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #101217;
+    color: #e9ebf0;
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+.app {
+    display: grid;
+    grid-template-columns: 330px 1fr;
+    min-height: 100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    padding: 22px;
+    background: #191c22;
+    border-right: 1px solid #292d35;
+    overflow-y: auto;
+}
+
+h1 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    letter-spacing: -0.3px;
+}
+
+.subtitle {
+    color: #8d94a1;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.upload {
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 8px;
+    background: #718cff;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.upload:hover {
+    background: #829bff;
+}
+
+.separator {
+    height: 1px;
+    background: #30343d;
+    margin: 18px 0;
+}
+
+/* =========================
+   PREVIEW TOGGLE
+========================= */
+
+.preview-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+
+    background: #11141a;
+    border: 1px solid #353a45;
+    border-radius: 8px;
+
+    font-size: 13px;
+}
+
+.preview-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+}
+
+.preview-state {
+    color: #8ea7ff;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* =========================
+   CONTROLS
+========================= */
+
+.control {
+    margin-bottom: 17px;
+}
+
+.control-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+
+    font-size: 13px;
+}
+
+.value {
+    color: #8ea7ff;
+    font-variant-numeric: tabular-nums;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin: 0;
+    accent-color: #718cff;
+}
+
+.hint {
+    margin-top: 5px;
+    color: #707783;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+input[type="number"],
+select {
+    width: 100%;
+    padding: 9px 10px;
+
+    background: #11141a;
+    color: #eee;
+
+    border: 1px solid #353a45;
+    border-radius: 7px;
+
+    outline: none;
+}
+
+input[type="number"]:focus,
+select:focus {
+    border-color: #718cff;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin: 10px 0;
+
+    font-size: 13px;
+    color: #cbd0d9;
+}
+
+input[type="checkbox"] {
+    accent-color: #718cff;
+}
+
+/* =========================
+   PRESETS
+========================= */
+
+.preset-title {
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #858c98;
+}
+
+.presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+button {
+    border: 0;
+    border-radius: 7px;
+    padding: 9px 10px;
+
+    background: #292e38;
+    color: #e7e9ee;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: .15s;
+}
+
+button:hover {
+    background: #363c48;
+}
+
+button.primary {
+    background: #718cff;
+    color: white;
+}
+
+button.primary:hover {
+    background: #829bff;
+}
+
+button.dangerless {
+    background: #292e38;
+}
+
+.button-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+}
+
+.download {
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* =========================
+   WORKSPACE
+========================= */
+
+.workspace {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    height: 58px;
+    padding: 0 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #15181e;
+    border-bottom: 1px solid #292d35;
+
+    font-size: 13px;
+}
+
+.status {
+    color: #858c98;
+    font-size: 12px;
+}
+
+/* =========================
+   CANVAS AREA
+========================= */
+
+.canvas-wrap {
+    flex: 1;
+
+    padding: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: auto;
+
+    background-color: #171a20;
+
+    background-image:
+        linear-gradient(45deg, #1d2026 25%, transparent 25%),
+        linear-gradient(-45deg, #1d2026 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1d2026 75%),
+        linear-gradient(-45deg, transparent 75%, #1d2026 75%);
+
+    background-size: 24px 24px;
+
+    background-position:
+        0 0,
+        0 12px,
+        12px -12px,
+        -12px 0;
+}
+
+.empty {
+    text-align: center;
+    color: #737a87;
+    font-size: 14px;
+}
+
+.empty strong {
+    display: block;
+    color: #aeb4c0;
+    margin-bottom: 6px;
+}
+
+/* =========================
+   COMPARISON VIEW
+========================= */
+
+.comparison {
+    position: relative;
+
+    max-width: 100%;
+    max-height: calc(100vh - 100px);
+
+    overflow: hidden;
+
+    line-height: 0;
+
+    box-shadow:
+        0 15px 55px rgba(0, 0, 0, .5);
+}
+
+.comparison canvas {
+    display: block;
+
+    max-width: 100%;
+    max-height: calc(100vh - 100px);
+
+    object-fit: contain;
+}
+
+/*
+    Original canvas is the base image.
+*/
+
+#originalCanvas {
+    position: relative;
+    z-index: 1;
+}
+
+/*
+    Processed canvas sits on top.
+*/
+
+.processed-layer {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 50%;
+    height: 100%;
+
+    overflow: hidden;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+.processed-layer canvas {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    max-width: none;
+    max-height: none;
+
+    width: auto;
+    height: auto;
+}
+
+/* =========================
+   COMPARISON LINE
+========================= */
+
+.comparison-line {
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+
+    left: 50%;
+
+    width: 2px;
+
+    background: rgba(255,255,255,.95);
+
+    box-shadow:
+        0 0 4px rgba(0,0,0,.8);
+
+    transform: translateX(-1px);
+
+    z-index: 5;
+
+    pointer-events: none;
+}
+
+.comparison-handle {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: white;
+    color: #20232a;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    box-shadow:
+        0 3px 14px rgba(0,0,0,.45);
+}
+
+/* =========================
+   INVISIBLE SLIDER
+========================= */
+
+.comparison-slider {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+
+    opacity: 0;
+
+    cursor: ew-resize;
+
+    z-index: 10;
+}
+
+/* =========================
+   LABELS
+========================= */
+
+.image-label {
+    position: absolute;
+
+    top: 12px;
+
+    padding: 5px 8px;
+
+    border-radius: 5px;
+
+    background: rgba(0,0,0,.55);
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+
+    line-height: 1;
+
+    z-index: 7;
+
+    pointer-events: none;
+
+    backdrop-filter: blur(4px);
+}
+
+.original-label {
+    left: 12px;
+}
+
+.processed-label {
+    right: 12px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+    .app {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid #292d35;
+    }
+
+    .canvas-wrap {
+        min-height: 60vh;
+    }
+}

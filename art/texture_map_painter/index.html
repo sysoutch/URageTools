@@ -236,6 +236,36 @@
       .maps { height: auto; }
     }
 
+    @media (min-width: 1101px) {
+      #app > aside, .workspace { min-height: 0; }
+      #app > aside { overflow: auto; }
+    }
+    @media (min-width: 721px) and (max-width: 1100px) {
+      body { overflow: hidden; }
+      #app { grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr); grid-template-rows: minmax(0, 1fr) minmax(250px, .7fr); height: 100dvh; overflow: hidden; }
+      #app > aside:first-child, .workspace { min-height: 0; overflow: auto; }
+      #app > aside:last-child { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr); min-height: 0; overflow: hidden; }
+      #preview3d { height: auto; min-height: 0; border-bottom: 0; border-right: 1px solid var(--line); }
+      .maps { height: auto; min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      #paintCanvas, #model3dView { width: min(66vh, 100%); height: min(66vh, 100%); }
+    }
+    @media (max-width: 720px) {
+      body { overflow: auto; }
+      #app { padding: 8px; gap: 8px; grid-template-columns: 1fr; height: auto; }
+      #app > aside:first-child, #app > aside:last-child { max-height: none; overflow: visible; }
+      .workspace { min-height: 62dvh; }
+      .tabs { overflow-x: auto; padding: 8px; }
+      .tab { flex: 0 0 auto; padding: 8px 12px; }
+      #paintWrap { min-height: 52dvh; padding: 10px; }
+      #paintCanvas, #model3dView { width: min(88vw, 72dvh); height: min(88vw, 72dvh); }
+      #preview3d { height: min(56vw, 340px); min-height: 220px; }
+      .maps { height: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; }
+    }
+    @media (max-width: 430px) {
+      .button-row, .maps { grid-template-columns: 1fr; }
+      label { align-items: flex-start; flex-direction: column; }
+      input[type="range"] { width: 100%; }
+    }
     /* Mode indicator */
     #modeIndicator {
       position: absolute;

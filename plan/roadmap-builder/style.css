@@ -1,0 +1,196 @@
+:root {
+            --primary: #ff8a4d;
+            --primary-hover: #ff6136;
+            --danger: #f87171;
+            --bg: #120d0d;
+            --card-bg: rgba(24, 14, 14, 0.92);
+            --surface: rgba(18, 11, 11, 0.98);
+            --text-main: #f6f1ee;
+            --text-muted: #c8b6ae;
+            --border: rgba(255, 180, 128, 0.18);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background:
+                radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 16%, transparent) 0%, transparent 38%),
+                linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%),
+                var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        /* Toolbar / Header */
+        .header {
+            background: var(--surface);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+
+        body[data-dashboard-sidebar-externalized] .header {
+            display: none;
+        }
+
+        body[data-dashboard-sidebar-externalized] .canvas {
+            padding-top: 2rem;
+        }
+
+        .btn-group { display: flex; gap: 8px; }
+
+        button {
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:hover { background: rgba(255,255,255,0.08); border-color: color-mix(in srgb, var(--primary) 28%, var(--border)); }
+        button.primary { background: var(--primary); color: white; border: none; }
+        button.primary:hover { background: var(--primary-hover); }
+
+        /* Roadmap Containers */
+        .canvas { padding: 4rem 2rem; min-height: 100vh; }
+
+        /* --- VERTICAL LAYOUT --- */
+        .roadmap.vertical {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .roadmap.vertical::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0; bottom: 0;
+            width: 4px;
+            background: var(--border);
+            transform: translateX(-50%);
+            border-radius: 4px;
+        }
+
+        .roadmap.vertical .item {
+            width: 50%;
+            padding: 0 40px;
+            box-sizing: border-box;
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .roadmap.vertical .item:nth-child(odd) { margin-right: 50%; text-align: right; }
+        .roadmap.vertical .item:nth-child(even) { margin-left: 50%; text-align: left; }
+
+        /* --- HORIZONTAL LAYOUT --- */
+        .roadmap.horizontal {
+            display: flex;
+            align-items: flex-start;
+            padding-top: 60px;
+            overflow-x: auto;
+            border-top: 4px solid var(--border);
+        }
+
+        .roadmap.horizontal .item {
+            flex: 0 0 320px;
+            padding: 0 1rem;
+            position: relative;
+        }
+
+        /* Card Visuals */
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.24);
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .card:hover { transform: translateY(-4px); }
+
+        .dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border: 4px solid var(--bg);
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .vertical .item:nth-child(odd) .dot { right: -10px; top: 24px; }
+        .vertical .item:nth-child(even) .dot { left: -10px; top: 24px; }
+        .horizontal .dot { top: -68px; left: 50%; transform: translateX(-50%); }
+
+        .card h3 { margin: 0; font-size: 1.125rem; outline: none; }
+        .card p { margin: 0.5rem 0 1rem 0; color: var(--text-muted); font-size: 0.9375rem; outline: none; }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .card:hover .actions { opacity: 1; }
+
+        .btn-icon { padding: 4px; border-radius: 4px; color: var(--text-muted); }
+        .btn-icon:hover { color: var(--danger); }
+/* Use the active dashboard palette instead of keeping Roadmap Studio on its fire defaults. */
+body[data-dashboard-theme] {
+    --primary: var(--tool-accent, #ff8a4d);
+    --primary-hover: var(--tool-accent-strong, var(--tool-accent, #ff6136));
+    --danger: var(--tool-danger, #f87171);
+    --bg: var(--tool-bg, #120d0d);
+    --card-bg: var(--tool-surface, rgba(24, 14, 14, .92));
+    --surface: var(--tool-surface-strong, rgba(18, 11, 11, .98));
+    --text-main: var(--tool-text, #f6f1ee);
+    --text-muted: var(--tool-muted, #c8b6ae);
+    --border: var(--tool-line, rgba(255, 180, 128, .18));
+}
+
+button { color: var(--text-main); }
+button.primary { color: var(--tool-on-accent, white); }
+
+@media (min-width: 1280px) {
+    .canvas { padding: 5rem 3rem; }
+    .roadmap.vertical { max-width: 960px; }
+    .card { padding: 1.75rem; }
+}
+
+@media (max-width: 760px) {
+    .header { align-items: stretch; flex-direction: column; gap: 12px; padding: 14px 16px; }
+    .header > div { justify-content: space-between; }
+    .btn-group button { min-height: 42px; flex: 1 1 auto; justify-content: center; }
+    .canvas { min-height: auto; padding: 28px 16px 42px; }
+    .roadmap.vertical::before { left: 18px; transform: none; }
+    .roadmap.vertical .item,
+    .roadmap.vertical .item:nth-child(odd),
+    .roadmap.vertical .item:nth-child(even) {
+        width: 100%; margin: 0 0 20px; padding: 0 0 0 48px; text-align: left;
+    }
+    .vertical .item:nth-child(odd) .dot,
+    .vertical .item:nth-child(even) .dot { left: 10px; right: auto; }
+    .card { padding: 16px; border-radius: 14px; }
+    .actions { opacity: 1; }
+    .roadmap.horizontal { padding-top: 46px; scroll-snap-type: x proximity; overscroll-behavior-inline: contain; }
+    .roadmap.horizontal .item { flex-basis: min(78vw, 320px); scroll-snap-align: start; }
+    .horizontal .dot { top: -54px; }
+}

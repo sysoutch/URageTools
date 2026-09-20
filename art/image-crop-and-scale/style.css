@@ -44,3 +44,24 @@ input:disabled { opacity: 0.45; cursor: not-allowed; }
 body[data-dashboard-sidebar-externalized] .sidebar { display: none !important; }
 body[data-dashboard-sidebar-externalized] { display: block; overflow: auto; }
 body[data-dashboard-sidebar-externalized] .main { min-height: 100vh; }
+
+/* Small screens use a vertical workspace so the source controls and result cards keep a practical width. */
+@media (max-width: 760px) {
+  body { display: block; height: auto; min-height: 100dvh; overflow: auto; }
+  .sidebar { width: 100%; max-height: none; padding: 16px; border-right: 0; border-bottom: 1px solid var(--border); overflow: visible; }
+  .main { min-height: 56dvh; padding: 16px 12px 28px; overflow: visible; }
+  .grid { grid-template-columns: 1fr; gap: 14px; }
+}
+@media (max-width: 760px) {
+  body[data-dashboard-theme] .sidebar { width: 100% !important; min-width: 0 !important; max-width: none !important; max-height: 46dvh !important; overflow-y: auto !important; overscroll-behavior: contain; }
+}
+@media (max-width: 760px) {
+  body[data-dashboard-theme] .sidebar[data-dashboard-tool-sidebar] { width: 100% !important; min-width: 0 !important; max-width: none !important; }
+}
+/* Matches the shared #previews dashboard selector so the standalone phone layout wins without weakening desktop sizing. */
+@media (max-width: 760px) {
+  body[data-dashboard-theme]:has(#previews) .sidebar { width: 100% !important; max-width: none !important; min-width: 0 !important; }
+}
+@media (max-width: 760px) {
+  body[data-dashboard-theme]:has(#previews) .sidebar[data-dashboard-tool-sidebar] { width: 100% !important; max-width: none !important; min-width: 0 !important; }
+}

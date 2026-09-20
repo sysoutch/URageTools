@@ -318,3 +318,20 @@ input[type="color"] {
         font-size: 1.25rem;
     }
 }
+
+/* Small screens must stack the inspector above a usable preview; a 300px side rail leaves no working canvas on a phone. */
+@media (max-width: 760px) {
+    body { height: auto; min-height: 100dvh; overflow: auto; }
+    .app-wrapper { width: 100%; height: auto; min-height: 100dvh; display: block; overflow: visible; }
+    .color-panel { position: static; width: 100%; height: auto; max-height: none; padding: 16px; overflow: visible; border-right: 0; border-bottom: 1px solid var(--border); box-shadow: none; }
+    .preview-area { height: min(68dvh, 560px); min-height: 340px; overflow: hidden; }
+    .canvas-container { height: auto; min-height: 0; }
+}
+
+@media (max-width: 420px) {
+    .preview-toolbar { height: auto; min-height: var(--toolbar-height); padding: 10px 12px; }
+    .upload-card { width: 100%; }
+}
+@media (max-width: 760px) {
+    .color-panel { max-height: 46dvh; overflow-y: auto; overscroll-behavior: contain; }
+}

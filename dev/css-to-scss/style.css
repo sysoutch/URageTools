@@ -1,0 +1,33 @@
+:root { --accent: #ff8a4d; --accent-strong: #ff6136; --bg: #120d0d; --bg-alt: rgba(18, 11, 11, 0.98); --panel: rgba(24, 14, 14, 0.92); --border: rgba(255, 180, 128, 0.18); --border-strong: rgba(255, 180, 128, 0.34); --text: #f6f1ee; --muted: #c8b6ae; --blue: #59b6ff; }
+        body[data-dashboard-theme="water"] { --accent: #59b6ff; --accent-strong: #2f8cf0; --bg: #0d1522; --bg-alt: rgba(10, 17, 29, 0.98); --panel: rgba(12, 21, 37, 0.94); --border: rgba(114, 190, 255, 0.18); --border-strong: rgba(114, 190, 255, 0.34); --text: #eef5ff; --muted: #a9bfd8; --blue: #7bd0ff; }
+        body[data-dashboard-theme="nature"] { --accent: #82cd5f; --accent-strong: #58a23c; --bg: #11170f; --bg-alt: rgba(13, 19, 11, 0.98); --panel: rgba(18, 24, 16, 0.94); --border: rgba(146, 213, 120, 0.18); --border-strong: rgba(146, 213, 120, 0.34); --text: #f2f8ee; --muted: #bccfaf; --blue: #9ae27b; }
+        body[data-dashboard-theme="rock"] { --accent: #c4ae8a; --accent-strong: #9b8563; --bg: #151515; --bg-alt: rgba(16, 16, 16, 0.98); --panel: rgba(24, 24, 24, 0.95); --border: rgba(196, 190, 176, 0.18); --border-strong: rgba(196, 190, 176, 0.34); --text: #f2efea; --muted: #b7aea2; --blue: #d8c29f; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        header { background: var(--panel); padding: 10px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .main { display: flex; flex: 1; overflow: hidden; }
+        
+        .column { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+        #input-col { width: 28%; padding: 15px; }
+        #explorer-col { width: 22%; padding: 15px; background: var(--bg-alt); border-right: 1px solid var(--border); }
+        #preview-col { flex: 1; padding: 15px; background: var(--bg); position: relative; }
+
+        textarea, pre { background: var(--bg-alt); color: var(--blue); border: 1px solid var(--border); padding: 12px; border-radius: 10px; flex: 1; font-family: 'Fira Code', monospace; font-size: 13px; overflow: auto; }
+        
+        /* Interactive Variable List */
+        .var-edit-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; background: var(--panel); padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); }
+        .var-edit-row input { background: var(--bg); color: var(--accent); border: 1px solid var(--border-strong); padding: 2px 6px; border-radius: 6px; font-family: monospace; width: 100px; }
+        .var-val { font-size: 11px; color: var(--muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .file-tab { padding: 8px 12px; cursor: pointer; border-radius: 8px; margin-bottom: 4px; font-size: 13px; display: flex; justify-content: space-between; transition: 0.2s; border: 1px solid transparent; }
+        .file-tab:hover { background: rgba(255,255,255,0.04); border-color: var(--border); }
+        .file-tab.active { background: rgba(255, 138, 77, 0.14); border-color: var(--accent); color: var(--accent); font-weight: bold; }
+
+        .build-box { background: var(--panel); border: 1px solid var(--border); padding: 12px; border-radius: 12px; margin-top: 10px; }
+        select { background: var(--bg); color: white; border: 1px solid var(--border); padding: 6px; border-radius: 8px; width: 100%; margin-bottom: 10px; }
+        
+        .toggle-container { display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--muted); }
+        
+        button { background: var(--accent); color: white; border: none; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        button:disabled { background: rgba(255,255,255,0.12); cursor: not-allowed; }
+        h3 { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 15px; margin-bottom: 8px; letter-spacing: 0.5px; }

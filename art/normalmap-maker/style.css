@@ -571,3 +571,37 @@ canvas {
     padding: 22px;
   }
 }
+
+/* Adopt the active dashboard palette while keeping normal-map blue pixels unaltered. */
+body[data-dashboard-theme] {
+  --bg: var(--tool-bg, #120806);
+  --panel: var(--tool-surface, #1b0f0d);
+  --panel-2: var(--tool-surface-alt, #231513);
+  --muted: var(--tool-muted, #c3b1a8);
+  --text: var(--tool-text, #f8f2ee);
+  --line: var(--tool-line, rgba(255,137,78,.16));
+  --accent: var(--tool-accent, #ff7b42);
+  --accent-2: var(--tool-info, #ffc18a);
+  --danger: var(--tool-danger, #ff8a80);
+  --shadow: var(--tool-shadow, 0 20px 60px rgba(0,0,0,.35));
+}
+
+.btn.primary { background: linear-gradient(135deg, var(--accent), var(--tool-accent-strong, var(--accent))); }
+.btn.danger { color: var(--tool-danger, #ffd9d9); background: color-mix(in srgb, var(--danger) 14%, transparent); border-color: color-mix(in srgb, var(--danger) 35%, transparent); }
+
+@media (min-width: 1440px) {
+  .grid { grid-template-columns: 460px minmax(0, 1fr); }
+  .grid > aside.panel.stack, .grid > section.stack { padding: 28px; }
+}
+
+@media (max-width: 620px) {
+  header { gap: 14px; padding: 18px 16px 14px; }
+  .badge { white-space: normal; }
+  .grid > aside.panel.stack, .grid > section.stack { padding: 16px; }
+  .range-line { grid-template-columns: 1fr; }
+  .row .btn { flex: 1 1 100%; min-height: 44px; }
+  .preview-grid { gap: 12px; }
+  .canvas-card { min-height: 0; padding: 12px; border-radius: 14px; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { padding: 12px; border-radius: 14px; }
+}

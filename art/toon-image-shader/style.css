@@ -1,0 +1,542 @@
+:root {
+      --bg: #0b1020;
+      --panel: rgba(17, 24, 39, 0.82);
+      --panel-strong: #111827;
+      --line: rgba(255,255,255,0.10);
+
+      --text: #f8fafc;
+      --muted: #94a3b8;
+
+      --accent: #7c3aed;
+      --accent-2: #06b6d4;
+
+      --danger: #fb7185;
+      --ok: #34d399;
+
+      --shadow:
+        0 24px 80px rgba(0,0,0,.35);
+    }
+
+    /* =========================================================
+      RESET
+    ========================================================= */
+
+    * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+
+      overflow: hidden;
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--text);
+
+      background:
+        radial-gradient(
+          circle at 20% 5%,
+          rgba(124,58,237,.34),
+          transparent 26rem
+        ),
+        radial-gradient(
+          circle at 84% 8%,
+          rgba(6,182,212,.24),
+          transparent 23rem
+        ),
+        linear-gradient(
+          135deg,
+          #070a12 0%,
+          #0b1020 50%,
+          #111827 100%
+        );
+    }
+
+    /* =========================================================
+      APP LAYOUT
+    ========================================================= */
+
+    main {
+      width: 100%;
+      height: calc(100vh - 48px);
+      display: grid;
+      grid-template-columns: 420px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    /* =========================================================
+      HEADER
+    ========================================================= */
+
+    header {
+      display: none;
+    }
+
+    /* =========================================================
+      SIDEBAR
+    ========================================================= */
+
+    .panel {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.04),
+          rgba(255,255,255,.02)
+        ),
+        var(--panel);
+
+      backdrop-filter: blur(18px);
+
+      box-shadow: var(--shadow);
+
+      scrollbar-gutter: stable;
+    }
+
+    /* =========================================================
+      RIGHT STAGE
+    ========================================================= */
+
+    .stage {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.03),
+          rgba(255,255,255,.015)
+        ),
+        rgba(0,0,0,.08);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+
+    /* =========================================================
+      SCROLLBARS
+    ========================================================= */
+
+    .panel::-webkit-scrollbar,
+    .stage::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .panel::-webkit-scrollbar-thumb,
+    .stage::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+
+      border-radius: 999px;
+    }
+
+    .panel::-webkit-scrollbar-thumb:hover,
+    .stage::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,.24);
+    }
+
+    /* =========================================================
+      DROPZONE
+    ========================================================= */
+
+    #upload-card-wrapper {
+      width: 100%;
+    }
+    
+    input[type="file"] {
+      display: none;
+    }
+
+    /* =========================================================
+      CONTROLS
+    ========================================================= */
+
+    .control {
+      padding: 14px;
+
+      border-radius: 18px;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.04),
+          rgba(255,255,255,.02)
+        );
+
+      margin-top: 12px;
+    }
+
+    .row {
+      display: grid;
+
+      grid-template-columns: 1fr auto;
+
+      gap: 12px;
+
+      align-items: center;
+
+      margin-bottom: 10px;
+    }
+
+    label {
+      color: #dbeafe;
+
+      font-size: .92rem;
+
+      font-weight: 800;
+    }
+
+    .value {
+      color: #7dd3fc;
+
+      font-size: .84rem;
+
+      font-weight: 900;
+
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================================================
+      INPUTS
+    ========================================================= */
+
+    input[type="range"] {
+      width: 100%;
+
+      accent-color: var(--accent-2);
+    }
+
+    select,
+    input[type="color"] {
+      width: 100%;
+
+      border-radius: 14px;
+
+      border: 1px solid rgba(255,255,255,.12);
+
+      background: rgba(255,255,255,.08);
+
+      color: var(--text);
+
+      padding: 10px 12px;
+
+      font-weight: 800;
+    }
+
+    input[type="color"] {
+      height: 42px;
+
+      padding: 4px;
+    }
+
+    option {
+      color: #111827;
+    }
+
+    /* =========================================================
+      BUTTONS
+    ========================================================= */
+
+    button {
+      appearance: none;
+
+      border: 1px solid rgba(255,255,255,.11);
+
+      border-radius: 16px;
+
+      padding: 11px 12px;
+
+      cursor: pointer;
+
+      color: var(--text);
+
+      background: rgba(255,255,255,.08);
+
+      font-weight: 800;
+
+      transition:
+        transform .16s ease,
+        border-color .16s ease,
+        background .16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+
+      border-color: rgba(255,255,255,.22);
+    }
+
+    .primary {
+      background:
+        linear-gradient(
+          135deg,
+          #38bdf8,
+          #7c3aed
+        );
+    }
+
+    .danger {
+      background: rgba(251,113,133,.14);
+
+      color: #fecdd3;
+    }
+
+    /* =========================================================
+      BUTTON GRIDS
+    ========================================================= */
+
+    .presets,
+    .actions,
+    .switches,
+    .color-grid {
+      display: grid;
+
+      grid-template-columns: repeat(2, minmax(0,1fr));
+
+      gap: 10px;
+
+      margin-top: 14px;
+    }
+
+    /* =========================================================
+      TOGGLES
+    ========================================================= */
+
+    .toggle {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 8px;
+
+      padding: 11px 12px;
+
+      border-radius: 16px;
+
+      background: rgba(255,255,255,.06);
+
+      border: 1px solid rgba(255,255,255,.10);
+
+      user-select: none;
+
+      cursor: pointer;
+
+      font-weight: 800;
+
+      color: #e2e8f0;
+    }
+
+    .toggle input {
+      accent-color: var(--accent-2);
+    }
+
+    /* =========================================================
+      TOOLBAR
+    ========================================================= */
+
+    .toolbar {
+      flex: 0 0 auto;
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      padding-bottom: 18px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .status {
+      color: var(--muted);
+
+      font-size: .92rem;
+    }
+
+    /* =========================================================
+      CANVAS AREA
+    ========================================================= */
+
+    .canvas-wrap {
+      flex: 1 1 auto;
+
+      min-height: 0;
+
+      position: relative;
+
+      display: grid;
+      place-items: center;
+
+      overflow: auto;
+
+      border-radius: 22px;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      background:
+        linear-gradient(
+          45deg,
+          rgba(255,255,255,.035) 25%,
+          transparent 25%
+        ),
+        linear-gradient(
+          -45deg,
+          rgba(255,255,255,.035) 25%,
+          transparent 25%
+        ),
+        linear-gradient(
+          45deg,
+          transparent 75%,
+          rgba(255,255,255,.035) 75%
+        ),
+        linear-gradient(
+          -45deg,
+          transparent 75%,
+          rgba(255,255,255,.035) 75%
+        );
+
+      background-size: 28px 28px;
+
+      background-position:
+        0 0,
+        0 14px,
+        14px -14px,
+        -14px 0;
+    }
+
+    /* =========================================================
+      CANVAS
+    ========================================================= */
+
+    canvas {
+      max-width: none;
+
+      border-radius: 12px;
+
+      image-rendering: auto;
+    }
+
+    /* =========================================================
+      PLACEHOLDER
+    ========================================================= */
+
+    .placeholder {
+      position: absolute;
+
+      inset: 0;
+
+      display: grid;
+      place-items: center;
+
+      text-align: center;
+
+      padding: 30px;
+
+      color: var(--muted);
+
+      pointer-events: none;
+    }
+
+    .placeholder h2 {
+      margin: 0 0 10px;
+
+      color: var(--text);
+
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+
+      letter-spacing: -.04em;
+    }
+
+    /* =========================================================
+      FOOTER
+    ========================================================= */
+
+    .footer-note,
+    .mini {
+      color: var(--muted);
+
+      font-size: .86rem;
+
+      line-height: 1.45;
+    }
+
+    .footer-note {
+      flex: 0 0 auto;
+
+      padding-top: 14px;
+    }
+
+    .mini {
+      margin-top: 14px;
+    }
+
+    /* =========================================================
+      MOBILE
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+      body {
+        overflow: auto;
+
+        padding: 16px;
+      }
+
+      main {
+        height: auto;
+
+        grid-template-columns: 1fr;
+      }
+
+      .panel,
+      .stage {
+        height: auto;
+
+        overflow: visible;
+      }
+
+      .canvas-wrap {
+        min-height: 420px;
+      }
+
+      .presets,
+      .actions,
+      .switches,
+      .color-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    body[data-dashboard-sidebar-externalized] main {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    body[data-dashboard-sidebar-externalized] .panel {
+      display: none;
+    }

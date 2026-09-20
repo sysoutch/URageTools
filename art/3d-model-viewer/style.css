@@ -328,3 +328,25 @@ input[type="range"]::-webkit-slider-thumb:hover {
     }
     #viewport { height: 50vh; }
 }
+
+/* Responsive workspace: wide canvas + inspector, tablet compact inspector, phone stacked flow. */
+@media (min-width: 901px) and (max-width: 1180px) {
+  #sidebar { width: 300px; padding: 24px 18px; }
+  .header { margin-bottom: 24px; }
+  .upload-area, #hdr-drop-zone { padding: 28px 16px; }
+}
+@media (max-width: 900px) {
+  body { height: auto; min-height: 100dvh; overflow: auto; }
+  .app-shell { height: auto; min-height: calc(100dvh - var(--urage-header-height, 54px)); overflow: visible; }
+  #app-container { flex-direction: column; min-height: inherit; }
+  #viewport { flex: 0 0 auto; height: min(58dvh, 560px); min-height: 340px; }
+  #sidebar { width: 100%; height: auto; max-height: none; border-left: none; border-top: 1px solid var(--border); padding: 24px; overflow: visible; }
+}
+@media (max-width: 560px) {
+  #sidebar { padding: 18px 14px; }
+  #viewport { height: 48dvh; min-height: 280px; }
+  .header { margin-bottom: 22px; }
+  .logo-text { font-size: 17px; }
+  .btn-row, .control-row { flex-wrap: wrap; }
+  .icon-btn { min-width: calc(50% - 5px); padding: 12px 8px; }
+}

@@ -26,3 +26,21 @@ select, input[type="range"] { width: 100%; background: rgba(8, 10, 16, 0.8); col
 .btn-exp { background: var(--p); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 5px; }
 .row { display: flex; justify-content: space-between; align-items: center; }
 .val { font-family: monospace; font-size: 12px; color: var(--p); }
+
+/* Responsive workspace: tablet exposes controls as a compact grid; phone restores a readable vertical flow. */
+@media (max-width: 1000px) {
+  body { display: block; height: auto; min-height: 100dvh; overflow: auto; }
+  .sidebar { width: 100%; padding: 18px; flex-direction: row; flex-wrap: wrap; align-items: stretch; overflow: visible; }
+  .sidebar > h2 { flex: 1 1 100%; }
+  .control-group { flex: 1 1 220px; }
+  .btn-exp { flex: 1 1 100%; margin-top: 0; }
+  .viewport { min-height: 68dvh; }
+}
+@media (max-width: 600px) {
+  .sidebar { display: block; padding: 16px; }
+  .control-group { margin-top: 14px; }
+  .btn-exp { width: 100%; }
+  .viewport { grid-template-rows: minmax(300px, 52dvh) minmax(300px, 52dvh); min-height: 0; }
+  .canvas-container { overflow: auto; }
+  canvas { max-width: calc(100% - 24px); max-height: calc(100% - 48px); }
+}

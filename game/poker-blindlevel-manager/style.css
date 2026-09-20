@@ -1,0 +1,91 @@
+:root {
+            --bg: #0a0a0c;
+            --card: #16161a;
+            --accent: #d4af37;
+            --accent-glow: rgba(212, 175, 55, 0.3);
+            --text: #e2e2e2;
+            --muted: #888;
+            --danger: #ef4444;
+            --success: #10b981;
+            --break: #3b82f6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* Navigation */
+        nav { display: flex; background: #000; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; overflow-x: auto; white-space: nowrap; }
+        .tab-btn { background: none; border: none; color: var(--muted); padding: 15px 20px; cursor: pointer; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; border-bottom: 3px solid transparent; flex-shrink: 0; }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Clock Components */
+        .dashboard-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 20px; }
+        .main-display { text-align: center; background: var(--card); border-radius: 20px; padding: 40px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .timer { font-size: clamp(4rem, 15vw, 10rem); font-weight: 800; font-variant-numeric: tabular-nums; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); line-height: 1; margin: 10px 0; }
+        .blinds-banner { font-size: clamp(2rem, 8vw, 4.5rem); font-weight: 700; margin: 10px 0; }
+        .stat-sidebar { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #333; display: flex; flex-direction: column; gap: 15px; }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: var(--accent); font-size: 0.75rem; text-transform: uppercase; padding: 12px; border-bottom: 1px solid #333; }
+        td { padding: 12px; border-bottom: 1px solid #222; font-size: 0.95rem; }
+        tr.active-row { background: rgba(212, 175, 55, 0.1); border-left: 4px solid var(--accent); }
+        tr.break-row { background: rgba(59, 130, 246, 0.05); color: var(--break); font-style: italic; }
+
+        /* Controls */
+        button.action { background: var(--accent); color: #000; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button.action:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        button.secondary { background: #333; color: #fff; }
+        
+        .input-box input { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; margin-top: 5px; }
+
+        /* Log */
+        .log-container { height: 300px; overflow-y: auto; background: #000; border-radius: 10px; padding: 15px; font-family: monospace; font-size: 0.85rem; border: 1px solid #222; }
+
+        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+/* Map the poker surface onto the shared dashboard theme rather than a fixed gold palette. */
+:root {
+    --bg: var(--tool-bg, #120d0d);
+    --card: var(--tool-surface, #1d1119);
+    --accent: var(--tool-accent, #ff8a4d);
+    --accent-glow: color-mix(in srgb, var(--accent) 30%, transparent);
+    --text: var(--tool-text, #f6f1ee);
+    --muted: var(--tool-muted, #c8b6ae);
+    --danger: var(--tool-danger, #ef4444);
+    --success: var(--tool-success, #56c789);
+    --break: var(--tool-info, #59b6ff);
+    --line: var(--tool-line, rgba(255, 180, 128, .22));
+}
+
+nav { background: var(--tool-surface-strong, var(--bg)); border-bottom-color: var(--line); }
+.main-display, .stat-sidebar { border-color: var(--line); box-shadow: var(--tool-shadow, 0 10px 30px rgba(0,0,0,.35)); }
+th { border-bottom-color: var(--line); }
+td { border-bottom-color: color-mix(in srgb, var(--line) 70%, transparent); }
+tr.active-row { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+tr.break-row { background: color-mix(in srgb, var(--break) 9%, transparent); }
+button.secondary { background: var(--tool-surface-alt, #27202a); color: var(--text); }
+#player-name-input, .input-box input { background: var(--tool-surface-strong, var(--card)) !important; border-color: var(--line) !important; color: var(--text) !important; }
+
+@media (min-width: 1280px) {
+    .container { max-width: 1320px; padding: 32px; }
+    .main-display { padding: 48px; }
+}
+
+@media (max-width: 700px) {
+    .container { padding: 14px; }
+    .tab-btn { min-height: 48px; padding: 14px 16px; }
+    .main-display, .stat-sidebar { padding: 18px; border-radius: 14px; }
+    .timer { font-size: clamp(3.5rem, 19vw, 6rem); }
+    .blinds-banner { font-size: clamp(1.65rem, 11vw, 3rem); }
+    #view-clock .main-display > div[style*="display: flex"] { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px !important; margin-top: 22px !important; }
+    #view-clock .main-display > div[style*="display: flex"] .action { min-height: 44px; padding: 10px 6px; }
+    #view-players .main-display > div[style*="display:flex"] { flex-direction: column; }
+    #view-players .main-display > div[style*="display:flex"] .action { width: 100%; min-height: 44px; }
+    #view-settings .main-display > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 14px !important; }
+    #view-structure .main-display, #view-payouts .main-display { overflow-x: auto; }
+}

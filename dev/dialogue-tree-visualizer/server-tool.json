@@ -1,0 +1,39 @@
+{
+  "id": "dev__dialogue-tree-visualizer",
+  "title": "Dialogue Tree Visualizer",
+  "description": "Validate and export the Dialogue Tree Visualizer's native engine-data JSON. This does not render or infer dialogue content.",
+  "action": "dialogueTree",
+  "inputSchema": {
+    "type": "object",
+    "required": ["nodes"],
+    "properties": {
+      "variables": { "type": "array", "items": { "type": "string" }, "maxItems": 128, "default": [] },
+      "nodes": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 256,
+        "items": {
+          "type": "object",
+          "required": ["id", "x", "y", "type", "character"],
+          "properties": {
+            "id": { "type": ["string", "number"] },
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "type": { "type": "string", "enum": ["speech", "choice"] },
+            "character": { "type": "string" },
+            "text": { "type": "string" },
+            "condition": { "type": "string" },
+            "action": { "type": "string" }
+          }
+        }
+      },
+      "connections": {
+        "type": "array",
+        "maxItems": 1024,
+        "items": { "type": "object", "required": ["from", "to"], "properties": { "from": { "type": ["string", "number"] }, "to": { "type": ["string", "number"] } } },
+        "default": []
+      }
+    },
+    "additionalProperties": false
+  }
+}
