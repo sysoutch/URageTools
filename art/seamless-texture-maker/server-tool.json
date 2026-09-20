@@ -1,0 +1,21 @@
+{
+  "id": "art__seamless-texture-maker",
+  "title": "Seamless Texture Maker",
+  "description": "Create a deterministic mirrored 2×2 seamless texture tile from a URage image artifact.",
+  "action": "seamlessTexture",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "imageId": {
+        "type": "string",
+        "description": "ID of the imported or generated URage image."
+      },
+      "imageFileName": {
+        "type": "string",
+        "description": "File name returned with the source image."
+      }
+    },
+    "required": ["imageId", "imageFileName"],
+    "additionalProperties": false
+  }
+}

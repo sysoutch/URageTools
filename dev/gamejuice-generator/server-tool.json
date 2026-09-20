@@ -1,0 +1,22 @@
+{
+  "id": "dev__gamejuice-generator",
+  "title": "Gamejuice Generator",
+  "description": "Generate deterministic game-feel presets for named gameplay actions.",
+  "action": "gameJuice",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "actions": {
+        "type": "string",
+        "description": "One gameplay action per line, or a comma-separated list."
+      },
+      "framework": {
+        "type": "string",
+        "enum": ["phaser", "pixijs", "babylon", "unity"],
+        "description": "Target engine metadata. Defaults to phaser."
+      }
+    },
+    "required": ["actions"],
+    "additionalProperties": false
+  }
+}

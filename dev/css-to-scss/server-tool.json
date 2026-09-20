@@ -1,0 +1,21 @@
+{
+  "id": "dev__css-to-scss",
+  "title": "CSS To SCSS",
+  "description": "Refactor CSS into categorized SCSS partials and a main import manifest.",
+  "action": "cssToScss",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "css": {
+        "type": "string",
+        "description": "Source CSS to refactor."
+      },
+      "autoVariables": {
+        "type": "boolean",
+        "description": "Extract repeated color and spacing values into SCSS variables. Defaults to true."
+      }
+    },
+    "required": ["css"],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "art__spritesheet-utility",
+  "title": "Spritesheet Utility",
+  "description": "Split an existing URage image into a regular sprite grid. The server endpoint deliberately does not infer irregular sprite boundaries or reproduce interactive guide editing.",
+  "action": "spritesheetGrid",
+  "inputSchema": {
+    "type": "object",
+    "required": ["imageId", "imageFileName", "columns", "rows"],
+    "properties": {
+      "imageId": { "type": "string" },
+      "imageFileName": { "type": "string" },
+      "columns": { "type": "integer", "minimum": 1, "maximum": 8 },
+      "rows": { "type": "integer", "minimum": 1, "maximum": 8 },
+      "format": { "type": "string", "enum": ["png", "jpeg", "webp"], "default": "png" },
+      "quality": { "type": "integer", "minimum": 10, "maximum": 100, "default": 92 }
+    },
+    "additionalProperties": false
+  }
+}

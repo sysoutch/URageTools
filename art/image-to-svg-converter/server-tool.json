@@ -1,0 +1,33 @@
+{
+  "id": "art__image-to-svg-converter",
+  "title": "Image To SVG Converter",
+  "description": "Trace a URage image artifact to an SVG using the bundled ImageTracer implementation.",
+  "action": "imageToSvg",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "imageId": {
+        "type": "string",
+        "description": "ID of the imported or generated URage image."
+      },
+      "imageFileName": {
+        "type": "string",
+        "description": "File name returned with the source image."
+      },
+      "smoothing": {
+        "type": "number",
+        "minimum": 0.1,
+        "maximum": 8,
+        "description": "ImageTracer line and quadratic threshold. Defaults to 1."
+      },
+      "colors": {
+        "type": "integer",
+        "minimum": 2,
+        "maximum": 64,
+        "description": "Maximum trace palette colors. Defaults to 16."
+      }
+    },
+    "required": ["imageId", "imageFileName"],
+    "additionalProperties": false
+  }
+}
