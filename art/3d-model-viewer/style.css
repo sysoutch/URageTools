@@ -350,3 +350,31 @@ input[type="range"]::-webkit-slider-thumb:hover {
   .btn-row, .control-row { flex-wrap: wrap; }
   .icon-btn { min-width: calc(50% - 5px); padding: 12px 8px; }
 }
+
+/* Theme contract: the viewer shell must follow dashboard-theme.js, not fixed charcoal/blue values. */
+body[data-dashboard-theme] {
+    --bg: var(--tool-bg, #0a0a0b);
+    --panel: var(--tool-surface, #121214);
+    --border: var(--tool-line, #2a2a2e);
+    --accent: var(--tool-accent, #3b82f6);
+    --accent-hover: var(--tool-accent-strong, var(--tool-accent, #60a5fa));
+    --text-main: var(--tool-text, #fff);
+    --text-dim: var(--tool-muted, #a1a1aa);
+    --card-bg: var(--tool-surface-strong, #1c1c1f);
+}
+
+#viewport { background: radial-gradient(circle at center, color-mix(in srgb, var(--accent) 10%, var(--tool-surface-alt, #1e1e20)) 0%, var(--tool-bg, #050505) 100%); }
+.upload-area:hover, #hdr-drop-zone:hover { background: color-mix(in srgb, var(--accent) 8%, var(--card-bg)); }
+#hdr-drop-zone.drag-over { border-color: var(--tool-success, #00ffcc); background: color-mix(in srgb, var(--tool-success, #00ffcc) 12%, var(--card-bg)); }
+.logo { box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent); }
+.logo-text { background: linear-gradient(to right, var(--text-main), var(--text-dim)); -webkit-background-clip: text; }
+
+@media (min-width: 1280px) {
+    #sidebar { width: 380px; padding: 34px 28px; }
+}
+
+@media (max-width: 560px) {
+    .upload-area, #hdr-drop-zone { padding: 26px 14px; }
+    .drop-zone-icon { font-size: 40px; }
+    .icon-btn { min-height: 44px; }
+}

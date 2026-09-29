@@ -430,3 +430,36 @@ button {
     align-items: flex-start;
   }
 }
+/* Base64 Converter follows the selected dashboard theme instead of fixed slate colors. */
+body[data-dashboard-theme] {
+  --bg: var(--tool-bg, #0f172a);
+  --card: var(--tool-surface, #1e293b);
+  --card2: var(--tool-surface-alt, #172033);
+  --border: var(--tool-line, #334155);
+  --text: var(--tool-text, #e2e8f0);
+  --muted: var(--tool-muted, #94a3b8);
+  --primary: var(--tool-accent, #3b82f6);
+  --primary-hover: var(--tool-accent-strong, var(--tool-accent, #2563eb));
+  --success: var(--tool-success, #4ade80);
+  --error: var(--tool-danger, #f87171);
+}
+
+.tab, .secondary, .remove-file { background: var(--tool-surface-alt, #334155); color: var(--text); }
+.tab:hover, .secondary:hover, .remove-file:hover { background: color-mix(in srgb, var(--primary) 14%, var(--tool-surface-alt, #475569)); }
+textarea, .hex-preview, .text-preview { background: var(--tool-surface-strong, #0b1220); border-color: var(--border); }
+.drop-zone { border-color: var(--border); background: color-mix(in srgb, var(--primary) 5%, transparent); }
+.drop-zone:hover, .drop-zone.dragover { background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--text); }
+.danger { background: color-mix(in srgb, var(--error) 30%, var(--tool-surface-strong, #7f1d1d)); }
+
+@media (min-width: 1280px) {
+  .container { max-width: 1160px; }
+  .card { padding: 30px; }
+}
+
+@media (max-width: 650px) {
+  .controls button { width: 100%; min-height: 44px; }
+  .attachment.visible { gap: 10px; }
+  .attachment-preview { width: 56px; height: 56px; flex-basis: 56px; }
+  textarea { min-height: 190px; }
+  .metadata { grid-template-columns: 1fr; }
+}
