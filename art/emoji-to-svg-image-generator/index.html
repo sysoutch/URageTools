@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emoji to SVG / PNG Converter</title>
+<style>
+  :root { --bg:#0f1220; --card:#1a1f35; --line:#2c3357; --text:#e8ebff; --dim:#9aa3d1; --acc:#6c8cff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px; }
+  header { text-align:center; margin-bottom:24px; }
+  h1 { font-size:1.7rem; letter-spacing:.5px; }
+  h1 span { color:var(--acc); }
+  .sub { color:var(--dim); margin-top:6px; font-size:.95rem; }
+  main { width:100%; max-width:860px; display:grid; gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  label { display:block; font-size:.75rem; color:var(--dim); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+  input[type=text] { width:100%; font-size:2.4rem; padding:10px 14px; border-radius:10px; border:1px solid var(--line); background:#12162b; color:var(--text); text-align:center; }
+  input[type=text]:focus { outline:none; border-color:var(--acc); }
+  .presets { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .preset { font-size:1.5rem; background:#12162b; border:1px solid var(--line); border-radius:8px; padding:4px 9px; cursor:pointer; transition:.15s; line-height:1.3; }
+  .preset:hover { border-color:var(--acc); transform:translateY(-1px); }
+  .opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:16px; }
+  select { width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#12162b; color:var(--text); font-size:.95rem; }
+  .tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+  .tab { padding:7px 14px; border-radius:8px; border:1px solid var(--line); background:#12162b; color:var(--dim); cursor:pointer; font-size:.9rem; }
+  .tab.active { background:var(--acc); border-color:var(--acc); color:#fff; }
+  .pane { display:none; }
+  .pane.active { display:block; }
+  pre { background:#0b0e1c; border:1px solid var(--line); border-radius:10px; padding:14px; font-size:.78rem; max-height:320px; overflow:auto; white-space:pre-wrap; word-break:break-all; color:#c9d4ff; }
+  .pngwrap { display:flex; justify-content:center; background-image:linear-gradient(45deg,#232a4d 25%,transparent 25%),linear-gradient(-45deg,#232a4d 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#232a4d 75%),linear-gradient(-45deg,transparent 75%,#232a4d 75%); background-size:18px 18px; background-position:0 0,0 9px,9px -9px,-9px 0; border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .pngwrap img { max-width:256px; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  button.act { padding:9px 16px; border-radius:9px; border:none; background:var(--acc); color:#fff; font-size:.92rem; cursor:pointer; transition:.15s; }
+  button.act:hover { filter:brightness(1.15); }
+  button.act.ghost { background:transparent; border:1px solid var(--line); color:var(--text); }
+  .info { margin-top:12px; font-size:.85rem; color:var(--dim); min-height:1.2em; }
+  footer { margin-top:26px; color:var(--dim); font-size:.78rem; text-align:center; max-width:640px; line-height:1.5; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Emoji to <span>SVG / PNG</span> Converter</h1>
+  <p class="sub">Type or pick an emoji, render it on canvas, and export as SVG (with optional tint &amp; stroke) or PNG.</p>
+</header>
+<main>
+  <section class="card">
+    <label for="emojiInput">Emoji input</label>
+    <input type="text" id="emojiInput" value="😀" maxlength="8" placeholder="Type an emoji here…" autocomplete="off">
+    <div class="presets" id="presets"></div>
+  </section>
+
+  <section class="card">
+    <label for="sizeSel">Output size</label>
+    <select id="sizeSel">
+      <option value="64">64 × 64 px</option>
+      <option value="128" selected>128 × 128 px</option>
+      <option value="256">256 × 256 px</option>
+      <option value="512">512 × 512 px</option>
+    </select>
+
+    <div class="opts">
+      <div>
+        <label for="tintSel">Tint filter (SVG)</label>
+        <select id="tintSel">
+          <option value="">None</option>
+          <option value="#6c8cff">Blue</option>
+          <option value="#ff5d73">Red</option>
+          <option value="#41e08d">Green</option>
+          <option value="#ffd23f">Yellow</option>
+          <option value="#b96bff">Purple</option>
+        </select>
+      </div>
+      <div>
+        <label for="strokeSel">Stroke (SVG)</label>
+        <select id="strokeSel">
+          <option value="">None</option>
+          <option value="2">Thin (2px)</option>
+          <option value="4" selected>Medium (4px)</option>
+          <option value="8">Thick (8px)</option>
+        </select>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px;font-size:.95rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;">Preview</h3>
+    <div class="pngwrap" id="previewWrap"><img id="previewImg" alt="" width="128" height="128"></div>
+
+    <div class="tabs">
+      <button class="tab active" data-pane="svgPane">SVG code</button>
+      <button class="tab" data-pane="pngPane">PNG preview</button>
+      <button class="tab" data-pane="b64Pane">Base64 (data URL)</button>
+    </div>
+
+    <div class="pane active" id="svgPane"><pre id="svgOut"></pre></div>
+    <div class="pane" id="pngPane"><div class="pngwrap"><img id="pngImg" alt="" width="128" height="128"></div></div>
+    <div class="pane" id="b64Pane"><pre id="b64Out"></pre></div>
+
+    <div class="actions">
+      <button class="act" id="dlSvg">Download SVG</button>
+      <button class="act" id="dlPng">Download PNG</button>
+      <button class="act ghost" id="copySvg">Copy SVG</button>
+      <button class="act ghost" id="copyB64">Copy Base64</button>
+    </div>
+    <p class="info" id="status"></p>
+  </section>
+</main>
+<footer>Renders with your system emoji font (Segoe UI Emoji / Apple Color Emoji / Noto Color Emoji). SVG output embeds the raster as a data URL, so it stays self-contained and scalable. Everything runs locally in your browser — nothing is uploaded.</footer>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const state = { emoji: "😀", size: 128, tint: "", stroke: "" };
+
+const PRESETS = ["😀","😂","🥳","😎","🤖","👻","💀","❤️","🔥","⭐","🌈","⚡","🍕","🚀","🐱","🦄"];
+const presetsEl = $("presets");
+PRESETS.forEach((e) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "preset";
+  b.textContent = e;
+  b.addEventListener("click", () => { $("emojiInput").value = e; update(); });
+  presetsEl.appendChild(b);
+});
+
+function renderEmoji(emoji, size) {
+  const c = document.createElement("canvas");
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, size, size);
+  ctx.font = Math.floor(size * 0.82) + "px 'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(emoji, size / 2, size / 2 + size * 0.03);
+  return c.toDataURL("image/png");
+}
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255];
+}
+
+function buildSvg(dataUrl, size) {
+  const tint = state.tint;
+  const stroke = state.stroke ? parseInt(state.stroke, 10) : 0;
+  let defs = "";
+  if (tint) {
+    const [r, g, b] = hexToRgb(tint).map((v) => v.toFixed(3));
+    defs += '    <filter id="tint">\n';
+    defs += '      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/>\n';
+    defs += `      <feColorMatrix type="matrix" values="${r} 0 0 0 0  0 ${g} 0 0 0  0 0 ${b} 0 0  0 0 0 1 0"/>\n`;
+    defs += "    </filter>\n";
+  }
+  if (stroke) {
+    defs += '    <filter id="outline" x="-25%" y="-25%" width="150%" height="150%">\n';
+    defs += `      <feMorphology in="SourceAlpha" operator="dilate" radius="${stroke}" result="grow"/>\n`;
+    defs += '      <feFlood flood-color="#111325" result="col"/>\n';
+    defs += '      <feComposite in="col" in2="grow" operator="in" result="ring"/>\n';
+    defs += "      <feMerge><feMergeNode in=\"ring\"/><feMergeNode in=\"SourceGraphic\"/></feMerge>\n";
+    defs += "    </filter>\n";
+  }
+  const imgFilter = tint ? ' filter="url(#tint)"' : "";
+  let body;
+  if (stroke) {
+    body = `  <g filter="url(#outline)">\n    <image href="${dataUrl}"${imgFilter} x="0" y="0" width="${size}" height="${size}"/>\n  </g>`;
+  } else {
+    body = `  <image href="${dataUrl}"${imgFilter} x="0" y="0" width="${size}" height="${size}"/>`;
+  }
+  const defsBlock = defs ? "  <defs>\n" + defs + "  </defs>\n" : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">\n${defsBlock}${body}\n</svg>`;
+}
+
+function setStatus(msg) { $("status").textContent = msg; }
+
+function update() {
+  state.emoji = $("emojiInput").value.trim();
+  state.size = parseInt($("sizeSel").value, 10);
+  state.tint = $("tintSel").value;
+  state.stroke = $("strokeSel").value;
+  if (!state.emoji) { setStatus("Type an emoji to convert."); return; }
+  state.png = renderEmoji(state.emoji, state.size);
+  state.svg = buildSvg(state.png, state.size);
+  $("previewImg").src = state.png;
+  $("pngImg").src = state.png;
+  $("svgOut").textContent = state.svg;
+  $("b64Out").textContent = state.png;
+  setStatus(`Rendered ${state.emoji} at ${state.size}\u00d7${state.size}px.`);
+}
+
+document.querySelectorAll(".tab").forEach((t) => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+    document.querySelectorAll(".pane").forEach((p) => p.classList.remove("active"));
+    t.classList.add("active");
+    $(t.dataset.pane).classList.add("active");
+  });
+});
+
+function download(name, url) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+$("dlSvg").addEventListener("click", () => {
+  if (!state.svg) return setStatus("Nothing to download yet.");
+  const blobUrl = URL.createObjectURL(new Blob([state.svg], { type: "image/svg+xml" }));
+  download(`emoji-${state.size}px.svg`, blobUrl);
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+  setStatus("SVG downloaded.");
+});
+
+$("dlPng").addEventListener("click", () => {
+  if (!state.png) return setStatus("Nothing to download yet.");
+  download(`emoji-${state.size}px.png`, state.png);
+  setStatus("PNG downloaded.");
+});
+
+async function copyText(text, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus(label + " copied to clipboard.");
+  } catch (err) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      setStatus(label + " copied to clipboard.");
+    } catch (err2) {
+      setStatus("Copy failed \u2014 select the text manually.");
+    }
+    ta.remove();
+  }
+}
+
+$("copySvg").addEventListener("click", () => state.svg && copyText(state.svg, "SVG"));
+$("copyB64").addEventListener("click", () => state.png && copyText(state.png, "Base64 data URL"));
+
+$("emojiInput").addEventListener("input", update);
+["sizeSel", "tintSel", "strokeSel"].forEach((id) => $(id).addEventListener("change", update));
+
+update();
+</script>
+</body>
+</html>
