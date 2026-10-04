@@ -84,6 +84,15 @@
       "thumbnail": "/art/color-swapper/thumbnail.png"
     },
     {
+      "id": "art__emoji-to-svg-image-generator",
+      "category": "art",
+      "slug": "emoji-to-svg-image-generator",
+      "title": "Emoji to SVG / PNG Converter",
+      "description": "Render an emoji locally and export it as an SVG or transparent PNG, with optional SVG tint and stroke settings.",
+      "href": "/art/emoji-to-svg-image-generator/",
+      "thumbnail": ""
+    },
+    {
       "id": "art__favicon-creator",
       "category": "art",
       "slug": "favicon-creator",
@@ -124,7 +133,7 @@
       "category": "art",
       "slug": "image-to-ascii",
       "title": "Image To Ascii",
-      "description": "Convert a single image — or an entire sequence of frames (animated GIFs included) — into ASCII art, with animated HTML export and manual or automatic background removal. Built for pasting into Discord, terminals, and any plain-text context.",
+      "description": "Convert a single image — or an entire sequence of frames (animated GIFs included) — into ASCII art, with animated HTML and GIF export and manual or automatic background removal. Built for pasting into Discord, terminals, and any plain-text context.",
       "href": "/art/image-to-ascii/",
       "thumbnail": "/art/image-to-ascii/thumbnail.png"
     },

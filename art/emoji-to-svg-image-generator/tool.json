@@ -1,0 +1,5 @@
+{
+  "id": "art__emoji-to-svg-image-generator",
+  "title": "Emoji to SVG / PNG Converter",
+  "description": "Render an emoji locally and export it as an SVG or transparent PNG, with optional SVG tint and stroke settings."
+}
