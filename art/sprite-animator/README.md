@@ -1,8 +1,8 @@
 # Sprite Idle / Jump Animator
 
-A small, self-contained HTML5 tool that takes a **single sprite image** and creates simple procedural **idle** or **jump** animations from it.
+A small browser tool that takes a **single sprite image** and creates simple procedural **idle** or **jump** animations from it.
 
-The tool runs entirely in the browser and requires no server, build process, framework, or external dependencies.
+The tool runs entirely in the browser and requires no server, build process, framework, or external dependencies. It is split into three files that sit next to each other: `index.html` (markup), `style.css` (styling), and `script.js` (behavior).
 
 ## Features
 
@@ -20,8 +20,8 @@ The tool runs entirely in the browser and requires no server, build process, fra
 - Optional ground shadow
 - Optional transparency checkerboard
 - Pause and restart the preview
-- Export the generated animation as a horizontal PNG sprite sheet
-- Save the HTML tool itself for offline use
+- Export the generated animation as a PNG sprite sheet (`Grid` or `Sideways` layout, chosen in the panel)
+- Save the tool itself as one self-contained HTML file (works when the tool is served over http(s); opened straight from disk it reports the three-file layout instead)
 - Pixel-art-friendly canvas rendering
 
 ## Requirements
@@ -39,7 +39,7 @@ No installation is required.
 
 ## Usage
 
-1. Open `sprite_idle_jump_animator.html` in your browser.
+1. Open `index.html` in your browser, keeping `style.css` and `script.js` in the same folder.
 2. Click the sprite image input.
 3. Select a PNG, WebP, GIF, or JPEG sprite.
 4. Choose either `Idle` or `Jump`.
@@ -115,14 +115,23 @@ The sprite itself is not redrawn. The animation is produced using transformation
 The exported sprite sheet is:
 
 - PNG format
-- Horizontal
 - One animation frame per cell
 - Currently exported using 256 × 256 pixel cells
+- `Grid` (default): frames fill cells left to right, top to bottom, so long animations stay compact
+- `Sideways`: all frames in one horizontal row
 
-For example, an 8-frame animation produces a sheet arranged like:
+For example, an 8-frame animation exported as `Sideways` produces:
 
 ```text
 [0][1][2][3][4][5][6][7]
+```
+
+The same 8 frames exported as `Grid` produce a 3 × 3 grid (reading order, last cell empty):
+
+```text
+[0] [1] [2]
+[3] [4] [5]
+[6] [7] [ ]
 ```
 
 The sprite sheet can then be imported into engines such as:
@@ -148,7 +157,7 @@ That means:
 - Jump anticipation and landing poses are simulated rather than redrawn
 - There is no automatic sprite trimming
 - There is no frame-by-frame manual editor
-- Export is currently limited to a horizontal PNG sprite sheet
+- Export is currently limited to PNG sprite sheets (`Grid` or `Sideways` layouts, chosen in the panel)
 
 For many simple games, prototypes, icons, NPCs, enemies, and decorative characters, that is still enough to squeeze suspicious amounts of life out of one image.
 
@@ -290,6 +299,8 @@ The current implementation uses:
 - Canvas transforms for translation, scale, and rotation
 
 No third-party libraries are required.
+
+The code lives in three files: `index.html` links `style.css` in the document head and loads `script.js` at the end of the body.
 
 ## License
 
