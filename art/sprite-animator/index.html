@@ -22,6 +22,7 @@
       <option value="jump">Jump</option>
     </select>
 
+
     <label>Frames</label>
     <div class="row"><input id="frames" type="range" min="4" max="24" value="8"><input id="framesN" type="number" min="4" max="24" value="8"></div>
 
@@ -43,6 +44,8 @@
   <div class="group">
     <label><input id="shadow" type="checkbox" checked style="width:auto"> Ground shadow</label>
     <label><input id="checker" type="checkbox" checked style="width:auto"> Transparency checkerboard</label>
+    <label><input id="pixelArt" type="checkbox" style="width:auto"> Pixel art (redrawn)</label>
+    <div class="small">When enabled, both Idle and Jump redraw source pixels on a sharp, integer-aligned grid in the preview and PNG export.</div>
 
     <label>Sheet layout</label>
     <select id="layout">

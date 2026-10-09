@@ -319,3 +319,8 @@ Choose the license based on how you want others to use and redistribute the proj
 Current status: **prototype / usable utility**
 
 The existing version is suitable for quickly generating lightweight idle and jump motion from a single sprite, especially for prototypes and simple 2D game assets.
+
+
+## Pixel art (redrawn) checkbox
+
+Tick **Pixel art (redrawn)** to enable grid-aligned, nearest-neighbor remapping for either **Idle** or **Jump**. Leave it unchecked for the original canvas-transform rendering. Both preview and PNG export use the selected rendering method. This is a pixel redraw, not independent hand-drawn poses. Oversized source images may be sampled down to fit the frame.

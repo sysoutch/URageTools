@@ -2,7 +2,13 @@ const $=id=>document.getElementById(id);
 const canvas=$('canvas'), ctx=canvas.getContext('2d');
 ctx.imageSmoothingEnabled=false;
 
-let img=null, playing=true, t0=performance.now();
+let img=null, sourcePixels=null, playing=true, t0=performance.now();
+const pixelCache=new Map();
+const pixelCanvas=document.createElement('canvas');
+const pixelCtx=pixelCanvas.getContext('2d');
+function resetPixelCache(){pixelCache.clear()}
+$('mode').addEventListener('change',resetPixelCache);
+$('pixelArt').addEventListener('change',resetPixelCache);
 
 function bindPair(a,b){
   const A=$(a),B=$(b);
@@ -15,7 +21,15 @@ bindPair('motion','motionN'); bindPair('squash','squashN'); bindPair('lean','lea
 $('file').onchange=e=>{
   const f=e.target.files[0]; if(!f)return;
   const u=URL.createObjectURL(f), im=new Image();
-  im.onload=()=>{img=im;URL.revokeObjectURL(u)};
+  im.onload=()=>{
+    img=im;
+    const source=document.createElement('canvas');
+    source.width=im.naturalWidth;source.height=im.naturalHeight;
+    const sc=source.getContext('2d',{willReadFrequently:true});
+    sc.drawImage(im,0,0);
+    try { sourcePixels=sc.getImageData(0,0,source.width,source.height); } catch(e) {sourcePixels=null;}
+    resetPixelCache();URL.revokeObjectURL(u);
+  };
   im.src=u;
 };
 
@@ -69,6 +83,60 @@ function paramsAt(p){
   }
 }
 
+
+// Pixel-art mode rasterizes each output grid cell from an actual source pixel.
+// All deformation, rotation, and translation are evaluated by inverse mapping;
+// canvas never scales a previously rendered frame by fractional amounts.
+function pixelFrame(w,h,p){
+  const key=[w,h,p,$('mode').value,$('motion').value,$('squash').value,$('lean').value,$('shadow').checked].join('|');
+  if(pixelCache.has(key)) return pixelCache.get(key);
+  const out=document.createElement('canvas');out.width=w;out.height=h;
+  const c=out.getContext('2d');c.imageSmoothingEnabled=false;
+  if(!sourcePixels)return out;
+  const sw=sourcePixels.width,sh=sourcePixels.height,src=sourcePixels.data;
+  const scale=Math.min(w*.42/sw,h*.55/sh);
+  // Big input sprites are downsampled to fit; small sprites preserve each input pixel.
+  const sourceStep=Math.max(1,Math.ceil(1/Math.max(scale,0.00001)));
+  const unit=Math.max(1,Math.floor(scale*sourceStep));
+  const pw=Math.ceil(sw/sourceStep),ph=Math.ceil(sh/sourceStep);
+  const q=paramsAt(p);
+  const cx=Math.round((w/2)/unit)*unit;
+  const ground=Math.round((h*.79)/unit)*unit;
+  const oy=Math.round(q.y/unit)*unit;
+  if($('shadow').checked){
+    c.save();c.globalAlpha=.24;c.fillStyle='#000';c.beginPath();
+    c.ellipse(cx,ground+8,pw*unit*.34*q.shadow,Math.max(5,ph*unit*.055*q.shadow),0,0,Math.PI*2);
+    c.fill();c.restore();
+  }
+  const co=Math.cos(q.rot),si=Math.sin(q.rot);
+  const halfW=pw/2, halfH=ph;
+  const rad=Math.ceil(Math.hypot(pw*unit*Math.max(1,q.sx),ph*unit*Math.max(1,q.sy)) /unit)+2;
+  const centerX=cx/unit, baseY=(ground+oy)/unit;
+  const minX=Math.max(0,Math.floor(centerX-rad));
+  const maxX=Math.min(Math.ceil(w/unit),Math.ceil(centerX+rad));
+  const minY=Math.max(0,Math.floor(baseY-rad));
+  const maxY=Math.min(Math.ceil(h/unit),Math.ceil(baseY+rad));
+  // Compose at one pixel per logical output cell, then enlarge with nearest neighbor.
+  const gw=maxX-minX,gh=maxY-minY;
+  if(gw<=0||gh<=0)return out;
+  const raster=c.createImageData(gw,gh),dst=raster.data;
+  for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){
+    const dx=(minX+x+.5-centerX),dy=(minY+y+.5-baseY);
+    const ix=( co*dx+si*dy)/q.sx+halfW;
+    const iy=(-si*dx+co*dy)/q.sy+halfH;
+    const sx=Math.floor(ix)*sourceStep,sy=Math.floor(iy)*sourceStep;
+    if(sx<0||sy<0||sx>=sw||sy>=sh)continue;
+    const a=(sy*sw+sx)*4,b=(y*gw+x)*4;
+    dst[b]=src[a];dst[b+1]=src[a+1];dst[b+2]=src[a+2];dst[b+3]=src[a+3];
+  }
+  pixelCanvas.width=gw;pixelCanvas.height=gh;
+  pixelCtx.putImageData(raster,0,0);
+  c.drawImage(pixelCanvas,(minX*unit),(minY*unit),gw*unit,gh*unit);
+  if(pixelCache.size>90)pixelCache.clear();
+  pixelCache.set(key,out);
+  return out;
+}
+
 function drawFrame(targetCtx,w,h,p,clear=true,ox=0,oy=0){
   if(clear) targetCtx.clearRect(0,0,w,h);
   if(!img){
@@ -76,6 +144,9 @@ function drawFrame(targetCtx,w,h,p,clear=true,ox=0,oy=0){
     targetCtx.fillText('Upload a sprite PNG to begin',w/2,h/2);return;
   }
 
+  if($('pixelArt').checked){
+    targetCtx.drawImage(pixelFrame(w,h,p),ox,oy);return;
+  }
   const q=paramsAt(p);
   const maxW=w*.42,maxH=h*.55;
   const scale=Math.min(maxW/img.width,maxH/img.height);
@@ -126,7 +197,7 @@ $('export').onclick=()=>{
   out.toBlob(blob=>{
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download=`${$('mode').value}-spritesheet-${n}f-${grid?'grid':'row'}.png`;
+    a.download=`${$('mode').value}${$('pixelArt').checked?'-pixel-art':''}-spritesheet-${n}f-${grid?'grid':'row'}.png`;
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   });
