@@ -1,0 +1,5 @@
+{
+  "title": "Ultimate Texas Hold'em",
+  "description": "Play Ultimate Texas Hold'em in your browser with an interactive poker table.",
+  "publishEntry": "dist/index.html"
+}

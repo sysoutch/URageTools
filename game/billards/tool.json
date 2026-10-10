@@ -1,0 +1,4 @@
+{
+  "description": "Play billiards against computer opponents in your browser.",
+  "publishEntry": "dist/index.html"
+}

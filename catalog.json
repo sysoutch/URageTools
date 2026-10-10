@@ -31,6 +31,12 @@
       "description": "Planning, inspection, and project-organization tools."
     },
     {
+      "id": "simulation",
+      "label": "Simulation",
+      "icon": "activity",
+      "description": "Interactive simulations and experiments."
+    },
+    {
       "id": "video",
       "label": "Video",
       "icon": "film",
@@ -61,7 +67,7 @@
       "category": "art",
       "slug": "albedo-tools",
       "title": "Albedo Tools",
-      "description": "This package contains:",
+      "description": "Edit albedo textures and prepare texture maps for your materials directly in the browser.",
       "href": "/art/albedo-tools/",
       "thumbnail": "/art/albedo-tools/thumbnail.png"
     },
@@ -90,7 +96,7 @@
       "title": "Emoji to SVG / PNG Converter",
       "description": "Render an emoji locally and export it as an SVG or transparent PNG, with optional SVG tint and stroke settings.",
       "href": "/art/emoji-to-svg-image-generator/",
-      "thumbnail": ""
+      "thumbnail": "/shared/tool-cover.png"
     },
     {
       "id": "art__favicon-creator",
@@ -106,7 +112,7 @@
       "category": "art",
       "slug": "gif-viewer",
       "title": "Gif Viewer",
-      "description": "Complete fixed standalone version.",
+      "description": "Open animated GIFs, inspect individual frames, and control playback in your browser.",
       "href": "/art/gif-viewer/",
       "thumbnail": "/art/gif-viewer/thumbnail.png"
     },
@@ -192,6 +198,15 @@
       "thumbnail": "/art/seamless-texture-maker/thumbnail.png"
     },
     {
+      "id": "art__sprite-animator",
+      "category": "art",
+      "slug": "sprite-animator",
+      "title": "Sprite Animator",
+      "description": "Animate a single sprite with procedural idle and jump motions in your browser.",
+      "href": "/art/sprite-animator/",
+      "thumbnail": "/shared/tool-cover.png"
+    },
+    {
       "id": "art__spritesheet-utility",
       "category": "art",
       "slug": "spritesheet-utility",
@@ -232,7 +247,7 @@
       "category": "audio",
       "slug": "audio-cutter",
       "title": "Audio Cutter",
-      "description": "Open this URage tool in your browser.",
+      "description": "Trim audio recordings and export the selected section directly in your browser.",
       "href": "/audio/audio-cutter/",
       "thumbnail": "/audio/audio-cutter/thumbnail.png"
     },
@@ -241,7 +256,7 @@
       "category": "audio",
       "slug": "audio-recorder",
       "title": "Audio Recorder",
-      "description": "Records microphone audio, shared tab/system audio, or both mixed together. The latest recording is exposed through `describeCurrentAssets` so the dashboard Tools workspace can send it to other tools or import flows.",
+      "description": "Record microphone or shared system audio, mix audio sources, and save your recording.",
       "href": "/audio/audio-recorder/",
       "thumbnail": "/audio/audio-recorder/thumbnail.png"
     },
@@ -277,7 +292,7 @@
       "category": "dev",
       "slug": "3d-model-sharer",
       "title": "3D Model Sharer",
-      "description": "Single-file static web tool for previewing, importing, and uploading Sketchfab 3D models.",
+      "description": "Preview 3D models in your browser and prepare them for sharing.",
       "href": "/dev/3d-model-sharer/",
       "thumbnail": "/dev/3d-model-sharer/thumbnail.png"
     },
@@ -286,7 +301,7 @@
       "category": "dev",
       "slug": "base64-converter",
       "title": "Base64 Converter",
-      "description": "A browser-based Base64 encoder and decoder with **Data URL support, image previews, binary detection, file conversion, and downloads**.",
+      "description": "A browser-based Base64 encoder and decoder with Data URL support, image previews, binary detection, file conversion, and downloads.",
       "href": "/dev/base64-converter/",
       "thumbnail": "/dev/base64-converter/thumbnail.png"
     },
@@ -295,7 +310,7 @@
       "category": "dev",
       "slug": "blender-control-center",
       "title": "Blender Control Center",
-      "description": "Open this URage tool in your browser.",
+      "description": "Use Blender Control Center online with this free URage browser tool.",
       "href": "/dev/blender-control-center/",
       "thumbnail": "/dev/blender-control-center/thumbnail.png"
     },
@@ -394,7 +409,7 @@
       "category": "dev",
       "slug": "image-metadata-remover",
       "title": "Image Metadata Remover",
-      "description": "Open this URage tool in your browser.",
+      "description": "Remove embedded metadata from your images before downloading and sharing them.",
       "href": "/dev/image-metadata-remover/",
       "thumbnail": "/dev/image-metadata-remover/thumbnail.png"
     },
@@ -412,7 +427,7 @@
       "category": "dev",
       "slug": "map-generator",
       "title": "Map Generator",
-      "description": "A combined 2D and 3D map generator tool with a unified interface. Accessible via tabs: **2D** and **3D**.",
+      "description": "Build maps with integrated 2D and 3D generators and switch between both workspaces.",
       "href": "/dev/map-generator/",
       "thumbnail": "/dev/map-generator/thumbnail.png"
     },
@@ -448,7 +463,7 @@
       "category": "dev",
       "slug": "tetris",
       "title": "tetris",
-      "description": "Tetris Clone",
+      "description": "Play a browser-based falling-block puzzle: rotate pieces, clear lines, and chase a higher score.",
       "href": "/dev/tetris/",
       "thumbnail": "/dev/tetris/thumbnail.png"
     },
@@ -484,7 +499,7 @@
       "category": "game",
       "slug": "billards",
       "title": "Billards",
-      "description": "A browser-based billiards game designed to start as a **local, single-player game against bots**, while keeping the architecture ready for **local multiplayer, LAN multiplayer, and eventually online multiplayer**.",
+      "description": "Play billiards against computer opponents in your browser.",
       "href": "/game/billards/",
       "thumbnail": "/game/billards/thumbnail.png"
     },
@@ -519,8 +534,8 @@
       "id": "game__ultimate-texas-holdem",
       "category": "game",
       "slug": "ultimate-texas-holdem",
-      "title": "Ultimate Texas Holdem",
-      "description": "Static browser implementation of Ultimate Texas Hold'em for the URage NOW Games catalog.",
+      "title": "Ultimate Texas Hold'em",
+      "description": "Play Ultimate Texas Hold'em in your browser with an interactive poker table.",
       "href": "/game/ultimate-texas-holdem/",
       "thumbnail": "/game/ultimate-texas-holdem/thumbnail.png"
     },
@@ -529,7 +544,7 @@
       "category": "game",
       "slug": "WordleVS",
       "title": "WordleVS",
-      "description": "Open this URage tool in your browser.",
+      "description": "Play a word-guessing puzzle in your browser and test your vocabulary.",
       "href": "/game/WordleVS/",
       "thumbnail": "/game/WordleVS/thumbnail.png"
     },
@@ -588,6 +603,15 @@
       "thumbnail": "/plan/roadmap-builder/thumbnail.png"
     },
     {
+      "id": "simulation__token_typing_simulator",
+      "category": "simulation",
+      "slug": "token_typing_simulator",
+      "title": "Token Typing Simulator",
+      "description": "Simulate AI text streaming at a chosen token speed, or test your intuition by guessing the generation speed across multiple rounds.",
+      "href": "/simulation/token_typing_simulator/",
+      "thumbnail": "/shared/tool-cover.png"
+    },
+    {
       "id": "video__media-converter",
       "category": "video",
       "slug": "media-converter",
@@ -601,7 +625,7 @@
       "category": "video",
       "slug": "video-recorder",
       "title": "Video Recorder",
-      "description": "Records webcam video with optional microphone audio. The latest recording is exposed through `describeCurrentAssets` so it can be sent from the dashboard Tools workspace.",
+      "description": "Record webcam video with optional microphone audio and save the result from your browser.",
       "href": "/video/video-recorder/",
       "thumbnail": "/video/video-recorder/thumbnail.png"
     },
@@ -610,7 +634,7 @@
       "category": "video",
       "slug": "video-transcriber",
       "title": "Video Transcriber",
-      "description": "This is a browser-only HTML5 tool for:",
+      "description": "Transcribe video in your browser to turn spoken content into readable text.",
       "href": "/video/video-transcriber/",
       "thumbnail": "/video/video-transcriber/thumbnail.png"
     }

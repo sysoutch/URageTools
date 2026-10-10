@@ -13,8 +13,24 @@
 }
 
 body[data-dashboard-theme] {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  text-shadow: none;
   color: var(--tool-text);
   background: var(--tool-bg);
+}
+
+/* Shared application chrome; canvas/image preview colours remain tool-owned. */
+body[data-dashboard-theme] > header {
+  background: var(--tool-surface);
+  color: var(--tool-text);
+  border-color: var(--tool-line);
+}
+body[data-dashboard-theme] > header :is(h1, h2, p) { color: inherit; text-shadow: none; }
+body[data-dashboard-theme] :is(.panel, .card, .sidebar, .output-panel, .stat, .controls-panel, .settings-panel, .toolbar, .topbar) {
+  background: var(--tool-surface);
+  color: var(--tool-text);
+  border-color: var(--tool-line);
+  border-radius: var(--tool-radius);
 }
 
 body[data-dashboard-theme] :where(button, .btn, .button, a.button, a.download, input, textarea, select) {

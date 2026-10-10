@@ -19,6 +19,43 @@ The local starter and catalog pages reuse the URage main-site navigation, ticker
 
 ## Categories
 
+### Website tool pages and social previews
+
+`scripts/build-catalog.js` discovers category/tool folders, updates their static
+Open Graph/Twitter metadata, and ensures the shared dashboard theme loader is
+present. Add `tool.json` with a concise title and description for new tools.
+Existing `thumbnail.png` files supply social images; missing thumbnails use
+`shared/tool-cover.png`. Images and canonical URLs are absolute URage website
+URLs, so previews do not depend on a crawler executing JavaScript.
+
+The host website's `node build-static.js` regenerates the catalogue and uses
+`scripts/tool-page.js` to publish every `/tools/<category>/<slug>/` inside the
+current website header and footer. The original utility is published beside
+it as `tool.html`, preserving relative asset paths. **Open in new window**
+opens that standalone file. Query strings and hashes pass through to the tool.
+Standalone tools remember the last theme supplied by the website; embedded
+tools receive the current website palette using the dashboard theme protocol.
+
+For a compiled tool, `tool.json` can specify `"publishEntry": "dist/index.html"`.
+The website publisher copies its existing build assets beside `tool.html`;
+rebuild that tool's distribution after changing its TypeScript source. This is
+used by Billiards and Ultimate Texas Hold'em. The source catalogue continues
+to work independently; the website frames are generated only in `public/tools`.
+
+`simulation` is a named category, currently containing Token Typing Simulator.
+Unknown category folders also receive a generated label instead of becoming
+invisible in the filter list.
+
+From the website root, validate generated pages with
+`node URageTools/scripts/check-published-tools.js`. The browser smoke check is
+`node URageTools/scripts/browser-check-published.cjs`, with an installed
+Playwright module (or `PLAYWRIGHT_MODULE` pointing to one), an optional
+`CHROMIUM_EXECUTABLE`, and a static server at `TOOLS_PREVIEW_URL` (default
+`http://127.0.0.1:3117`). It checks page shells, theme propagation, the Simulation
+filter, simulation controls, standalone opening, and mobile navigation. It
+blocks third-party requests and records tool errors separately; this is not a
+full functional test of every utility or live Discord/Matrix previews.
+
 - **art** - Image editing, color tools, SVG, pixel art
 - **audio** - Music creation, sound effects, recording, audio visualization
 - **dev** - Developer utilities, code generators, markdown tools

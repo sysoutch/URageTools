@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro SVG Vectorizer (Local)</title>
+
     <script src="../../shared/dashboard-theme.js"></script>
     <script src="../../shared/dashboard-tool-bridge.js"></script>
     <link rel="stylesheet" href="/tools/shared/css/upload-btn.css">
@@ -26,13 +26,13 @@
         .val-display { font-weight: normal; color: var(--tool-accent); float: right; }
         .preview-area { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .box { border: 1px solid var(--tool-line); border-radius: 12px; padding: 10px; min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden; background: var(--tool-surface-alt); position: relative; }
-        
+
         /* THE FIX: Force SVG to be visible */
         #svgContainer { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         #svgContainer svg { width: 100% !important; height: auto !important; max-height: 320px; display: block; }
-        
+
         img { max-width: 100%; max-height: 320px; height: auto; object-fit: contain; }
-        
+
         /* Spinner */
         #spinner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid rgba(255,255,255,0.15); border-top: 4px solid var(--tool-accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; z-index: 10; }
         @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
@@ -54,6 +54,20 @@
             .box { min-height: 250px; }
             #svgContainer svg, img { max-height: 260px; }
         }    </style>
+<title>Image To Svg Converter | URage Tools</title>
+<link rel="canonical" href="https://urage.net/tools/art/image-to-svg-converter/">
+<meta name="description" content="A powerful, client-side tool for converting raster images to scalable vector graphics (SVG) directly in your browser. This tool uses the ImageTracer.js library to transform pixel-based images into clean, editable SVG vector graphics without any server processing.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="URage Tools">
+<meta property="og:url" content="https://urage.net/tools/art/image-to-svg-converter/">
+<meta property="og:title" content="Image To Svg Converter | URage Tools">
+<meta property="og:description" content="A powerful, client-side tool for converting raster images to scalable vector graphics (SVG) directly in your browser. This tool uses the ImageTracer.js library to transform pixel-based images into clean, editable SVG vector graphics without any server processing.">
+<meta property="og:image" content="https://urage.net/tools/art/image-to-svg-converter/thumbnail.png">
+<meta property="og:image:alt" content="Image To Svg Converter preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Image To Svg Converter | URage Tools">
+<meta name="twitter:description" content="A powerful, client-side tool for converting raster images to scalable vector graphics (SVG) directly in your browser. This tool uses the ImageTracer.js library to transform pixel-based images into clean, editable SVG vector graphics without any server processing.">
+<meta name="twitter:image" content="https://urage.net/tools/art/image-to-svg-converter/thumbnail.png">
 </head>
 <body data-dashboard-theme="fire">
 

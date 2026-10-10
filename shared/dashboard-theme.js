@@ -1,4 +1,5 @@
 (function() {
+    const sharedRoot = new URL('.', document.currentScript.src);
     const themes = {
         blood: { accent: '#ff4d4d', accentStrong: '#ff1a1a', bg: '#1a0d0d', surface: 'rgba(26, 13, 13, 0.95)', surfaceStrong: 'rgba(17, 11, 11, 0.98)', line: 'rgba(255, 100, 100, 0.18)', lineStrong: 'rgba(255, 100, 100, 0.34)', text: '#f6f1ee', muted: '#c8b6ae' },
         fire: { accent: '#ff8a4d', accentStrong: '#ff6136', bg: '#120d0d', surface: 'rgba(24, 14, 14, 0.92)', surfaceStrong: 'rgba(18, 11, 11, 0.98)', line: 'rgba(255, 180, 128, 0.18)', lineStrong: 'rgba(255, 180, 128, 0.34)', text: '#f6f1ee', muted: '#c8b6ae' },
@@ -50,6 +51,14 @@
             '--bg': tokens.bg,
             '--surface': tokens.surface,
             '--panel': tokens.surface,
+            '--panel2': tokens.surfaceStrong,
+            '--card': tokens.surface,
+            '--card2': tokens.surfaceStrong,
+            '--ink': tokens.text,
+            '--dim': tokens.muted,
+            '--acc': tokens.accent,
+            '--primary-hover': tokens.accentStrong,
+            '--line2': tokens.lineStrong,
             '--panel-strong': tokens.surfaceStrong,
             '--glass': tokens.surface,
             '--glass-heavy': tokens.surfaceStrong,
@@ -61,7 +70,10 @@
             '--muted': tokens.muted,
             '--card-bg': tokens.surfaceStrong
         }
-        Object.entries(aliases).forEach(([name, value]) => rootStyle.setProperty(name, value))
+        Object.entries(aliases).forEach(([name, value]) => {
+            rootStyle.setProperty(name, value)
+            if (document.body) document.body.style.setProperty(name, value)
+        })
     }
 
     function ensureStylesheet(id, href) {
@@ -80,9 +92,9 @@
     }
 
     function ensureSharedToolStyles() {
-        ensureStylesheet('urage-shared-tool-theme-styles', '/tools/shared/css/tool-theme.css')
-        ensureStylesheet('urage-shared-tool-component-styles', '/tools/shared/css/components/tool-components.css')
-        ensureStylesheet('urage-shared-tool-sidebar-styles', '/tools/shared/css/sidebar-scrollview.css')
+        ensureStylesheet('urage-shared-tool-theme-styles', new URL('css/tool-theme.css', sharedRoot).href)
+        ensureStylesheet('urage-shared-tool-component-styles', new URL('css/components/tool-components.css', sharedRoot).href)
+        ensureStylesheet('urage-shared-tool-sidebar-styles', new URL('css/sidebar-scrollview.css', sharedRoot).href)
     }
 
     function postThemeReady() {
@@ -161,6 +173,9 @@
     }
 
     window.addEventListener('message', (event) => {
+        // The dashboard can host tools on a separate origin; only its parent
+        // window may supply theme messages.
+        if (event.source !== window.parent) return
         const message = event && event.data
         if (!message || message.type !== 'tool:theme') return
         applySyncedTheme(message.payload && message.payload.theme, message.payload && message.payload.tokens)
@@ -177,6 +192,13 @@
     window.applyDashboardThemeVars = applyThemeVars
     window.ensureDashboardToolStyles = ensureSharedToolStyles
     window.registerDashboardThemeSync = registerThemeSync
+    const initializeTheme = () => {
+        let stored
+        try { stored = JSON.parse(localStorage.getItem('urage-tool-website-theme')) } catch (_) {}
+        applySyncedTheme(stored?.theme, stored?.tokens)
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeTheme, { once: true })
+    else initializeTheme()
     scheduleSharedToolStyleRefresh()
     postThemeReady()
 })()
