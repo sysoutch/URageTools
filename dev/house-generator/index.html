@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Habitat Lab — 3D House Generator</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eaeef4;background:#0c1017}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}#app{display:grid;grid-template-columns:340px minmax(0,1fr);height:100vh;min-height:600px}.sidebar{background:#111721;border-right:1px solid #27303d;overflow-y:auto;padding:26px 23px}.brand{display:flex;gap:11px;align-items:center;margin-bottom:29px}.brandmark{width:39px;height:39px;border:1px solid #6fe0c2;border-radius:12px;display:grid;place-items:center;background:#15362f;color:#8df1d3;font-size:23px}.brand strong{display:block;font-size:17px;letter-spacing:-.5px}.brand small{color:#8e9bad;font-size:11px;letter-spacing:1.7px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.9px;color:#789080;font-weight:800;margin:22px 0 12px}.heading{font-size:26px;font-weight:760;line-height:1.13;letter-spacing:-1px;margin:0 0 7px}.sub{color:#8d99ab;font-size:12px;line-height:1.6;margin:0 0 22px}.field{margin-bottom:17px}.rowlabel{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;font-weight:600;color:#c6d0da}.value{font-variant-numeric:tabular-nums;color:#87e8c8;font-weight:700}select{background:#1a2330;border:1px solid #344050;border-radius:9px;color:#e8edf3;width:100%;padding:11px 12px;outline:none}input[type=range]{width:100%;accent-color:#82e9c8;cursor:pointer}.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.chip{background:#19222f;color:#b9c4d0;border:1px solid #34404f;border-radius:8px;padding:10px 5px;font-size:12px}.chip.active{background:#17382f;color:#8ef3d2;border-color:#4cc6a1}.checks{display:grid;gap:10px}.check{display:flex;align-items:center;gap:10px;font-size:12px;color:#c3ceda;cursor:pointer}.check input{accent-color:#75dcbc;width:16px;height:16px}.section-line{height:1px;background:#27303c;margin:21px 0}.primary{border:0;background:#8be8c7;color:#09251c;padding:14px 18px;border-radius:10px;font-weight:800;width:100%;margin-top:22px;box-shadow:0 8px 32px #58d7af19}.primary:hover{background:#a2f5d8}.secondary{border:1px solid #3d4859;background:#1a2431;color:#e5ebf4;padding:10px 14px;border-radius:9px;font-size:12px}.main{position:relative;min-width:0;background:radial-gradient(circle at 55% 45%,#26323e,#101720 76%);overflow:hidden}#view{width:100%;height:100%;display:block}.topbar{position:absolute;z-index:2;left:29px;right:28px;top:25px;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none}.topbar>*{pointer-events:auto}.title2{font-size:22px;font-weight:730;letter-spacing:-.7px}.meta{font-size:12px;color:#a4b2c0;margin-top:4px}.glass{border:1px solid #ffffff25;background:#121a24cc;backdrop-filter:blur(14px);border-radius:12px;padding:8px;display:flex;gap:7px}.viewbtn{background:transparent;border:0;color:#a8b9c7;font-size:12px;border-radius:8px;padding:9px 12px}.viewbtn.active{color:#0d2b22;background:#91e7c9;font-weight:700}.bottom{position:absolute;bottom:23px;left:29px;right:29px;display:flex;align-items:end;justify-content:space-between;pointer-events:none;gap:15px}.stats{background:#111a25d9;border:1px solid #ffffff20;border-radius:13px;padding:14px 18px;display:flex;gap:24px;backdrop-filter:blur(9px)}.stat span{display:block;font-size:10px;color:#95a4b4;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px}.stat strong{font-size:20px;letter-spacing:-.7px}.help{color:#a5b4c3;font-size:11px;text-align:right;line-height:1.7}.legend{position:absolute;z-index:2;top:101px;right:29px;background:#111a25d9;border:1px solid #ffffff1c;padding:12px 14px;border-radius:11px;color:#b2c1ce;font-size:11px;line-height:1.8;pointer-events:none}.dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px}#toast{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);background:#e5fff6;color:#143b2c;font-size:12px;font-weight:700;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}@media(max-width:850px){#app{grid-template-columns:1fr;height:auto}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 17px;max-height:none;padding:20px}.brand,.heading,.sub,.section-line,.primary{grid-column:1/-1}.eyebrow{grid-column:1/-1}.main{height:65vh;min-height:460px}.legend{display:none}.topbar{left:16px;right:16px;top:16px}.bottom{left:16px;right:16px;bottom:15px}.stats{gap:14px;padding:11px}.stat strong{font-size:16px}.help{display:none}}@media(max-width:460px){.sidebar{grid-template-columns:1fr}.main{height:62vh}.glass{padding:4px;gap:1px}.viewbtn{padding:7px;font-size:10px}.title2{font-size:17px}.stats{gap:12px}}
+</style>
+</head>
+<body><div id="app"><aside class="sidebar"><div class="brand"><div class="brandmark">⌂</div><div><strong>Habitat Lab</strong><small>PROCEDURAL ARCHITECTURE</small></div></div><h1 class="heading">Design your space.</h1><p class="sub">Choose your layout, finish and furniture. Generate a brand-new 3D home in one click.</p>
+<div class="eyebrow">01 / Layout</div>
+<div class="field"><div class="rowlabel"><label for="size">Footprint</label><span class="value" id="sizeV">12 × 10 m</span></div><input type="range" id="size" min="8" max="20" step="2" value="12"/></div>
+<div class="field"><div class="rowlabel"><label for="stories">Number of floors</label><span class="value" id="storiesV">2</span></div><input type="range" id="stories" min="1" max="4" value="2" step="1"/></div>
+<div class="field"><div class="rowlabel"><label for="roomCount">Rooms per floor</label><span class="value" id="roomsV">5</span></div><input type="range" id="roomCount" min="2" max="9" value="5"/></div>
+<div class="field"><div class="rowlabel"><label for="seed">Layout seed</label><span class="value" id="seedV">1284</span></div><input type="range" id="seed" min="1" max="9999" value="1284"/></div>
+<div class="field"><div class="rowlabel">Floor layout</div><div class="chips" id="layoutChips"><button class="chip active" data-layout="balanced">Balanced</button><button class="chip" data-layout="open">Open-plan</button><button class="chip" data-layout="cozy">Cozy</button></div></div>
+<div class="section-line"></div><div class="eyebrow">02 / Appearance</div>
+<div class="field"><div class="rowlabel"><label for="style">Interior style</label></div><select id="style"><option value="modern">Modern minimalist</option><option value="scandi">Scandinavian</option><option value="warm">Warm contemporary</option><option value="industrial">Industrial loft</option></select></div>
+<div class="field"><div class="rowlabel"><label for="floor">Floor finish</label></div><select id="floor"><option value="wood">Natural oak</option><option value="dark">Smoked walnut</option><option value="concrete">Polished concrete</option><option value="tile">Pale stone tile</option></select></div>
+<div class="section-line"></div><div class="eyebrow">03 / Interior</div><div class="checks"><label class="check"><input type="checkbox" id="furniture" checked/> Generate furniture</label><label class="check"><input type="checkbox" id="plants" checked/> Add indoor plants</label><label class="check"><input type="checkbox" id="decor" checked/> Add rugs & decorations</label><label class="check"><input type="checkbox" id="windows" checked/> Add exterior windows</label><label class="check"><input type="checkbox" id="walls" checked/> Show interior walls</label><label class="check"><input type="checkbox" id="doors" checked/> Add working doors</label><label class="check"><input type="checkbox" id="stairs" checked/> Add staircases</label></div>
+<button class="primary" id="generate">✦ Generate house</button><div style="display:flex;gap:9px;margin-top:9px"><button class="secondary" id="randomize" style="flex:1">↻ Randomize seed</button><button class="secondary" id="screenshot" style="flex:1">↓ Save image</button></div><p style="font-size:10px;color:#77899a;line-height:1.55;margin-top:17px">Concept-level procedural model, not an engineering or construction plan.</p></aside>
+<main class="main"><canvas id="view"></canvas><div class="topbar"><div><div class="title2">Your generated home</div><div class="meta" id="description">5 rooms · 120 m² · Modern minimalist</div></div><div class="glass"><select id="floorView" aria-label="Visible floor" style="background:#202b38;color:#edf6f4;border:1px solid #536575;border-radius:7px;padding:6px 8px"><option value="all">All floors</option></select><button class="viewbtn active" id="iso">3D view</button><button class="viewbtn" id="top">Floor plan</button><button class="viewbtn" id="spin">Auto-rotate</button></div></div><div class="legend"><div><span class="dot" style="background:#ddb57e"></span>Living / dining</div><div><span class="dot" style="background:#9bbab2"></span>Bedroom</div><div><span class="dot" style="background:#c2b2d1"></span>Kitchen</div><div><span class="dot" style="background:#91b6d4"></span>Bathroom</div><div><span class="dot" style="background:#cfaf9b"></span>Other</div></div><div class="bottom"><div class="stats"><div class="stat"><span>Total area</span><strong id="areaStat">120 m²</strong></div><div class="stat"><span>Rooms</span><strong id="roomsStat">5</strong></div><div class="stat"><span>Bedrooms</span><strong id="bedsStat">2</strong></div></div><div class="help">Drag to orbit · Scroll to zoom<br/>Right-click to pan</div></div><div id="toast">House generated</div></main></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const $=id=>document.getElementById(id), canvas=$('view');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.7;
+const scene=new THREE.Scene();scene.background=new THREE.Color('#19232e');const camera=new THREE.PerspectiveCamera(43,1,.1,200);camera.position.set(17,20,21);const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.08;controls.minDistance=8;controls.maxDistance=65;controls.maxPolarAngle=Math.PI/2.03;controls.target.set(0,0,0);
+scene.add(new THREE.HemisphereLight(0xd7ebff,0x6d6256,2.7));const sun=new THREE.DirectionalLight(0xffedce,3);sun.position.set(-12,22,13);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.bias=-.0002;scene.add(sun);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(150,150),new THREE.MeshStandardMaterial({color:'#263540',roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.12;ground.receiveShadow=true;scene.add(ground);const grid=new THREE.GridHelper(100,100,0x40505d,0x34414d);grid.position.y=-.105;grid.material.opacity=.22;grid.material.transparent=true;scene.add(grid);
+let house=new THREE.Group();scene.add(house);let chosenLayout='balanced',roomData=[],spin=false,currentW=12,currentD=10,levelGroups=[],activeDoors=[],storeys=2;const LEVEL_H=2.85;
+const styles={modern:{wall:'#f4f0e8',trim:'#d2d6d2',wood:'#b99163',metal:'#3c454b',upholstery:'#b9d0c4',accent:'#a8b7d0'},scandi:{wall:'#f8f6ef',trim:'#e2ded6',wood:'#deb987',metal:'#75867b',upholstery:'#dfbdaa',accent:'#91b5a9'},warm:{wall:'#eee0d1',trim:'#cbb5a0',wood:'#a6744f',metal:'#5f4b42',upholstery:'#cda77f',accent:'#b7a0a8'},industrial:{wall:'#bdbbb3',trim:'#8d8b87',wood:'#81664f',metal:'#313943',upholstery:'#958d80',accent:'#b58160'}};
+function mat(color,roughness=.84){return new THREE.MeshStandardMaterial({color,roughness,metalness:0})}function box(parent,w,h,d,color,x,y,z){let o=new THREE.Mesh(new THREE.BoxGeometry(Math.max(.015,w),Math.max(.015,h),Math.max(.015,d)),typeof color==='string'?mat(color):color);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}function cyl(parent,r,h,color,x,y,z){let o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,12),mat(color));o.position.set(x,y,z);o.castShadow=true;parent.add(o);return o}
+function rngFor(seed){let s=seed>>>0;return()=>{s=(Math.imul(1664525,s)+1013904223)>>>0;return s/4294967296}}function rand(rng,a,b){return a+(b-a)*rng()}
+function roomPartitions(W,D,count,rng){let a=[{x:-W/2,z:-D/2,w:W,d:D}];while(a.length<count){let eligible=a.map((r,i)=>({...r,i})).filter(r=>r.w>3.1||r.d>3.1).sort((a,b)=>b.w*b.d-a.w*a.d);if(!eligible.length)break;let q=eligible[0],axis=q.w/q.d>(chosenLayout==='cozy'?.85:1.22)?'x':'z';if(axis==='x'&&q.w<3.1)axis='z';if(axis==='z'&&q.d<3.1)axis='x';let ratio=chosenLayout==='cozy'?rand(rng,.38,.62):rand(rng,.43,.57);let A={...q},B={...q};delete A.i;delete B.i;if(axis==='x'){A.w=q.w*ratio;B.w=q.w-A.w;B.x=q.x+A.w}else{A.d=q.d*ratio;B.d=q.d-A.d;B.z=q.z+A.d}a.splice(q.i,1,A,B)}return a}
+function typeRooms(rooms){let sorted=rooms.map((r,i)=>({i,area:r.w*r.d})).sort((a,b)=>b.area-a.area);let types=Array(rooms.length).fill('Office');let priorities=['Living','Bedroom','Kitchen','Bathroom','Bedroom','Dining','Bedroom','Study','Guest'];sorted.forEach((r,k)=>types[r.i]=priorities[k]||'Study');return types}
+function furniture(r,type,p,rng){if(!$('furniture').checked)return;const cx=r.x+r.w/2,cz=r.z+r.d/2,ww=r.w,dd=r.d;const can=ww>1.7&&dd>1.7; if(!can)return;const wood=p.wood,soft=p.upholstery,metal=p.metal;
+const rug=(w,d,col)=>{if($('decor').checked)box(house,w,.025,d,col,cx,.085,cz)};
+if(type==='Living'){rug(Math.min(ww*.76,3.3),Math.min(dd*.7,2.8),'#ddd0bf');box(house,Math.min(ww*.65,2.6),.42,.83,soft,cx,.43,cz+dd*.21);box(house,Math.min(ww*.65,2.6),.5,.17,soft,cx,.8,cz+dd*.21+.34);box(house,1.1,.31,.62,wood,cx,.26,cz-dd*.11);box(house,1.25,.13,.14,metal,cx,.75,cz-dd*.38);box(house,1.0,.72,.065,'#283544',cx,1.19,cz-dd*.38)}
+else if(type==='Bedroom'||type==='Guest'){rug(Math.min(ww*.75,2.8),Math.min(dd*.76,2.6),'#e3d4c9');let bw=Math.min(ww*.62,1.9),bd=Math.min(dd*.60,2.2);box(house,bw,.3,bd,wood,cx,.31,cz);box(house,bw*.94,.27,bd*.88,'#f2ede4',cx,.59,cz);box(house,bw,.72,.13,soft,cx,.73,cz-bd/2);box(house,bw*.4,.11,.33,'#ffffff',cx-bw*.23,.78,cz-bd*.27);box(house,bw*.4,.11,.33,'#ffffff',cx+bw*.23,.78,cz-bd*.27);box(house,Math.min(.72,ww*.22),1.65,.55,wood,r.x+.48,.91,r.z+dd-.45)}
+else if(type==='Kitchen'){let bw=Math.min(ww*.74,3),counterZ=r.z+.46;box(house,bw,.86,.63,wood,cx,.45,counterZ);box(house,bw,.075,.68,'#ecebe7',cx,.92,counterZ);box(house,.46,.014,.35,metal,cx-bw*.2,.965,counterZ);box(house,.48,.04,.38,'#5d6b70',cx+bw*.2,.965,counterZ);box(house,.67,1.84,.67,'#c6cbd0',r.x+.47,.96,r.z+dd-.5);if(dd>3)box(house,Math.min(ww*.49,1.65),.88,.85,wood,cx,.47,cz+.36)}
+else if(type==='Bathroom'){box(house,Math.min(ww*.4,1.35),.18,.72,'#f4f8f7',r.x+ww*.26,.23,r.z+.54);box(house,.65,.75,.52,wood,r.x+ww*.75,.4,r.z+.48);box(house,.45,.14,.38,'#fbfbfa',r.x+ww*.75,.82,r.z+.48);box(house,.54,.38,.68,'#f4f7f5',cx,.36,r.z+dd-.6);}
+else if(type==='Dining'){rug(Math.min(ww*.7,2.8),Math.min(dd*.7,2.6),'#dfd2c0');box(house,Math.min(ww*.52,1.65),.1,Math.min(dd*.4,1.25),wood,cx,.76,cz);for(let i of [-1,1]){box(house,.45,.45,.45,soft,cx+i*Math.min(ww*.34,1.05),.35,cz);box(house,.46,.69,.12,soft,cx+i*Math.min(ww*.34,1.05),.68,cz)}}
+else{rug(Math.min(ww*.7,2.6),Math.min(dd*.7,2.5),'#d8d9d2');box(house,Math.min(ww*.6,1.75),.08,.7,wood,cx,.75,cz-dd*.17);box(house,.12,.72,.12,metal,cx-.5,.4,cz-dd*.17);box(house,.12,.72,.12,metal,cx+.5,.4,cz-dd*.17);box(house,.57,.43,.55,soft,cx,.36,cz+dd*.20);box(house,.5,.53,.1,soft,cx,.67,cz+dd*.39)}
+if($('plants').checked&&ww>2.6&&dd>2.6){let px=r.x+ww*.87,pz=r.z+dd*.82;cyl(house,.18,.35,'#c8a18a',px,.21,pz);for(let k=0;k<6;k++){let angle=k*Math.PI/3,rad=.14;let leaf=new THREE.Mesh(new THREE.SphereGeometry(.21,7,5),mat(k%2?'#44745f':'#638c6a'));leaf.scale.set(.6,1.55,.7);leaf.position.set(px+Math.cos(angle)*rad,.67+(.1*(k%2)),pz+Math.sin(angle)*rad);house.add(leaf)}}
+}
+function addDoor(x,z,vertical,width,p,exterior=false){
+ if(!$('doors').checked)return;
+ const hinge=new THREE.Group();house.add(hinge);
+ // Door is held partly open so room-to-room passage remains visible from above.
+ hinge.position.set(x,z===null?0:.14,z===null?0:z);
+ // Fix horizontal wall orientation by rotating the complete hinged leaf.
+ if(vertical){hinge.position.set(x,.15,z-width/2);hinge.rotation.y=-.55;
+  box(hinge,.055,1.91,width*.94,exterior?'#86634a':p.wood,0,.96,width*.47);
+  const knob=box(hinge,.115,.065,.065,'#d4b676',0,1.03,width*.82);
+ }else{hinge.position.set(x-width/2,.15,z);hinge.rotation.y=-.55;
+  box(hinge,width*.94,1.91,.055,exterior?'#86634a':p.wood,width*.47,.96,0);
+  box(hinge,.065,.065,.115,'#d4b676',width*.82,1.03,0);
+ }
+ activeDoors.push(hinge);
+}
+function addStairs(W,D,p){
+ if(!$('stairs').checked || storeys<2)return;
+ // Compact staircase in the northwest corner, consistently aligned across stories.
+ const sx=-W/2+.30,sz=-D/2+.28,run=Math.min(2.8,D*.28),width=Math.min(1.05,W*.14),n=13;
+ for(let k=0;k<n;k++){
+   const depth=run/n,yy=(k+.5)*LEVEL_H/n;
+   box(house,width,.13,depth+.012,p.wood,sx+width/2,yy,sz+(k+.5)*depth);
+ }
+ // Handrail and supports make each staircase readable in 3D.
+ box(house,.055,LEVEL_H*.55,.055,p.metal,sx+width+.08,LEVEL_H*.31,sz+.12);
+ box(house,.055,LEVEL_H*.55,.055,p.metal,sx+width+.08,LEVEL_H*.74,sz+run-.12);
+ const rail=box(house,.055,.07,Math.hypot(run,LEVEL_H),p.metal,sx+width+.08,LEVEL_H*.56,sz+run/2);
+ rail.rotation.x=Math.atan2(LEVEL_H,run);
+}
+function wall(x1,z1,x2,z2,clr,height=2.55,thick=.13){const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);let b=box(house,len,height,thick,clr,(x1+x2)/2,height/2+.11,(z1+z2)/2);b.rotation.y=-Math.atan2(dz,dx);return b}
+function makeWalls(rooms,W,D,p){const wallHeight=2.35, ext='#dcdcd6';// exterior walls: low enough for an open dollhouse view
+for(let side of ['north','south']){let z=side==='north'?-D/2:D/2;let sections=4,sw=W/sections;for(let i=0;i<sections;i++){let x=-W/2+i*sw;if(side==='south'&&i===1){let dw=Math.min(1.05,sw*.55),gap=(sw-dw)/2;wall(x,z,x+gap,z,ext,2.3,.17);wall(x+gap+dw,z,x+sw,z,ext,2.3,.17);box(house,dw,.25,.17,ext,x+sw/2,2.18,z);continue}if($('windows').checked){wall(x,z,x+sw*.23,z,ext,1.72,.17);wall(x+sw*.77,z,x+sw,z,ext,1.72,.17);box(house,sw*.54,.7,.045,'#a8d3da',x+sw*.5,1.2,z);box(house,sw*.57,.08,.13,p.trim,x+sw*.5,.8,z)}else wall(x,z,x+sw,z,ext,1.12,.17)}}for(let side of ['west','east']){let x=side==='west'?-W/2:W/2;for(let i=0;i<3;i++){let z=-D/2+i*D/3;wall(x,z,x,z+D/3,ext,1.12,.16)}}if(!$('walls').checked)return;
+const seen=new Set();rooms.forEach((a,i)=>rooms.slice(i+1).forEach((b,j)=>{let x,z,len,vertical=false;const eps=.02;if(Math.abs(a.x+a.w-b.x)<eps||Math.abs(b.x+b.w-a.x)<eps){x=Math.abs(a.x+a.w-b.x)<eps?a.x+a.w:b.x+b.w;let from=Math.max(a.z,b.z),to=Math.min(a.z+a.d,b.z+b.d);if(to-from>1.0){z=from;len=to-from;vertical=true}}else if(Math.abs(a.z+a.d-b.z)<eps||Math.abs(b.z+b.d-a.z)<eps){z=Math.abs(a.z+a.d-b.z)<eps?a.z+a.d:b.z+b.d;let from=Math.max(a.x,b.x),to=Math.min(a.x+a.w,b.x+b.w);if(to-from>1){x=from;len=to-from}}if(!len)return;if(chosenLayout==='open' && (i+j)%3===0)return;const key=[x,z,len,vertical].join(',');if(seen.has(key))return;seen.add(key);let door=Math.min(1.08,len*.4),left=(len-door)/2;if(vertical){wall(x,z,x,z+left,p.wall,wallHeight);wall(x,z+left+door,x,z+len,p.wall,wallHeight);box(house,.075,.095,door,p.trim,x,2.13,z+left+door/2);addDoor(x,z+left+door/2,true,door,p)}else{wall(x,z,x+left,z,p.wall,wallHeight);wall(x+left+door,z,x+len,z,p.wall,wallHeight);box(house,door,.095,.075,p.trim,x+left+door/2,2.13,z);addDoor(x+left+door/2,z,false,door,p)}}))}
+function setVisibleFloor(){
+ const v=$('floorView').value;
+ levelGroups.forEach((g,i)=>g.visible=v==='all'||Number(v)===i);
+ const centerY=v==='all'?(storeys-1)*LEVEL_H/2:Number(v)*LEVEL_H;
+ controls.target.set(0,centerY,0);
+ controls.update();
+}
+function generate(){
+ house.clear();levelGroups=[];activeDoors=[];
+ const root=house;
+ let W=+$('size').value,D=Math.max(7,W-2),count=+$('roomCount').value,seed=+$('seed').value;
+ storeys=+$('stories').value;currentW=W;currentD=D;
+ const p=styles[$('style').value],floorColors={wood:'#d2b28b',dark:'#7a5c46',concrete:'#aeb5b3',tile:'#d9d5cc'};
+ const tint={Living:'#ddb57e',Bedroom:'#9bbab2',Kitchen:'#c2b2d1',Bathroom:'#91b6d4',Dining:'#ddb57e',Office:'#cfaf9b',Guest:'#9bbab2',Study:'#cfaf9b'};
+ let totalRooms=0,totalBeds=0;
+ for(let level=0;level<storeys;level++){
+  const group=new THREE.Group();group.position.y=level*LEVEL_H;root.add(group);levelGroups.push(group);house=group;
+  const rng=rngFor(seed+level*7919);
+  // Floors above ground have a corner opening for staircase access.
+  const hole=$('stairs').checked&&storeys>1&&level>0;
+  if(hole){
+   let hw=Math.min(1.75,W*.22),hd=Math.min(3.25,D*.35);
+   box(house,W-hw,.22,D,'#ede6d9',hw/2,-.02,0);
+   box(house,hw,.22,D-hd,'#ede6d9',-W/2+hw/2,-.02,hd/2);
+  }else box(house,W,.22,D,'#ede6d9',0,-.02,0);
+  if(level===0)box(house,W+.28,.12,D+.28,'#67716d',0,-.18,0);
+  roomData=roomPartitions(W,D,count,rng);
+  let names=typeRooms(roomData);
+  // Upper levels emphasize bedrooms instead of repeating a kitchen on every floor.
+  if(level>0)names=names.map(t=>t==='Kitchen'?'Bedroom':t==='Dining'?'Study':t);
+  roomData.forEach((r,i)=>{
+   const hw=Math.min(1.75,W*.22),hd=Math.min(3.25,D*.35);
+   const hx=-W/2+hw,hz=-D/2+hd;
+   const intersects=hole&&r.x<hx&&r.z<hz;
+   const tiles=intersects ? [
+    {x:Math.max(r.x,hx),z:r.z,w:Math.max(0,r.x+r.w-Math.max(r.x,hx)),d:r.d},
+    {x:r.x,z:Math.max(r.z,hz),w:Math.max(0,Math.min(r.x+r.w,hx)-r.x),d:Math.max(0,r.z+r.d-Math.max(r.z,hz))}
+   ] : [r];
+   tiles.forEach(t=>{if(t.w<.08||t.d<.08)return;
+    let floor=box(house,t.w-.045,.017,t.d-.045,floorColors[$('floor').value],t.x+t.w/2,.103,t.z+t.d/2);floor.material.roughness=.95;
+    let trim=box(house,t.w-.1,.012,t.d-.1,tint[names[i]],t.x+t.w/2,.116,t.z+t.d/2);trim.material.transparent=true;trim.material.opacity=.11;
+   });
+   if(!intersects)furniture(r,names[i],p,rng);
+  });
+  makeWalls(roomData,W,D,p);
+  if(level<storeys-1)addStairs(W,D,p);
+  // A simple entrance door in the outside front wall.
+  addDoor(-W/2+W/4+W/8,D/2,false,Math.min(1.05,W/4*.55),p,true);
+  totalRooms+=roomData.length;totalBeds+=names.filter(n=>n==='Bedroom'||n==='Guest').length;
+ }
+ house=root;
+ const selector=$('floorView'),previous=selector.value;
+ selector.innerHTML='<option value="all">All floors</option>'+levelGroups.map((_,i)=>`<option value="${i}">Floor ${i+1}</option>`).join('');
+ selector.value=previous==='all'?'all':Math.min(Number(previous)||0,storeys-1).toString();
+ $('areaStat').textContent=W*D*storeys+' m²';$('roomsStat').textContent=totalRooms;$('bedsStat').textContent=totalBeds;
+ $('description').textContent=`${storeys} floor${storeys===1?'':'s'} · ${totalRooms} rooms · ${W*D*storeys} m²`;
+ setVisibleFloor();
+ if($('top').classList.contains('active'))camera.position.set(0,Math.max(W,D)*2.3+storeys*LEVEL_H,.02);
+ else camera.position.set(W*1.25,W*1.12+storeys*LEVEL_H,D*1.7);
+ controls.update();toast('House generated · '+storeys+' floor(s) · seed '+seed);
+}
+let toastTimeout;function toast(text){$('toast').textContent=text;$('toast').style.opacity=1;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').style.opacity=0,2200)}
+$('floorView').onchange=setVisibleFloor;$('stories').oninput=e=>$('storiesV').textContent=e.target.value;$('size').oninput=e=>$('sizeV').textContent=`${e.target.value} × ${Math.max(7,+e.target.value-2)} m`;$('roomCount').oninput=e=>$('roomsV').textContent=e.target.value;$('seed').oninput=e=>$('seedV').textContent=e.target.value;document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{chosenLayout=b.dataset.layout;document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c===b))});$('generate').onclick=generate;$('randomize').onclick=()=>{let v=Math.floor(Math.random()*9999)+1;$('seed').value=v;$('seedV').textContent=v;generate()};$('iso').onclick=()=>{camera.up.set(0,1,0);camera.position.set(currentW*1.15,currentW*1.36,currentD*1.45);controls.target.set(0,($('floorView').value==='all'?(storeys-1)/2:+$('floorView').value)*LEVEL_H,0);controls.update();$('iso').classList.add('active');$('top').classList.remove('active')};$('top').onclick=()=>{camera.up.set(0,0,-1);camera.position.set(0,Math.max(currentW,currentD)*1.75,.001);controls.target.set(0,($('floorView').value==='all'?(storeys-1)/2:+$('floorView').value)*LEVEL_H,0);controls.update();$('top').classList.add('active');$('iso').classList.remove('active')};$('spin').onclick=()=>{spin=!spin;controls.autoRotate=spin;controls.autoRotateSpeed=1.4;$('spin').classList.toggle('active',spin)};$('screenshot').onclick=()=>{renderer.render(scene,camera);const a=document.createElement('a');a.download='habitat-lab-house.png';a.href=canvas.toDataURL('image/png');a.click();toast('Image saved')};function resize(){const r=canvas.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(canvas);resize();generate();function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+</script></body></html>
