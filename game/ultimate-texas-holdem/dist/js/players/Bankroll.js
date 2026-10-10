@@ -15,7 +15,7 @@
  * - constructor(initialAmount)
  * - currentBalance - Current bankroll amount
  * - sessionStart - Session start bankroll
- * - totalWagered - Total amount wagered this session
+ * - totalBeted - Total amount beted this session
  * - totalWon - Total amount won this session
  * - totalLost - Total amount lost this session
  * - canBet(amount) - Check if player can afford a bet
@@ -34,7 +34,7 @@ export class Bankroll {
   #id;
   #currentBalance;
   #sessionStart;
-  #totalWagered;
+  #totalBeted;
   #totalWon;
   #totalLost;
   #peakBankroll;
@@ -48,7 +48,7 @@ export class Bankroll {
     this.#id = ++bankrollIdCounter;
     this.#currentBalance = Math.max(0, initialAmount);
     this.#sessionStart = this.#currentBalance;
-    this.#totalWagered = 0;
+    this.#totalBeted = 0;
     this.#totalWon = 0;
     this.#totalLost = 0;
     this.#peakBankroll = this.#currentBalance;
@@ -76,10 +76,10 @@ export class Bankroll {
   }
 
   /**
-   * Get the total amount wagered this session.
+   * Get the total amount beted this session.
    */
-  get totalWagered() {
-    return this.#totalWagered;
+  get totalBeted() {
+    return this.#totalBeted;
   }
 
   /**
@@ -111,11 +111,11 @@ export class Bankroll {
   }
 
   /**
-   * Calculate win rate as a percentage of wagered amount.
+   * Calculate win rate as a percentage of beted amount.
    */
   get winRate() {
-    if (this.#totalWagered === 0) return 0;
-    return (this.netProfit / this.#totalWagered) * 100;
+    if (this.#totalBeted === 0) return 0;
+    return (this.netProfit / this.#totalBeted) * 100;
   }
 
   /**
@@ -152,8 +152,8 @@ export class Bankroll {
 
   /**
    * Deduct a bet amount from the bankroll.
-   * @param {number} amount - Amount to wager.
-   * @returns {boolean} Whether the wager was successful.
+   * @param {number} amount - Amount to bet.
+   * @returns {boolean} Whether the bet was successful.
    */
   placeBet(amount) {
     if (!this.canBet(amount)) {
@@ -162,7 +162,7 @@ export class Bankroll {
     }
 
     this.#currentBalance -= amount;
-    this.#totalWagered += amount;
+    this.#totalBeted += amount;
 
     this.#recordChange(this.#currentBalance, 'bet', amount);
 
@@ -228,11 +228,11 @@ export class Bankroll {
 
   /**
    * Process a complete bet outcome.
-   * @param {number} wageredAmount - Original bet amount.
+   * @param {number} betedAmount - Original bet amount.
    * @param {number} returnedAmount - Amount returned to player (including winnings).
    */
-  processOutcome(wageredAmount, returnedAmount) {
-    const netAmount = returnedAmount - wageredAmount;
+  processOutcome(betedAmount, returnedAmount) {
+    const netAmount = returnedAmount - betedAmount;
 
     if (netAmount > 0) {
       this.receiveWin(netAmount);
@@ -291,7 +291,7 @@ export class Bankroll {
    */
   resetSession() {
     this.#sessionStart = this.#currentBalance;
-    this.#totalWagered = 0;
+    this.#totalBeted = 0;
     this.#totalWon = 0;
     this.#totalLost = 0;
     this.#peakBankroll = this.#currentBalance;
@@ -343,7 +343,7 @@ export class Bankroll {
     return {
       currentBalance: this.#currentBalance,
       sessionStart: this.#sessionStart,
-      totalWagered: this.#totalWagered,
+      totalBeted: this.#totalBeted,
       totalWon: this.#totalWon,
       totalLost: this.#totalLost,
       peakBankroll: this.#peakBankroll,

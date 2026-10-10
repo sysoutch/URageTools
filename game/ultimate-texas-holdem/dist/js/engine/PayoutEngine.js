@@ -155,7 +155,7 @@ export class PayoutEngine {
     }
 
     const blindBet = options.blindBet || 0;
-    const totalWagered = anteBet + blindBet + playBet + tripsBet;
+    const totalBeted = anteBet + blindBet + playBet + tripsBet;
     const result = {
       antePayout: 0,
       blindPayout: 0,
@@ -163,7 +163,7 @@ export class PayoutEngine {
       tripsPayout: 0,
       straightBonus: 0,
       totalWon: 0,
-      netProfit: -totalWagered,
+      netProfit: -totalBeted,
       breakdown: null,
       details: [],
     };
@@ -274,7 +274,7 @@ export class PayoutEngine {
 
     // Calculate totals
     result.totalWon = result.antePayout + result.blindPayout + result.playPayout + result.tripsPayout + result.straightBonus;
-    result.netProfit = result.totalWon - totalWagered;
+    result.netProfit = result.totalWon - totalBeted;
     result.breakdown = this.#buildBreakdown({
       anteBet,
       blindBet,
@@ -309,7 +309,7 @@ export class PayoutEngine {
   }
 
   /**
-   * Build a UI-friendly breakdown for each wager bucket.
+   * Build a UI-friendly breakdown for each bet bucket.
    * Profit values exclude returned stakes so the numbers add up to net profit cleanly.
    * @param {Object} payoutData - Raw settled bets and returns.
    * @returns {Array<Object>} Ordered breakdown rows.
@@ -337,31 +337,31 @@ export class PayoutEngine {
   }
 
   /**
-   * Create a settlement row for a standard wager.
+   * Create a settlement row for a standard bet.
    * @param {string} label - Display label.
-   * @param {number} wager - Original wager.
+   * @param {number} bet - Original bet.
    * @param {number} totalReturn - Total amount returned including stake.
    * @returns {Object|null}
    */
-  #createBreakdownEntry(label, wager, totalReturn) {
-    if (!wager && !totalReturn) {
+  #createBreakdownEntry(label, bet, totalReturn) {
+    if (!bet && !totalReturn) {
       return null;
     }
 
-    const profit = totalReturn - wager;
+    const profit = totalReturn - bet;
     let multiplierLabel = 'Lose';
 
-    if (wager > 0) {
-      if (profit === 0 && totalReturn === wager) {
+    if (bet > 0) {
+      if (profit === 0 && totalReturn === bet) {
         multiplierLabel = 'Push';
       } else if (profit > 0) {
-        multiplierLabel = `${this.#formatMultiplier(profit / wager)}x`;
+        multiplierLabel = `${this.#formatMultiplier(profit / bet)}x`;
       }
     }
 
     return {
       label,
-      wager,
+      bet,
       totalReturn,
       profit,
       multiplierLabel,
@@ -381,7 +381,7 @@ export class PayoutEngine {
 
     return {
       label,
-      wager: 0,
+      bet: 0,
       totalReturn: amount,
       profit: amount,
       multiplierLabel: 'Bonus',
@@ -491,9 +491,9 @@ export class PayoutEngine {
   }
 
   /**
-   * Calculate trips side bet return including the original wager.
+   * Calculate trips side bet return including the original bet.
    * @param {number} handRank - The player's hand rank.
-   * @param {number} tripsBet - The trips wager amount.
+   * @param {number} tripsBet - The trips bet amount.
    * @returns {number} Total trips return including stake.
    */
   calculateTripsPayout(handRank, tripsBet) {
@@ -520,7 +520,7 @@ export class PayoutEngine {
   /**
    * Calculate the official blind payout including pushes and returned stake.
    * @param {number} handRank - Final player hand rank.
-   * @param {number} blindBet - Blind wager amount.
+   * @param {number} blindBet - Blind bet amount.
    * @param {number} comparison - Hand comparison result.
    * @returns {number} Total blind return including stake where applicable.
    */

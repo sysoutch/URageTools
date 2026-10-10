@@ -312,7 +312,7 @@ export const STATISTICS_DEFAULTS = {
   pushes: 0,
   biggestWin: 0,
   biggestLoss: 0,
-  totalWagered: 0,
+  totalBeted: 0,
   totalWon: 0,
   totalLost: 0,
   biggestBankroll: 1000,

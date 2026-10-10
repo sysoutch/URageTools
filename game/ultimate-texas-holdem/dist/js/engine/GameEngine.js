@@ -776,7 +776,7 @@ export class GameEngine {
   }
 
   /**
-   * Set the opening wagers while respecting the selected rules preset.
+   * Set the opening bets while respecting the selected rules preset.
    * @param {number} anteAmount - Desired ante amount.
    * @param {boolean} usesOfficialRules - Whether blind must mirror ante.
    * @returns {boolean}
@@ -804,7 +804,7 @@ export class GameEngine {
   }
 
   /**
-   * Max legal trips wager after reserving the opening wager structure.
+   * Max legal trips bet after reserving the opening bet structure.
    * @param {number} anteAmount - Current ante amount.
    * @param {number} bankroll - Available bankroll.
    * @param {boolean} usesOfficialRules - Whether blind mirrors ante.
@@ -831,8 +831,8 @@ export class GameEngine {
   }
 
   /**
-   * Reject unaffordable Play wagers instead of silently turning them into partial all-in bets.
-   * @param {number} amount - Required Play wager.
+   * Reject unaffordable Play bets instead of silently turning them into partial all-in bets.
+   * @param {number} amount - Required Play bet.
    * @returns {boolean}
    */
   #canAffordPlayBet(amount) {

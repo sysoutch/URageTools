@@ -18,7 +18,7 @@
  * - hand            - Current hand cards
  * - anteBet         - Current ante bet amount
  * - playBet         - Current play bet amount
- * - totalBet        - Total amount wagered in current round
+ * - totalBet        - Total amount beted in current round
  * - action          - Last action taken
  * - isFolded        - Whether player has folded
  * - isActive        - Whether player is still in the hand

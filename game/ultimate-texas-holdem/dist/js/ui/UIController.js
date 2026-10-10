@@ -208,7 +208,7 @@ export class UIController {
       this.#updateButtonStates();
     });
     bus.on(EVENTS.BET_INVALID, (data) => {
-      window.alert(data?.message || 'This wager is not available with the current bankroll.');
+      window.alert(data?.message || 'This bet is not available with the current bankroll.');
       this.#updateButtonStates();
     });
 
@@ -1125,7 +1125,7 @@ export class UIController {
   }
 
   /**
-   * Max legal Trips amount after reserving the current opening wager structure.
+   * Max legal Trips amount after reserving the current opening bet structure.
    * @param {Object} gameState - State snapshot.
    * @returns {number}
    */
@@ -1137,7 +1137,7 @@ export class UIController {
   }
 
   /**
-   * Cash not already committed to Ante, Blind, Trips, or an earlier Play wager.
+   * Cash not already committed to Ante, Blind, Trips, or an earlier Play bet.
    * @param {Object} gameState - State snapshot.
    * @returns {number}
    */
@@ -1154,7 +1154,7 @@ export class UIController {
 
   /**
    * Status text for the opening round under the current rules preset.
-   * @param {boolean} hasRepeatBet - Whether a carry-forward wager is loaded.
+   * @param {boolean} hasRepeatBet - Whether a carry-forward bet is loaded.
    * @returns {string}
    */
   #getOpeningStatusMessage(hasRepeatBet) {
@@ -1537,7 +1537,7 @@ export class UIController {
           </label>
           <p class="settings-modal__hint">The winning-Ante option returns the Ante plus a 1:1 win when your hand beats the dealer. Trips still settles independently.</p>
           <label class="settings-modal__field">
-            <span>Before-flop Play wager</span>
+            <span>Before-flop Play bet</span>
             <select name="preflopRaiseMode">
               <option value="THREE_ONLY" ${settings.preflopRaiseMode === 'THREE_ONLY' ? 'selected' : ''}>3x only</option>
               <option value="THREE_OR_FOUR" ${settings.preflopRaiseMode !== 'THREE_ONLY' ? 'selected' : ''}>3x or 4x</option>

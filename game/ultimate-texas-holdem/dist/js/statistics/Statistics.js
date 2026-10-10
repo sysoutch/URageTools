@@ -125,8 +125,8 @@ export class Statistics {
       this.#stats.pushes++;
     }
 
-    // Update total amount wagered
-    this.#stats.totalWagered += anteBet + playBet;
+    // Update total amount beted
+    this.#stats.totalBeted += anteBet + playBet;
 
     // Update biggest win/loss
     if (won && amount > this.#stats.biggestWin) {

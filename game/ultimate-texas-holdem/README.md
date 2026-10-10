@@ -10,8 +10,8 @@ Open `index.html` through the dashboard. The root entry redirects to `dist/index
 
 - A pre-game saloon map gates progressively higher-stakes tables by bankroll and offers valid quick Ante choices. Unlock requirements are not entry fees.
 - Opening play uses Ante plus a matching Blind; Trips is optional.
-- The Play wager is 3x or 4x before the flop, 2x after the flop, or 1x after the river. Settings can restrict the preflop choice to 3x only.
-- Every wager is checked against the remaining bankroll. An unaffordable Play wager is rejected rather than silently reduced to an illegal partial wager.
+- The Play bet is 3x or 4x before the flop, 2x after the flop, or 1x after the river. Settings can restrict the preflop choice to 3x only.
+- Every bet is checked against the remaining bankroll. An unaffordable Play bet is rejected rather than silently reduced to an illegal partial bet.
 - Dealer qualification is enabled by default and requires at least a pair of fours.
 - Qualification uses the dealer's best five-card result across both dealer cards and all five community cards. A qualifying pair may therefore be entirely on the board.
 - When the dealer does not qualify, Ante, Blind, and Play are returned. Trips still settles independently from the player's best seven-card hand.
@@ -21,7 +21,7 @@ Open `index.html` through the dashboard. The root entry redirects to `dist/index
 
 ## Mobile layout
 
-At phone widths, the table prioritizes the current decision rather than preserving desktop casino-table geometry. The HUD becomes a compact two-card summary, opening wagers use a two-column touch layout, inactive table regions are hidden until cards are dealt, cards scale to fit five community slots without horizontal scrolling, and the settings dialog uses the full viewport with a reachable footer.
+At phone widths, the table prioritizes the current decision rather than preserving desktop casino-table geometry. The HUD becomes a compact two-card summary, opening bets use a two-column touch layout, inactive table regions are hidden until cards are dealt, cards scale to fit five community slots without horizontal scrolling, and the settings dialog uses the full viewport with a reachable footer.
 
 ## Static layout
 

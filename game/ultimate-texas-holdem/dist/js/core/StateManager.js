@@ -32,7 +32,7 @@ const initialState = {
   // Player information
   bankroll: 1000,
   currentBet: 0,
-  totalWagered: 0,
+  totalBeted: 0,
   totalWon: 0,
 
   // Ultimate TH specific bets
