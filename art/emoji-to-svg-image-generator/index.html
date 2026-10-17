@@ -53,7 +53,7 @@
 <meta name="twitter:description" content="Render an emoji locally and export it as an SVG or transparent PNG, with optional SVG tint and stroke settings.">
 <meta name="twitter:image" content="https://urage.net/tools/shared/tool-cover.png">
 </head>
-<body>
+<body data-dashboard-theme="fire">
 <header>
   <h1>Emoji to <span>SVG / PNG</span> Converter</h1>
   <p class="sub">Type or pick an emoji, render it on canvas, and export as SVG (with optional tint &amp; stroke) or PNG.</p>
@@ -262,5 +262,8 @@ $("emojiInput").addEventListener("input", update);
 
 update();
 </script>
+<script src="../../shared/dashboard-tool-bridge.js"></script>
+<script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+<script src="../../shared/dashboard-generic-input-receiver.js"></script>
 </body>
 </html>
