@@ -270,6 +270,15 @@
       "thumbnail": "/audio/beat-maker/thumbnail.png"
     },
     {
+      "id": "audio__cat-voice-synth",
+      "category": "audio",
+      "slug": "cat-voice-synth",
+      "title": "Meow Machine",
+      "description": "Type what a cat should say and synthesize realistic meows, purrs, trills, chirps, hisses and growls in your browser.",
+      "href": "/audio/cat-voice-synth/",
+      "thumbnail": "/audio/cat-voice-synth/thumbnail.png"
+    },
+    {
       "id": "audio__music-visualizer",
       "category": "audio",
       "slug": "music-visualizer",

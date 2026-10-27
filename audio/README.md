@@ -6,6 +6,7 @@ A collection of tools for audio creation, manipulation, and visualization.
 
 - **Music Visualizer**: Create visual representations of music
 - **SFX Generator**: Generate sound effects for games and multimedia
+- **Meow Machine**: Synthesize realistic cat meows, purrs, trills, chirps, hisses and growls from typed text
 
 ## Features
 
