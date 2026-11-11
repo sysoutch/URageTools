@@ -12,6 +12,10 @@ Dashboard tool for assembling image, GIF, and video pages into a themed flip-boo
 - Current Book Pages sidebar for renaming, reordering, inserting, and removing pages.
 - Canvas flip-book preview with closed-cover, open-spread, and sealed-book states.
 
+## Unity
+
+The same book can be used in Unity through the URage `InteractiveBook` package (`Assets/URage/InteractiveBook` in *Find the Sock*): **Export for Unity** (`U`) downloads the book as a `BookDefinition` JSON file. Put its page pictures in a `Resources` folder named `<Book>Pages` (the file names without their extension are the page images), drop the JSON into the project, and open the asset it creates in *Tools > URage > Interactive Book Creator*. Video and GIF pages export as text-only pages. The *Leather Album* look matches the Unity package's `Album` skin.
+
 ## Rendering Notes
 
 - Pages are prerendered by content key so changed or reordered pages do not reuse stale canvases.

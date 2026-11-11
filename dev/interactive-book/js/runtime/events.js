@@ -162,6 +162,7 @@ export function registerEventModule(app) {
         els.zoomResetButton?.addEventListener('click', app.resetZoom);
         els.fullscreenButton?.addEventListener('click', app.toggleFullscreen);
         els.exportBookButton?.addEventListener('click', app.exportBookAsImage);
+        els.exportUnityButton?.addEventListener('click', app.exportUnityJson);
         els.inspectBookButton?.addEventListener('click', () => app.toggleInspectMode());
         els.magnifierButton?.addEventListener('click', () => app.toggleMagnifierEnabled());
         els.pageContextMenu?.addEventListener('click', event => {
@@ -225,6 +226,9 @@ export function registerEventModule(app) {
                     break;
                 case 'f':
                     app.toggleFullscreen();
+                    break;
+                case 'u':
+                    app.exportUnityJson();
                     break;
                 case 'e':
                     app.exportBookAsImage();

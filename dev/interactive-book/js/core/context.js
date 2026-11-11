@@ -8,6 +8,7 @@ export function createInteractiveBookApp() {
         bookDescriptionInput: $('book-description-input'),
         addBookButton: $('add-book-button'),
         bookStyleSelect: $('book-style-select'),
+        exportUnityButton: $('export-unity-button'),
         fileUpload: $('file-upload'),
         contextFileUpload: $('context-file-upload'),
         mediaTray: $('floating-media-tray'),
@@ -89,6 +90,19 @@ export function createInteractiveBookApp() {
             pageShade: '#76b6cf',
             pageSurface: '#effcff',
             stageAccent: '#36c6ff'
+        },
+        album: {
+            coverBase: '#4a3728',
+            coverShadow: '#2a1d14',
+            coverHighlight: '#7a5a3f',
+            trim: '#d4af37',
+            trimDark: '#8a6a1e',
+            gem: '#e8c76a',
+            gemGlow: 'rgba(232,199,106,0.34)',
+            pageEdge: '#efe0bd',
+            pageShade: '#b89459',
+            pageSurface: '#fdfbf0',
+            stageAccent: '#d4af37'
         },
         royal: {
             coverBase: '#5a2446',

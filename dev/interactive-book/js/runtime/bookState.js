@@ -1139,6 +1139,49 @@ export function registerBookStateModule(app) {
         });
     }
 
+    function unityResourceName(value) {
+        return String(value || '').replace(/[^A-Za-z0-9]+/g, '').replace(/^\d+/, '') || 'Book';
+    }
+
+    function exportUnityJson() {
+        syncActiveBookFromState();
+        const book = getActiveBook();
+        if (!book) return setStatus('No book to export.');
+        const bookName = unityResourceName(book.title);
+        const folder = `${bookName}Pages`;
+        const skinName = { inferno: 'Inferno', tide: 'Tide', royal: 'Royal', album: 'Album' }[state.bookStyle] || 'Inferno';
+        const pages = (book.dynamicPages || []).map((page, index) => {
+            const fileName = getDisplayFileName(page.name || page.image, `page-${index + 1}`);
+            const stem = fileName.replace(/\.[^.]+$/, '');
+            return {
+                id: String(page.id || `page${index + 1}`),
+                image: page.mediaKind === 'video' || page.mediaKind === 'gif' ? '' : `${folder}/${stem}`,
+                text: String(page.text || '').trim()
+            };
+        });
+        const payload = {
+            $type: 'URage.InteractiveBook.BookDefinition',
+            $asset: `Assets/Resources/Content/${bookName}.asset`,
+            title: String(book.title || 'Untitled Book'),
+            description: String(book.description || ''),
+            endText: 'THE END',
+            style: skinName,
+            display: '2D',
+            textSize: Number(state.fontSize) || 22,
+            pageBackground: state.bgColor && state.bgColor !== '#fdfbf0' ? String(state.bgColor) : '',
+            textColour: '',
+            pages
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 4)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${bookName}.json`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        setStatus(`Exported ${bookName}.json for Unity. Put the page pictures in a Resources folder named "${folder}" (file names without extension), then open the JSON's asset in the Book Creator.`);
+    }
+
     async function exportBookAsImage() {
         const overlay = app.$('export-overlay');
         if (!overlay) return;
@@ -1340,6 +1383,7 @@ export function registerBookStateModule(app) {
         resetZoom,
         toggleFullscreen,
         exportBookAsImage,
+        exportUnityJson,
         initBook,
         hasLiveMedia
     });
