@@ -34,6 +34,8 @@ function scheduler() {
       ui.patternLabel.textContent = drawPattern;
       ui.lengthLabel.textContent = String(currentPattern().steps);
       if (state.activePattern === drawPattern) markPlayhead(drawStep); else renderLanes(drawStep);
+      // Each new bar: show what party mode plays in it (silenced hits, extra hits).
+      if (drawStep % 16 === 0) showArrangement(drawStep);
       deckStep(drawStep);
     }, delay);
     nextStep();
@@ -43,8 +45,9 @@ function scheduler() {
 
 function setPlayState(on) {
   state.isPlaying = on;
-  ui.playBtn.textContent = on ? '❚❚ Pause' : '▶ Play';
+  ui.playBtn.innerHTML = on ? icon('fa-pause') + '<span>Pause</span>' : icon('fa-play') + '<span>Play</span>';
   ui.led.classList.toggle('on', on);
+  if (!on) showArrangement(null);
   updateDeck();
 }
 

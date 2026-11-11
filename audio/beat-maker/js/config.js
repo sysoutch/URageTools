@@ -7,15 +7,18 @@ const STORAGE_KEY = 'mini-studio-offline-v3';
 const MEMORY_KEY = 'mini-studio-memory-v3';
 
 const laneMeta = [
-  { key: 'kick', label: 'Kick', icon: '🥁', hint: 'foundation', colorClass: 'kick' },
-  { key: 'snare', label: 'Snare', icon: '💥', hint: 'backbeat', colorClass: 'snare' },
-  { key: 'hats', label: 'Hi-Hat', icon: '✨', hint: 'rhythm sparkle', colorClass: 'hats' },
-  { key: 'clap', label: 'Clap', icon: '👏', hint: 'extra snap', colorClass: 'clap' },
-  { key: 'bass', label: 'Bass', icon: '🎸', hint: 'low groove', colorClass: 'bass' },
-  { key: 'chord', label: 'Chord', icon: '🎹', hint: 'harmony layer', colorClass: 'chord' },
-  { key: 'perc', label: 'Perc', icon: '🪘', hint: 'fill motion', colorClass: 'perc' },
-  { key: 'fx', label: 'FX', icon: '🌫️', hint: 'air & accents', colorClass: 'fx' }
+  { key: 'kick', label: 'Kick', icon: 'fa-drum', hint: 'foundation', colorClass: 'kick' },
+  { key: 'snare', label: 'Snare', icon: 'fa-bullseye', hint: 'backbeat', colorClass: 'snare' },
+  { key: 'hats', label: 'Hi-Hat', icon: 'fa-compact-disc', hint: 'rhythm sparkle', colorClass: 'hats' },
+  { key: 'clap', label: 'Clap', icon: 'fa-hand-paper', hint: 'extra snap', colorClass: 'clap' },
+  { key: 'bass', label: 'Bass', icon: 'fa-guitar', hint: 'low groove', colorClass: 'bass' },
+  { key: 'chord', label: 'Chord', icon: 'fa-music', hint: 'harmony layer', colorClass: 'chord' },
+  { key: 'perc', label: 'Perc', icon: 'fa-drum-steelpan', hint: 'fill motion', colorClass: 'perc' },
+  { key: 'fx', label: 'FX', icon: 'fa-wind', hint: 'air & accents', colorClass: 'fx' }
 ];
+
+// Font Awesome icon markup (shared/libs/fontawesome, works offline).
+const icon = (name) => '<i class="fas ' + name + '" aria-hidden="true"></i>';
 
 // Helper functions needed before PRESETS IIFE evaluation
 const makeSteps = (active = [], length = MAX_STEPS) => Array.from({ length }, (_, i) => active.includes(i));

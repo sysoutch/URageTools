@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <script src="../../shared/dashboard-theme.js"></script>
-  <link rel="stylesheet" href="/tools/shared/css/sidebar-scrollview.css">
+  <link rel="stylesheet" href="../../shared/css/sidebar-scrollview.css">
+  <link rel="stylesheet" href="../../shared/libs/fontawesome/css/all.min.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/responsive.css">
 <title>Beat Maker | URage Tools</title>
 <link rel="canonical" href="https://urage.net/tools/audio/beat-maker/">
@@ -31,378 +33,299 @@
     <!-- LEFT SIDEBAR -->
     <aside class="sidebar" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Sequencer Controls">
 
-      <section class="grid-2">
-        <div class="panel">
-          <div class="section-title">
-            <h2>Transport</h2>
-            <span>Space = play/pause</span>
-          </div>
+      <!-- TRANSPORT -->
+      <section class="panel side-block">
+        <header class="side-head">
+          <h2><i class="fas fa-play-circle" aria-hidden="true"></i>Transport</h2>
+          <span class="side-hint"><kbd>Space</kbd> play / pause</span>
+        </header>
 
-          <div class="button-row">
-            <button class="icon-btn primary" id="playBtn">▶ Play</button>
-            <button class="icon-btn" id="stopBtn">■ Stop</button>
-            <button class="icon-btn" id="clearBtn">✦ Clear</button>
-            <button class="icon-btn" id="randomBtn">⟲ Random</button>
-            <button class="icon-btn" id="autoRandomBtn">⟳ Auto Random</button>
-            <button class="icon-btn" id="duplicateBtn">⧉ Duplicate A→B</button>
-            <button class="icon-btn" id="chainBtn">⇄ Chain A+B</button>
-          </div>
-
-          <div class="mini-row" style="margin-top:12px; align-items:center;">
-            <div class="transport-led" id="led"></div>
-            <span class="dim">Pattern: <strong id="patternLabel">A</strong></span>
-            <span class="dim">Step: <strong id="stepLabel">1</strong></span>
-            <span class="dim">Length: <strong id="lengthLabel">16</strong></span>
-          </div>
+        <div class="transport-main">
+          <button class="icon-btn primary" id="playBtn" type="button"><i class="fas fa-play" aria-hidden="true"></i><span>Play</span></button>
+          <button class="icon-btn" id="stopBtn" type="button"><i class="fas fa-stop" aria-hidden="true"></i><span>Stop</span></button>
         </div>
 
-        <div class="panel">
-          <div class="section-title">
-            <h2>Groove</h2>
-            <span>Fine control</span>
-          </div>
+        <div class="transport-grid">
+          <button class="icon-btn" id="clearBtn" type="button" title="Clear every step (C)"><i class="fas fa-eraser" aria-hidden="true"></i><span>Clear</span></button>
+          <button class="icon-btn" id="randomBtn" type="button" title="Roll a new pattern (R)"><i class="fas fa-dice" aria-hidden="true"></i><span>Random</span></button>
+          <button class="icon-btn" id="autoRandomBtn" type="button" title="Keep evolving the pattern while it plays"><i class="fas fa-sync-alt" aria-hidden="true"></i><span>Auto random</span></button>
+          <button class="icon-btn" id="duplicateBtn" type="button" title="Copy pattern A into B"><i class="fas fa-copy" aria-hidden="true"></i><span>Copy A → B</span></button>
+          <button class="icon-btn wide" id="chainBtn" type="button" title="Play A and B one after the other"><i class="fas fa-link" aria-hidden="true"></i><span>Chain A + B</span></button>
+        </div>
 
-          <div class="stat-grid">
-            <div class="stat">
-              <label>Tempo</label>
-              <strong><span id="bpmValue">112</span> BPM</strong>
-              <input id="bpm" type="range" min="70" max="180" value="112" />
-            </div>
-
-            <div class="stat">
-              <label>Swing</label>
-              <strong><span id="swingValue">12</span>%</strong>
-              <input id="swing" type="range" min="0" max="45" value="12" />
-            </div>
-
-            <div class="stat">
-              <label>Master</label>
-              <strong><span id="volumeValue">80</span>%</strong>
-              <input id="volume" type="range" min="0" max="100" value="80" />
-            </div>
-
-            <div class="stat">
-              <label>Steps</label>
-              <strong><span id="stepsValue">16</span></strong>
-              <input id="steps" type="range" min="8" max="32" value="16" step="8" />
-            </div>
-          </div>
+        <div class="transport-status" aria-live="off">
+          <span class="transport-led" id="led" aria-hidden="true"></span>
+          <span class="status-chip">Pattern <strong id="patternLabel">A</strong></span>
+          <span class="status-chip">Step <strong id="stepLabel">1</strong></span>
+          <span class="status-chip">Length <strong id="lengthLabel">16</strong></span>
         </div>
       </section>
 
-      <!-- AUTO RANDOM PANEL -->
-      <section class="panel" id="autoRandomPanel">
-        <div class="section-title">
-          <h2>⟳ Auto Random</h2>
-          <span id="autoRandomStatus">Disabled — enable to start auto-generating patterns</span>
+      <!-- GROOVE -->
+      <section class="panel side-block">
+        <header class="side-head">
+          <h2><i class="fas fa-sliders-h" aria-hidden="true"></i>Groove</h2>
+        </header>
+
+        <div class="stat-grid">
+          <label class="stat">
+            <span class="stat-label">Tempo</span>
+            <strong><span id="bpmValue">112</span> BPM</strong>
+            <input id="bpm" type="range" min="70" max="180" value="112" />
+          </label>
+          <label class="stat">
+            <span class="stat-label">Swing</span>
+            <strong><span id="swingValue">12</span>%</strong>
+            <input id="swing" type="range" min="0" max="45" value="12" />
+          </label>
+          <label class="stat">
+            <span class="stat-label">Master</span>
+            <strong><span id="volumeValue">80</span>%</strong>
+            <input id="volume" type="range" min="0" max="100" value="80" />
+          </label>
+          <label class="stat">
+            <span class="stat-label">Steps</span>
+            <strong><span id="stepsValue">16</span></strong>
+            <input id="steps" type="range" min="8" max="32" value="16" step="8" />
+          </label>
         </div>
+      </section>
+
+      <!-- AUTO RANDOM -->
+      <section class="panel side-block" id="autoRandomPanel">
+        <header class="side-head">
+          <h2><i class="fas fa-sync-alt" aria-hidden="true"></i>Auto random</h2>
+          <span class="status-pill" id="autoRandomStatus">Off</span>
+        </header>
+        <p class="side-note">Evolves the pattern while it plays. Turn it on with <b>Auto random</b> above.</p>
 
         <div class="stat-grid" id="autoRandomControls">
-
-          <!-- === SECTION: Core Scheduling === -->
-          <div style="grid-column: span 2; font-size:13px;font-weight:bold;color:var(--accent);margin-top:8px;">⏱ After X Loops Scheduling</div>
-
-          <!-- Loops Until Random (core interval) -->
-          <div class="stat">
-            <label>After X loops</label>
-            <strong><span id="arLoopsValue">4</span></strong>
+          <label class="stat">
+            <span class="stat-label">Change every</span>
+            <strong><span id="arLoopsValue">4</span> loops</strong>
             <input id="arLoops" type="range" min="1" max="32" value="4" />
-          </div>
-
-          <!-- Auto Stop -->
-          <div class="stat">
-            <label>Auto stop after X loops</label>
-            <strong><span id="arStopValue">∞</span></strong>
+          </label>
+          <label class="stat">
+            <span class="stat-label">Stop after</span>
+            <strong><span id="arStopValue">∞</span> loops</strong>
             <input id="arStop" type="range" min="0" max="64" value="0" />
-          </div>
-
-          <!-- Drum Fill every X loops -->
-          <div class="stat">
-            <label>🥁 Drum fill every</label>
-            <strong><span id="arFillEveryValue">8</span></strong>
-            <input id="arFillEvery" type="range" min="0" max="32" value="8" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">0 = disabled, adds fills on perc/fx lanes</small>
-          </div>
-
-          <!-- Breakdown every X loops -->
-          <div class="stat">
-            <label>🔇 Breakdown every</label>
-            <strong><span id="arBreakdownEveryValue">16</span></strong>
-            <input id="arBreakdownEvery" type="range" min="0" max="64" value="16" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">0 = disabled, strips elements gradually</small>
-          </div>
-
-          <!-- Buildup every X loops -->
-          <div class="stat">
-            <label>🔊 Buildup every</label>
-            <strong><span id="arBuildupEveryValue">32</span></strong>
-            <input id="arBuildupEvery" type="range" min="0" max="64" value="32" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">0 = disabled, layers elements gradually</small>
-          </div>
-
-          <!-- BPM Drift every X loops -->
-          <div class="stat">
-            <label>🎵 BPM drift every</label>
-            <strong><span id="arBpmDriftStepValue">4</span></strong>
-            <input id="arBpmDriftStep" type="range" min="1" max="16" value="4" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Change BPM every N loops</small>
-          </div>
-
-          <!-- === SECTION: Variety & Mode === -->
-          <div style="grid-column: span 2; font-size:13px;font-weight:bold;color:var(--accent);margin-top:8px;">🎲 Variety & Mode</div>
-
-          <!-- Variety Mode -->
-          <div class="stat">
-            <label>Variety mode</label>
-            <select id="arVarietyMode" style="width:100%;margin-top:8px;padding:6px;border-radius:8px;background:var(--panel-2);color:var(--text);border:1px solid var(--line);">
-              <option value="full">Full Random — complete re-roll each cycle</option>
-              <option value="evolution" selected>Evolution — mutate 30-60% of steps per cycle</option>
-              <option value="drift">Drift — gradually shift 1-2 steps per loop</option>
+          </label>
+          <label class="stat span-2">
+            <span class="stat-label">Variety</span>
+            <select id="arVarietyMode">
+              <option value="full">Full random: a fresh pattern each cycle</option>
+              <option value="evolution" selected>Evolution: change 30–60% of steps</option>
+              <option value="drift">Drift: move one or two steps per loop</option>
             </select>
-          </div>
-
-          <!-- Intensity -->
-          <div class="stat">
-            <label>Intensity</label>
-            <strong><span id="arIntensityValue">50</span>%</strong>
+          </label>
+          <label class="stat span-2">
+            <span class="stat-label">Intensity</span>
+            <strong><span id="arIntensityValue">50%</span></strong>
             <input id="arIntensity" type="range" min="10" max="90" value="50" />
+          </label>
+        </div>
+
+        <div class="ar-summary">
+          <span><i class="fas fa-redo" aria-hidden="true"></i><b id="arLoopCount">0</b> loops</span>
+          <span><i class="fas fa-history" aria-hidden="true"></i><b id="arLastChanged">—</b></span>
+          <span class="ar-modes"><i class="fas fa-layer-group" aria-hidden="true"></i><b id="arActiveModes">None</b></span>
+        </div>
+
+        <details class="ar-group">
+          <summary><i class="fas fa-clock" aria-hidden="true"></i>Scheduling</summary>
+          <div class="stat-grid">
+            <label class="stat">
+              <span class="stat-label">Drum fill every</span>
+              <strong><span id="arFillEveryValue">8</span></strong>
+              <input id="arFillEvery" type="range" min="0" max="32" value="8" />
+              <small>0 = off. Adds fills on perc and FX.</small>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Breakdown every</span>
+              <strong><span id="arBreakdownEveryValue">16</span></strong>
+              <input id="arBreakdownEvery" type="range" min="0" max="64" value="16" />
+              <small>0 = off. Strips hits gradually.</small>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Build-up every</span>
+              <strong><span id="arBuildupEveryValue">32</span></strong>
+              <input id="arBuildupEvery" type="range" min="0" max="64" value="32" />
+              <small>0 = off. Layers hits gradually.</small>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Tempo drift every</span>
+              <strong><span id="arBpmDriftStepValue">4</span></strong>
+              <input id="arBpmDriftStep" type="range" min="1" max="16" value="4" />
+              <small>Loops between tempo changes.</small>
+            </label>
           </div>
+        </details>
 
-          <!-- Scope -->
-          <div class="stat">
-            <label>Scope</label>
-            <select id="arScope" style="width:100%;margin-top:8px;padding:6px;border-radius:8px;background:var(--panel-2);color:var(--text);border:1px solid var(--line);">
-              <option value="all">All lanes</option>
-              <option value="selected">Selected lanes only</option>
-              <option value="single">Single lane</option>
-            </select>
+        <details class="ar-group">
+          <summary><i class="fas fa-dice" aria-hidden="true"></i>Where it changes</summary>
+          <div class="stat-grid">
+            <label class="stat span-2">
+              <span class="stat-label">Lanes</span>
+              <select id="arScope">
+                <option value="all">All lanes (lock the ones to keep)</option>
+                <option value="selected">Selected lanes only</option>
+                <option value="single">One lane</option>
+              </select>
+            </label>
+            <div class="span-2 plain-block">
+              <span class="stat-label">Lane picks</span>
+              <div class="lane-chips" id="arLaneSelector"></div>
+            </div>
+            <label class="stat span-2">
+              <span class="stat-label">Step weighting</span>
+              <select id="arProbMode">
+                <option value="uniform">Even: every step alike</option>
+                <option value="beat" selected>On the beat: 1, 5, 9, 13…</option>
+                <option value="syncopate">Syncopated: off-beats first</option>
+              </select>
+            </label>
+            <label class="stat span-2">
+              <span class="stat-label">Fill intensity</span>
+              <strong><span id="arFillChanceValue">20%</span></strong>
+              <input id="arFillChance" type="range" min="5" max="50" value="20" />
+            </label>
+            <div class="span-2 plain-block">
+              <span class="stat-label">Density per lane</span>
+              <div class="density-list" id="laneIntensitySliders"></div>
+            </div>
           </div>
+        </details>
 
-          <!-- Probability mode -->
-          <div class="stat">
-            <label>Probability mode</label>
-            <select id="arProbMode" style="width:100%;margin-top:8px;padding:6px;border-radius:8px;background:var(--panel-2);color:var(--text);border:1px solid var(--line);">
-              <option value="uniform">Uniform — equal chance all steps</option>
-              <option value="beat" selected>Beat — higher on 1, 5, 9, 13…</option>
-              <option value="syncopate">Syncopate — emphasize off-beats</option>
-            </select>
+        <details class="ar-group">
+          <summary><i class="fas fa-chart-area" aria-hidden="true"></i>Breakdown &amp; build-up</summary>
+          <div class="stat-grid">
+            <label class="check-stat span-2">
+              <input id="arBreakdownMode" type="checkbox" />
+              <span><b>Breakdown mode</b><small>Strip hits down, then rebuild.</small></span>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Speed</span>
+              <strong><span id="arBreakdownRateValue">2</span></strong>
+              <input id="arBreakdownRate" type="range" min="1" max="5" value="2" disabled />
+            </label>
+            <label class="stat">
+              <span class="stat-label">Floor</span>
+              <strong><span id="arBreakdownMinValue">10%</span></strong>
+              <input id="arBreakdownMin" type="range" min="5" max="40" value="10" disabled />
+            </label>
+            <label class="check-stat span-2">
+              <input id="arBuildupMode" type="checkbox" />
+              <span><b>Build-up mode</b><small>Layer hits in gradually.</small></span>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Speed</span>
+              <strong><span id="arBuildupRateValue">2</span></strong>
+              <input id="arBuildupRate" type="range" min="1" max="5" value="2" disabled />
+            </label>
+            <label class="stat">
+              <span class="stat-label">Ceiling</span>
+              <strong><span id="arBuildupMaxValue">70%</span></strong>
+              <input id="arBuildupMax" type="range" min="30" max="90" value="70" disabled />
+            </label>
           </div>
+        </details>
 
-          <!-- Fill chance -->
-          <div class="stat">
-            <label>Fill intensity</label>
-            <strong><span id="arFillChanceValue">20</span>%</strong>
-            <input id="arFillChance" type="range" min="5" max="50" value="20" />
-          </div>
-
-          <!-- === SECTION: Breakdown & Buildup === -->
-          <div style="grid-column: span 2; font-size:13px;font-weight:bold;color:var(--accent);margin-top:8px;">📉📈 Breakdown & Buildup</div>
-
-          <!-- Breakdown mode toggle -->
-          <div class="stat">
-            <label>Breakdown mode</label>
-            <input id="arBreakdownMode" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Gradually strip elements, then rebuild</small>
-          </div>
-
-          <!-- Breakdown rate -->
-          <div class="stat">
-            <label>Breakdown speed</label>
-            <strong><span id="arBreakdownRateValue">2</span></strong>
-            <input id="arBreakdownRate" type="range" min="1" max="5" value="2" disabled />
-          </div>
-
-          <!-- Breakdown floor -->
-          <div class="stat">
-            <label>Breakdown floor</label>
-            <strong><span id="arBreakdownMinValue">10</span>%</strong>
-            <input id="arBreakdownMin" type="range" min="5" max="40" value="10" disabled />
-          </div>
-
-          <!-- Buildup mode toggle -->
-          <div class="stat">
-            <label>Buildup mode</label>
-            <input id="arBuildupMode" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Gradually layer in elements</small>
-          </div>
-
-          <!-- Buildup rate -->
-          <div class="stat">
-            <label>Buildup speed</label>
-            <strong><span id="arBuildupRateValue">2</span></strong>
-            <input id="arBuildupRate" type="range" min="1" max="5" value="2" disabled />
-          </div>
-
-          <!-- Buildup ceiling -->
-          <div class="stat">
-            <label>Buildup ceiling</label>
-            <strong><span id="arBuildupMaxValue">70</span>%</strong>
-            <input id="arBuildupMax" type="range" min="30" max="90" value="70" disabled />
-          </div>
-
-          <!-- === SECTION: Groove & Feel === -->
-          <div style="grid-column: span 2; font-size:13px;font-weight:bold;color:var(--accent);margin-top:8px;">🎶 Groove & Feel</div>
-
-          <!-- Humanize toggle -->
-          <div class="stat">
-            <label>Humanize</label>
-            <input id="arHumanize" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Add slight randomness for organic feel</small>
-          </div>
-
-          <!-- Humanize amount -->
-          <div class="stat">
-            <label>Humanize amount</label>
-            <strong><span id="arHumanizeValue">15</span>%</strong>
-            <input id="arHumanize" type="range" min="5" max="40" value="15" disabled style="margin-top:8px;" />
-          </div>
-
-          <!-- Swing variation toggle -->
-          <div class="stat">
-            <label>Swing variation</label>
-            <input id="arSwingVar" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Randomize swing ±N per cycle</small>
-            <div class="mini-row" style="margin-top:6px;">
-              <label style="font-size:11px;">Range:</label>
+        <details class="ar-group">
+          <summary><i class="fas fa-wave-square" aria-hidden="true"></i>Groove &amp; feel</summary>
+          <div class="stat-grid">
+            <label class="check-stat">
+              <input id="arHumanize" type="checkbox" />
+              <span><b>Humanize</b><small>Small random flips.</small></span>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Amount</span>
+              <strong><span id="arHumanizeValue">15%</span></strong>
+              <input id="arHumanizeAmount" type="range" min="5" max="40" value="15" disabled />
+            </label>
+            <label class="check-stat">
+              <input id="arSwingVar" type="checkbox" />
+              <span><b>Swing variation</b><small>Nudge swing each cycle.</small></span>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Range ±</span>
+              <strong><span id="arSwingRangeValue">3</span></strong>
               <input id="arSwingRange" type="range" min="1" max="10" value="3" disabled />
-              <span id="arSwingRangeValue" style="font-size:12px;min-width:20px;">3</span>
-            </div>
-          </div>
-
-          <!-- Step variation toggle -->
-          <div class="stat">
-            <label>Step variation</label>
-            <input id="arStepVar" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Slightly adjust step count each cycle</small>
-            <div class="mini-row" style="margin-top:6px;">
-              <label style="font-size:11px;">Vary amount:</label>
+            </label>
+            <label class="check-stat">
+              <input id="arStepVar" type="checkbox" />
+              <span><b>Step variation</b><small>Vary the loop length.</small></span>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Amount ±</span>
+              <strong><span id="arStepVaryAmountValue">2</span></strong>
               <input id="arStepVaryAmount" type="range" min="1" max="8" value="2" disabled />
-              <span id="arStepVaryAmountValue" style="font-size:12px;min-width:20px;">2</span>
-            </div>
+            </label>
+            <label class="check-stat">
+              <input id="arRandomBPM" type="checkbox" />
+              <span><b>Tempo drift</b><small>Slowly vary the BPM.</small></span>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Range ±</span>
+              <strong><span id="arBpmDriftRangeValue">5 BPM</span></strong>
+              <input id="arBpmDriftRange" type="range" min="1" max="20" value="5" disabled />
+            </label>
+            <label class="check-stat">
+              <input id="arBassPulse" type="checkbox" />
+              <span><b>Bass pulse</b><small>Bass follows the kick.</small></span>
+            </label>
+            <label class="check-stat">
+              <input id="arChordStab" type="checkbox" />
+              <span><b>Chord stabs</b><small>Accents on each beat group.</small></span>
+            </label>
+            <label class="stat span-2">
+              <span class="stat-label">Accent chance</span>
+              <strong><span id="arAccentChanceValue">15%</span></strong>
+              <input id="arAccentChance" type="range" min="0" max="60" value="15" />
+            </label>
           </div>
+        </details>
 
-          <!-- Random BPM toggle -->
-          <div class="stat">
-            <label>Random BPM drift</label>
-            <input id="arRandomBPM" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Slowly vary tempo within a range</small>
-          </div>
-
-          <!-- BPM drift range -->
-          <div class="stat">
-            <label>BPM drift range</label>
-            <strong><span id="arBpmDriftRangeValue">5</span></strong>
-            <input id="arBpmDriftRange" type="range" min="1" max="20" value="5" disabled />
-          </div>
-
-          <!-- Bass pulse -->
-          <div class="stat">
-            <label>Bass pulse</label>
-            <input id="arBassPulse" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Sync bass to kick pattern for stronger groove</small>
-          </div>
-
-          <!-- Chord stabs -->
-          <div class="stat">
-            <label>Chord stabs</label>
-            <input id="arChordStab" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Add chord accents on beat boundaries (0, 8, 16, 24)</small>
-          </div>
-
-          <!-- Accent chance -->
-          <div class="stat">
-            <label>Accent chance</label>
-            <strong><span id="arAccentChanceValue">15</span>%</strong>
-            <input id="arAccentChance" type="range" min="0" max="60" value="15" />
-          </div>
-
-          <!-- === SECTION: Pattern & Transition === -->
-          <div style="grid-column: span 2; font-size:13px;font-weight:bold;color:var(--accent);margin-top:8px;">🔄 Pattern & Transition</div>
-
-          <!-- Pattern transition -->
-          <div class="stat">
-            <label>Pattern transition</label>
-            <input id="arPatternTransition" type="checkbox" style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Crossfade between A↔B during auto-random</small>
-            <div class="mini-row" style="margin-top:6px;">
-              <label style="font-size:11px;">Duration:</label>
+        <details class="ar-group">
+          <summary><i class="fas fa-exchange-alt" aria-hidden="true"></i>Transitions</summary>
+          <div class="stat-grid">
+            <label class="check-stat">
+              <input id="arPatternTransition" type="checkbox" />
+              <span><b>Crossfade A ↔ B</b><small>While chaining.</small></span>
+            </label>
+            <label class="stat">
+              <span class="stat-label">Duration</span>
+              <strong id="arTransitionDurationValue">800ms</strong>
               <input id="arTransitionDuration" type="range" min="200" max="4000" step="100" value="800" disabled />
-              <span id="arTransitionDurationValue" style="font-size:12px;min-width:45px;">800ms</span>
-            </div>
+            </label>
+            <label class="check-stat span-2">
+              <input id="arRandomizeOnStop" type="checkbox" checked />
+              <span><b>New pattern on stop</b><small>Roll a fresh pattern when you press Stop.</small></span>
+            </label>
           </div>
-
-          <!-- Randomize on stop -->
-          <div class="stat">
-            <label>Randomize on stop</label>
-            <input id="arRandomizeOnStop" type="checkbox" checked style="margin-top:8px;" />
-            <small style="color:var(--muted);font-size:11px;display:block;margin-top:4px;">Generate new pattern when stopping playback</small>
-          </div>
-
-          <!-- === SECTION: Per-lane & Status === -->
-          <div style="grid-column: span 2; font-size:13px;font-weight:bold;color:var(--accent);margin-top:8px;">🎛 Lane Controls & Status</div>
-
-          <!-- Per-lane intensity -->
-          <div class="stat" style="grid-column: span 2;">
-            <label>Lane density overrides</label>
-            <div id="laneIntensitySliders" style="display:flex;flex-direction:column;gap:6px;margin-top:8px;"></div>
-          </div>
-
-          <!-- Loop counter display -->
-          <div class="stat">
-            <label>Cycle count</label>
-            <strong><span id="arLoopCount">0</span></strong>
-            <small style="color:var(--muted);font-size:11px;">Loops completed so far</small>
-          </div>
-
-          <!-- Last changed info -->
-          <div class="stat">
-            <label>Last changed</label>
-            <strong id="arLastChanged" style="font-size:14px;">—</strong>
-            <small style="color:var(--muted);font-size:11px;">When pattern last shifted</small>
-          </div>
-
-          <!-- Active mode indicator -->
-          <div class="stat">
-            <label>Active modes</label>
-            <strong id="arActiveModes" style="font-size:12px;word-break:normal;">None</strong>
-            <small style="color:var(--muted);font-size:11px;">Currently enabled features</small>
-          </div>
-
-        </div>
-
-        <!-- Lane lock/selection row -->
-        <div class="mini-row" id="arLaneSelector" style="margin-top:12px;flex-wrap:wrap;gap:4px;">
-          <span class="dim" style="width:100%;margin-bottom:4px;">Lane controls:</span>
-        </div>
+        </details>
       </section>
 
-      <section class="panel">
-        <div class="section-title">
-          <h2>Pattern memories</h2>
-          <span>Store four snapshots</span>
-        </div>
-
+      <!-- MEMORIES -->
+      <section class="panel side-block">
+        <header class="side-head">
+          <h2><i class="fas fa-memory" aria-hidden="true"></i>Pattern memories</h2>
+          <span class="side-hint"><kbd>1</kbd>–<kbd>4</kbd> load, <kbd>Shift</kbd> saves</span>
+        </header>
         <div class="memory-grid" id="memoryGrid"></div>
       </section>
 
-      <section class="panel">
-        <div class="section-title">
-          <h2>Pattern I/O</h2>
-          <span>Move ideas between browsers</span>
+      <!-- I/O -->
+      <section class="panel side-block">
+        <header class="side-head">
+          <h2><i class="fas fa-exchange-alt" aria-hidden="true"></i>Import &amp; export</h2>
+        </header>
+        <div class="io-grid">
+          <button class="icon-btn" id="exportBtn" type="button"><i class="fas fa-file-export" aria-hidden="true"></i><span>Export JSON</span></button>
+          <button class="icon-btn" id="importBtn" type="button"><i class="fas fa-file-import" aria-hidden="true"></i><span>Import JSON</span></button>
+          <button class="icon-btn" id="saveLocalBtn" type="button"><i class="fas fa-save" aria-hidden="true"></i><span>Save in browser</span></button>
+          <button class="icon-btn" id="loadLocalBtn" type="button"><i class="fas fa-folder-open" aria-hidden="true"></i><span>Load from browser</span></button>
         </div>
-
-        <div class="button-row" style="margin-bottom:12px;">
-          <button class="icon-btn" id="exportBtn">⇩ Export JSON</button>
-          <button class="icon-btn" id="importBtn">⇧ Import JSON</button>
-          <button class="icon-btn" id="saveLocalBtn">💾 Save local</button>
-          <button class="icon-btn" id="loadLocalBtn">📂 Load local</button>
-        </div>
-
-        <textarea
-          class="export-box"
-          id="ioBox"
-          placeholder="Exported JSON appears here..."
-        ></textarea>
+        <textarea class="export-box" id="ioBox" aria-label="Pattern JSON" placeholder="Exported JSON appears here. Paste JSON here, then Import."></textarea>
       </section>
 
     </aside>
@@ -412,7 +335,7 @@
 
       <!-- The deck: play, what's on, and where party mode is in its phrase (ui.js updateDeck). -->
       <section class="panel deck" id="deck">
-        <button class="deck-play" id="deckPlay" aria-label="Play or pause (Space)">▶</button>
+        <button class="deck-play" id="deckPlay" type="button" aria-label="Play or pause (Space)"><i class="fas fa-play" aria-hidden="true"></i></button>
         <div class="deck-info">
           <div class="deck-title">
             <strong id="deckPreset">Custom beat</strong>
@@ -428,7 +351,7 @@
           </div>
           <div class="phrase" id="phrase" aria-label="Party mode phrase: 16 bars"></div>
         </div>
-        <button type="button" class="party-btn on" id="partyBtn" title="Party mode: fills, breakdowns, build-ups and drops over every 16 bars">🎉 Party mode</button>
+        <button type="button" class="party-btn on" id="partyBtn" title="Party mode: fills, breakdowns, build-ups and drops over every 16 bars"><i class="fas fa-glass-cheers" aria-hidden="true"></i> Party mode</button>
       </section>
 
       <section class="panel">
@@ -443,7 +366,7 @@
       <section class="panel sequencer">
         <div class="section-title">
           <h2>Sequencer</h2>
-          <span>Click steps to toggle notes and hits</span>
+          <span class="grid-legend"><span><i class="swatch silenced"></i>Left out this bar</span><span><i class="swatch extra"></i>Added by party mode</span></span>
         </div>
 
         <div id="stepRuler" class="step-ruler" aria-hidden="true"></div>

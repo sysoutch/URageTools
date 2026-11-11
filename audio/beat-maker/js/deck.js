@@ -55,7 +55,7 @@ function initDeck() {
 function updateDeck(step = state.currentStep) {
   if (!deck.play) return;
   const p = currentPattern(), playing = state.isPlaying;
-  deck.play.textContent = playing ? '❚❚' : '▶';
+  deck.play.innerHTML = icon(playing ? 'fa-pause' : 'fa-play');
   deck.play.classList.toggle('playing', playing);
   deck.preset.textContent = p.name || 'Custom beat';
   deck.a.classList.toggle('on', state.activePattern === 'A');
@@ -63,7 +63,7 @@ function updateDeck(step = state.currentStep) {
   deck.bpm.textContent = p.bpm;
   const party = p.party !== false;
   deck.party.classList.toggle('on', party);
-  deck.party.textContent = party ? '🎉 Party mode' : '🔁 Plain loop';
+  deck.party.innerHTML = party ? icon('fa-glass-cheers') + ' Party mode' : icon('fa-redo') + ' Plain loop';
   deck.phrase.classList.toggle('off', !party);
   const where = BeatEngine.section(p, step || 0), bar = playing && party ? where.bar % 16 : -1, kind = playing ? where.section : party ? 'groove' : 'loop';
   if (bar !== deck.lastBar) {

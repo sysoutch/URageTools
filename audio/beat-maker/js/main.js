@@ -25,6 +25,9 @@ function initApp() {
   renderLanes();
   renderMemoryGrid();
   attachEventHandlers();
+  // The auto-random lane picks and per-lane density were only drawn after the scope changed, so they started empty.
+  renderAutoRandomLaneSelector();
+  renderLaneIntensitySliders();
   initDeck();
 }
 

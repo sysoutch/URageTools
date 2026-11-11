@@ -246,47 +246,61 @@
     return Math.floor(bar / PHRASE) % 2 ? 'lift' : 'groove';
   }
 
-  // Plays every lane that has `step` on, at `time` (already swung: see swingDelay), and in party mode what the phrase
-  // adds or leaves out around it.
-  function playStep(ctx, out, pattern, step, time) {
-    const party = partyOn(pattern), bar = party ? barOf(pattern, step) : 0, at = bar % PHRASE, inBar = step % 16;
-    const section = party ? sectionOf(bar) : 'groove', lift = party && (section === 'lift' || section === 'drop') ? 1 : 0;
+  // What party mode does to one step of `bar`: the lanes it silences, and the extra hits it adds (each with the lane a
+  // display should show it on). playStep plays this, and Beat Maker's grid draws it, so the two never disagree.
+  const PLAIN = { section: 'loop', lift: 0, silent: [], extras: [] };
+  function arrangement(pattern, bar, step) {
+    if (!partyOn(pattern)) return PLAIN;
+    const at = bar % PHRASE, inBar = step % 16, section = sectionOf(bar);
+    const lift = section === 'lift' || section === 'drop' ? 1 : 0;
     // Breakdown: no kick, no bass, hats thinned. Last half bar of the build-up: everything holds its breath.
-    const holding = party && BUILD_AT[1] === at && inBar >= 8;
-    const silent = (key) => (section === 'breakdown' && (key === 'kick' || key === 'bass' || (key === 'hats' && inBar % 4)))
-      || (holding && key !== 'snare' && key !== 'fx');
-    const kickHere = pattern.lanes.kick.steps[step] && audible(pattern, 'kick') && !silent('kick');
-    LANES.forEach((key) => {
-      if (!pattern.lanes[key].steps[step] || !audible(pattern, key) || silent(key)) return;
-      const level = laneLevel(pattern, key);
-      if (level > 0) voices[key](ctx, out, time, level, step, pattern.steps, pattern, lift, key === 'bass' && kickHere);
-    });
-    if (!party) return;
-    const drums = pattern.volume / 100, spb = secondsPerStep(pattern);
+    const holding = BUILD_AT[1] === at && inBar >= 8;
+    const silent = LANES.filter((key) => (section === 'breakdown' && (key === 'kick' || key === 'bass' || (key === 'hats' && inBar % 4)))
+      || (holding && key !== 'snare' && key !== 'fx'));
+    const extras = [];
     // A crash at the top of each phrase (and the drop's boom after a build-up).
-    if (inBar === 0 && at === 0) {
-      if (bar > 0) voices.impact(ctx, out, time, drums * 0.8);
-      else voices.crash(ctx, out, time, drums * 0.7);
-    }
+    if (inBar === 0 && at === 0) extras.push(bar > 0 ? { voice: 'impact', lane: 'fx', level: 0.8 } : { voice: 'crash', lane: 'fx', level: 0.7 });
     // Lifted phrases: open hats on the off-beats, and a "Hey!" now and then.
-    if (lift && inBar % 4 === 2 && !pattern.lanes.hats.steps[step]) voices.openhat(ctx, out, time, drums * 0.8);
-    if (lift && at % 8 === 6 && inBar === 12) voices.hey(ctx, out, time, drums * 0.9);
+    if (lift && inBar % 4 === 2 && !pattern.lanes.hats.steps[step]) extras.push({ voice: 'openhat', lane: 'hats', level: 0.8 });
+    if (lift && at % 8 === 6 && inBar === 12) extras.push({ voice: 'hey', lane: 'clap', level: 0.9 });
     // A fill closing every fourth bar (not before a breakdown or in a build-up): toms down over the last beat.
     if ((at + 1) % FILL_EVERY === 0 && !BUILD_AT.includes(at) && at !== BREAK_AT[0] - 1 && inBar >= 12) {
-      voices.tom(ctx, out, time, drums * 0.9, [200, 170, 140, 115][inBar - 12]);
+      extras.push({ voice: 'tom', lane: 'perc', level: 0.9, arg: [200, 170, 140, 115][inBar - 12] });
     }
     // The build-up: a snare roll from quarters to sixteenths, and a sweep rising over both bars.
     if (BUILD_AT.includes(at)) {
       const pos = (at - BUILD_AT[0]) * 16 + inBar, gap = pos < 8 ? 4 : pos < 16 ? 2 : 1;
-      if (pos % gap === 0) voices.snare(ctx, out, time, drums * (0.35 + 0.5 * pos / 32));
-      if (pos === 0) voices.riser(ctx, out, time, drums, 32 * spb);
+      if (pos % gap === 0) extras.push({ voice: 'snare', lane: 'snare', level: 0.35 + 0.5 * pos / 32 });
+      if (pos === 0) extras.push({ voice: 'riser', lane: 'fx', level: 1, steps: 32 });
     }
+    return { section, lift, silent, extras };
+  }
+
+  // Plays every lane that has `step` on, at `time` (already swung: see swingDelay), and in party mode what the phrase
+  // adds or leaves out around it (arrangement).
+  function playStep(ctx, out, pattern, step, time) {
+    const party = partyOn(pattern), plan = party ? arrangement(pattern, barOf(pattern, step), step) : PLAIN;
+    const silent = (key) => plan.silent.includes(key);
+    const kickHere = pattern.lanes.kick.steps[step] && audible(pattern, 'kick') && !silent('kick');
+    LANES.forEach((key) => {
+      if (!pattern.lanes[key].steps[step] || !audible(pattern, key) || silent(key)) return;
+      const level = laneLevel(pattern, key);
+      if (level > 0) voices[key](ctx, out, time, level, step, pattern.steps, pattern, plan.lift, key === 'bass' && kickHere);
+    });
+    const drums = pattern.volume / 100, spb = secondsPerStep(pattern);
+    plan.extras.forEach((hit) => voices[hit.voice](ctx, out, time, drums * hit.level, hit.steps ? hit.steps * spb : hit.arg));
+  }
+
+  // Which bar of the phrase `step` of a pattern's loop belongs to, as it plays now.
+  function barAt(pattern, step = 0) {
+    const perLoop = Math.max(1, Math.round(pattern.steps / 16));
+    return (bars.get(pattern) ?? 0) * perLoop + Math.floor(step / 16);
   }
 
   // Where a pattern is in party mode's phrase, for a display: { bar, section }, at `step` of its loop.
   function section(pattern, step = 0) {
     if (!partyOn(pattern)) return { bar: 0, section: 'loop' };
-    const perLoop = Math.max(1, Math.round(pattern.steps / 16)), bar = (bars.get(pattern) ?? 0) * perLoop + Math.floor(step / 16);
+    const bar = barAt(pattern, step);
     return { bar, section: sectionOf(bar) };
   }
 
@@ -394,7 +408,7 @@
 
   root.BeatEngine = {
     LANES, MAX_STEPS, BASS_SCALE, CHORD_BANK, PRESETS,
-    noteFreq, voices, audible, laneLevel, playStep, secondsPerStep, swingDelay, expand, section,
+    noteFreq, voices, audible, laneLevel, playStep, secondsPerStep, swingDelay, expand, section, arrangement, barAt,
     // Every preset as a full pattern, steps `length` long.
     presets: (length) => Object.fromEntries(Object.entries(PRESETS).map(([name, p]) => [name, expand(p, length)])),
   };

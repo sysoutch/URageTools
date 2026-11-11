@@ -406,13 +406,13 @@ function toggleAutoRandom() {
     // Start: do an initial randomization
     autoRandomize();
     ui.autoRandomBtn.classList.add('active');
-    ui.autoRandomStatus.textContent = 'Active — pattern evolves every X loops';
-    ui.autoRandomStatus.style.color = '#4aff82';
+    ui.autoRandomStatus.textContent = 'On: evolves every ' + autoRandomState.loopsUntilRandom + ' loops';
+    ui.autoRandomPanel.classList.add('is-on');
   } else {
     autoRandomState.loopCount = 0;
     ui.autoRandomBtn.classList.remove('active');
-    ui.autoRandomStatus.textContent = 'Disabled — enable to start auto-generating patterns';
-    ui.autoRandomStatus.style.color = '';
+    ui.autoRandomStatus.textContent = 'Off';
+    ui.autoRandomPanel.classList.remove('is-on');
     updateAutoRandomUI();
   }
 }
@@ -476,7 +476,7 @@ function checkLoopCompletion() {
       autoRandomState.enabled = false;
       ui.autoRandomBtn.classList.remove('active');
       ui.autoRandomStatus.textContent = 'Stopped after ' + stopAfter + ' loops';
-      ui.autoRandomStatus.style.color = '';
+      ui.autoRandomPanel.classList.remove('is-on');
     }
     
     updateAutoRandomUI();
@@ -522,16 +522,17 @@ function markPresets() {
 // =========================================================
 
 function renderAutoRandomLaneSelector() {
-  ui.arLaneSelector.innerHTML = '<span class="dim" style="width:100%;margin-bottom:4px;">Lane controls:</span>';
+  ui.arLaneSelector.innerHTML = '';
   
   laneMeta.forEach((lane) => {
     const btn = document.createElement('button');
-    btn.className = 'tiny-btn';
+    btn.className = 'tiny-btn lane-chip';
+    btn.setAttribute('aria-label', lane.label);
     
     if (autoRandomState.scope === 'all') {
       // Lock/Unlock button
       const isLocked = isLaneLocked(lane.key);
-      btn.textContent = lane.icon + (isLocked ? '🔒' : '🔓');
+      btn.innerHTML = icon(lane.icon) + icon(isLocked ? 'fa-lock' : 'fa-lock-open');
       btn.title = isLocked ? 'Unlock ' + lane.label + ' from auto-random' : 'Lock ' + lane.label + ' out of auto-random';
       if (isLocked) btn.classList.add('active');
       btn.addEventListener('click', () => {
@@ -545,7 +546,7 @@ function renderAutoRandomLaneSelector() {
     } else if (autoRandomState.scope === 'selected') {
       // Select/Deselect button
       const isSelected = autoRandomState.selectedLanes.includes(lane.key);
-      btn.textContent = lane.icon + (isSelected ? ' ✓' : ' ○');
+      btn.innerHTML = icon(lane.icon) + icon(isSelected ? 'fa-check' : 'fa-plus');
       btn.title = isSelected ? 'Deselect ' + lane.label : 'Select ' + lane.label;
       if (isSelected) btn.classList.add('active');
       btn.addEventListener('click', () => {
@@ -559,7 +560,7 @@ function renderAutoRandomLaneSelector() {
     } else if (autoRandomState.scope === 'single') {
       // Single lane selector
       const isSelected = autoRandomState.singleLane === lane.key;
-      btn.textContent = lane.icon + (isSelected ? ' ●' : ' ○');
+      btn.innerHTML = icon(lane.icon) + icon(isSelected ? 'fa-dot-circle' : 'fa-circle');
       btn.title = isSelected ? 'Deselect ' + lane.label : 'Select ' + lane.label + ' for single-lane mode';
       if (isSelected) btn.classList.add('active');
       btn.addEventListener('click', () => {
@@ -577,21 +578,18 @@ function renderLaneIntensitySliders() {
   
   laneMeta.forEach((lane) => {
     const row = document.createElement('div');
-    row.className = 'mini-row';
-    row.style.alignItems = 'center';
-    row.style.gap = '6px';
+    row.className = 'density-row';
     
     const label = document.createElement('span');
-    label.style.cssText = 'font-size:12px;min-width:50px;display:flex;align-items:center;gap:4px;color:var(--muted);';
-    label.innerHTML = lane.icon + ' <strong style="color:var(--text);">' + lane.label + '</strong>';
+    label.className = 'density-label';
+    label.innerHTML = icon(lane.icon) + '<strong>' + lane.label + '</strong>';
     
     const slider = document.createElement('input');
     slider.type = 'range';
     slider.min = '0';
     slider.max = '100';
     slider.step = '5';
-    slider.style.flex = '1';
-    slider.style.accentColor = 'var(--accent)';
+    slider.setAttribute('aria-label', lane.label + ' density');
     
     const override = laneIntensityOverrides[lane.key];
     if (override !== null && override !== undefined) {
@@ -602,8 +600,8 @@ function renderLaneIntensitySliders() {
     }
     
     const valLabel = document.createElement('span');
-    valLabel.style.cssText = 'font-size:11px;min-width:32px;text-align:right;color:var(--text);';
-    valLabel.textContent = override !== null && override !== undefined ? Math.round(override * 100) + '%' : 'def';
+    valLabel.className = 'density-value';
+    valLabel.textContent = override !== null && override !== undefined ? Math.round(override * 100) + '%' : 'Auto';
     
     slider.addEventListener('input', (e) => {
       const val = Number(e.target.value) / 100;
@@ -615,12 +613,14 @@ function renderLaneIntensitySliders() {
     // Reset button
     const resetBtn = document.createElement('button');
     resetBtn.className = 'tiny-btn';
-    resetBtn.style.cssText = 'min-width:28px;font-size:9px;';
-    resetBtn.textContent = override !== null && override !== undefined ? 'Rst' : '+';
+    resetBtn.innerHTML = icon('fa-undo');
+    resetBtn.title = 'Reset ' + lane.label + ' to the auto-random intensity';
+    resetBtn.setAttribute('aria-label', resetBtn.title);
+    resetBtn.disabled = override === null || override === undefined;
     resetBtn.addEventListener('click', () => {
       laneIntensityOverrides[lane.key] = null;
       slider.value = '50';
-      valLabel.textContent = 'def';
+      valLabel.textContent = 'Auto';
       renderLaneIntensitySliders();
       persistLocal();
     });
@@ -673,7 +673,7 @@ function renderLanes(highlightStep) {
     const laneState = p.lanes[lane.key];
     const info = document.createElement('div');
     info.className = 'lane-info';
-    info.innerHTML = '<div class="lane-head"><div class="emoji">' + lane.icon + '</div><div class="lane-name"><strong>' + lane.label + '</strong><span>' + lane.hint + '</span></div></div><div class="lane-tools"><button class="tiny-btn ' + (laneState.mute ? 'active' : '') + '" data-action="mute">M</button><button class="tiny-btn ' + (laneState.solo ? 'active' : '') + '" data-action="solo">S</button><input type="range" min="0" max="1" step="0.01" value="' + laneState.volume + '" data-action="vol" /></div>';
+    info.innerHTML = '<div class="lane-head"><div class="emoji lane-icon">' + icon(lane.icon) + '</div><div class="lane-name"><strong>' + lane.label + '</strong><span>' + lane.hint + '</span></div></div><div class="lane-tools"><button class="tiny-btn ' + (laneState.mute ? 'active' : '') + '" data-action="mute">M</button><button class="tiny-btn ' + (laneState.solo ? 'active' : '') + '" data-action="solo">S</button><input type="range" min="0" max="1" step="0.01" value="' + laneState.volume + '" data-action="vol" /></div>';
     info.querySelector('[data-action="mute"]').addEventListener('click', () => { laneState.mute = !laneState.mute; if (laneState.mute) laneState.solo = false; renderLanes(); persistLocal(); });
     info.querySelector('[data-action="solo"]').addEventListener('click', () => { laneState.solo = !laneState.solo; if (laneState.solo) laneState.mute = false; renderLanes(); persistLocal(); });
     info.querySelector('[data-action="vol"]').addEventListener('input', (e) => { laneState.volume = Number(e.target.value); persistLocal(); });
@@ -690,6 +690,30 @@ function renderLanes(highlightStep) {
       row.appendChild(btn);
     }
     ui.lanes.appendChild(row);
+  });
+  ui.arrangedBar = null;
+  if (state.isPlaying) showArrangement(activeHighlight - (activeHighlight % 16));
+}
+
+// Party mode changes what plays from bar to bar (beat-engine.js arrangement): the breakdown drops kick, bass and most
+// hats, the build-up adds a snare roll, fills add toms. The grid shows the bar playing now: hits that are silenced
+// dim, extra hits light up as outlines. `fromStep` is the first step of that bar; null clears it.
+function showArrangement(fromStep) {
+  if (!ui.columns) return;
+  const p = currentPattern();
+  const party = state.isPlaying && fromStep !== null && p.party !== false;
+  const bar = party ? BeatEngine.barAt(p, fromStep) : null;
+  const key = party ? state.activePattern + ':' + bar + ':' + fromStep : null;
+  if (key === ui.arrangedBar) return;
+  ui.arrangedBar = key;
+  ui.columns.forEach((column, step) => {
+    const inBar = party && step >= fromStep && step < fromStep + 16;
+    const plan = inBar ? BeatEngine.arrangement(p, bar, step) : null;
+    column.forEach((btn, laneIndex) => {
+      const lane = laneMeta[laneIndex].key;
+      btn.classList.toggle('silenced', !!plan && p.lanes[lane].steps[step] && plan.silent.includes(lane));
+      btn.classList.toggle('extra', !!plan && !p.lanes[lane].steps[step] && plan.extras.some((hit) => hit.lane === lane));
+    });
   });
 }
 
@@ -858,7 +882,7 @@ function attachEventHandlers() {
   // NEW: Groove & feel controls
   ui.arHumanize?.addEventListener('change', () => {
     autoRandomState.humanize = ui.arHumanize.checked;
-    const slider = document.getElementById('arHumanizeSlider');
+    const slider = document.getElementById('arHumanizeAmount');
     if (slider) slider.disabled = !ui.arHumanize.checked;
     persistLocal();
   });
