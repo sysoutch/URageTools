@@ -828,13 +828,17 @@ export function registerBookStateModule(app) {
         renderDashboardMedia();
     }
 
-    async function refreshDashboardMedia() {
-        setStatus('Refreshing image pools and recent generated images...');
+    // On the public website there is no dashboard media API. The startup
+    // refresh stays quiet there; only an explicit Refresh reports failures.
+    async function refreshDashboardMedia(options = {}) {
+        const quiet = options.quiet === true;
+        if (!quiet) setStatus('Refreshing image pools and recent generated images...');
         try {
             await Promise.all([loadImagePools(), loadRecentGeneratedImages()]);
-            setStatus('Dashboard media refreshed.');
+            if (!quiet) setStatus('Dashboard media refreshed.');
         } catch (error) {
-            setStatus(`Dashboard media refresh failed: ${error?.message || 'Unknown error'}`);
+            if (quiet) return;
+            setStatus(`Dashboard media is only available inside the URage Now dashboard (${error?.message || 'unknown error'}).`);
         }
     }
 
@@ -1293,7 +1297,10 @@ export function registerBookStateModule(app) {
         app.renderVisiblePagesSoon();
         app.requestBookRender();
         renderPageQueue();
-        setStatus(`Book ready with ${Math.max(0, pagesData.length - 4)} custom pages. Visible pages load as you turn.`);
+        const customCount = state.dynamicPages.length;
+        setStatus(customCount === 0
+            ? 'Book ready. Add pages from disk to fill it.'
+            : `Book ready with ${customCount} custom page${customCount === 1 ? '' : 's'}. Visible pages load as you turn.`);
     }
 
     function hasLiveMedia(data) {

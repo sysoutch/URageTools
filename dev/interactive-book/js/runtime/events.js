@@ -452,7 +452,7 @@ export function registerEventModule(app) {
         bindEvents();
         app.requestBookRender();
         await app.initBook();
-        await app.refreshDashboardMedia();
+        await app.refreshDashboardMedia({ quiet: true });
     }
 
     Object.assign(app, {

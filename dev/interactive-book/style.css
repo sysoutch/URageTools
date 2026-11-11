@@ -134,7 +134,8 @@ body[data-dashboard-sidebar-externalized="true"] .tool-sidebar {
 /* Page queue list gets its own scrollbar */
 .current-pages-card .page-queue {
     max-height: none;
-    height: 0;
+    height: auto;
+    min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 4px;
@@ -803,6 +804,35 @@ canvas {
     gap: 12px;
 }
 
+.workspace-head-title {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.workspace-head-title .status-text {
+    margin-top: 6px;
+    font-size: 12px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.workspace-head-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.workspace-head-actions .compact-button,
+.zoom-level {
+    white-space: nowrap;
+}
+
 /* Zoom controls */
 .zoom-controls {
     display: inline-flex;
@@ -822,12 +852,10 @@ canvas {
     user-select: none;
 }
 
-/* Page counter */
+/* Page counter: sits in the action row under the stage, beside the
+   inspect and magnifier buttons, so it never covers them. */
 .page-counter {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
+    align-self: center;
     padding: 6px 14px;
     border-radius: 20px;
     background: rgba(0,0,0,0.55);
