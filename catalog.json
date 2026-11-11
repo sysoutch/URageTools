@@ -477,15 +477,6 @@
       "thumbnail": "/dev/qr-code-creator/thumbnail.png"
     },
     {
-      "id": "dev__tetris",
-      "category": "dev",
-      "slug": "tetris",
-      "title": "tetris",
-      "description": "Play a browser-based falling-block puzzle: rotate pieces, clear lines, and chase a higher score.",
-      "href": "/dev/tetris/",
-      "thumbnail": "/dev/tetris/thumbnail.png"
-    },
-    {
       "id": "dev__tilemap-creator",
       "category": "dev",
       "slug": "tilemap-creator",
@@ -520,6 +511,15 @@
       "description": "Play billiards against computer opponents in your browser.",
       "href": "/game/billards/",
       "thumbnail": "/game/billards/thumbnail.png"
+    },
+    {
+      "id": "game__block-rage",
+      "category": "game",
+      "slug": "block-rage",
+      "title": "Block Rage",
+      "description": "A free falling-block puzzle in your browser: stack pieces, clear lines, fill your rage meter and burn away the bottom of the stack.",
+      "href": "/game/block-rage/",
+      "thumbnail": "/game/block-rage/thumbnail.png"
     },
     {
       "id": "game__html-game-51",

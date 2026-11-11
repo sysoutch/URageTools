@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "game__block-rage",
+  "title": "Block Rage",
+  "description": "A free falling-block puzzle in your browser: stack pieces, clear lines, fill your rage meter and burn away the bottom of the stack.",
+  "integration": {
+    "theme": true,
+    "currentOutput": true,
+    "toolBridge": true,
+    "dashboardSidebar": true,
+    "acceptsFiles": false,
+    "outputKind": "image",
+    "persistState": true
+  }
+}

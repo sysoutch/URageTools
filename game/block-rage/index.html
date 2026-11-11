@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" data-dashboard-theme="fire">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script src="../../shared/dashboard-theme.js"></script>
+  <link rel="stylesheet" href="style.css">
+<title>Block Rage | URage Tools</title>
+<link rel="canonical" href="https://urage.net/tools/game/block-rage/">
+<meta name="description" content="A free falling-block puzzle in your browser: stack pieces, clear lines, fill your rage meter and burn away the bottom of the stack.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="URage Tools">
+<meta property="og:url" content="https://urage.net/tools/game/block-rage/">
+<meta property="og:title" content="Block Rage | URage Tools">
+<meta property="og:description" content="A free falling-block puzzle in your browser: stack pieces, clear lines, fill your rage meter and burn away the bottom of the stack.">
+<meta property="og:image" content="https://urage.net/tools/game/block-rage/thumbnail.png">
+<meta property="og:image:alt" content="Block Rage preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Block Rage | URage Tools">
+<meta name="twitter:description" content="A free falling-block puzzle in your browser: stack pieces, clear lines, fill your rage meter and burn away the bottom of the stack.">
+<meta name="twitter:image" content="https://urage.net/tools/game/block-rage/thumbnail.png">
+</head>
+<body data-dashboard-theme="fire">
+  <div class="br-shell">
+    <aside class="br-sidebar" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Block Rage">
+      <header class="br-brand">
+        <span class="br-kicker">URage Games</span>
+        <h1>Block Rage</h1>
+        <p>Stack falling blocks, clear lines, and burn the floor when your rage boils over.</p>
+      </header>
+
+      <dl class="br-stats" aria-label="Game stats">
+        <div><dt>Score</dt><dd data-hud="score">0</dd></div>
+        <div><dt>Best</dt><dd data-hud="best">0</dd></div>
+        <div><dt>Lines</dt><dd data-hud="lines">0</dd></div>
+        <div><dt>Level</dt><dd data-hud="level">1</dd></div>
+      </dl>
+
+      <section class="br-card br-rage" aria-labelledby="rage-heading">
+        <div class="br-row">
+          <h2 id="rage-heading">Rage</h2>
+          <span class="br-hint">Clear lines to fill it</span>
+        </div>
+        <div class="br-meter" data-rage-meter role="meter" aria-label="Rage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="br-meter-fill" data-rage-fill></span>
+        </div>
+        <button class="br-button br-rage-button" id="rage-button" type="button" disabled>Unleash rage <kbd>R</kbd></button>
+        <p class="br-hint">A full meter burns the bottom 4 rows for bonus points.</p>
+      </section>
+
+      <section class="br-card" aria-label="Game options">
+        <div class="br-button-row">
+          <button class="br-button br-primary" id="new-game-button" type="button">New game</button>
+          <button class="br-button" id="pause-button" type="button" disabled>Pause</button>
+        </div>
+        <label class="br-toggle"><input type="checkbox" id="sound-toggle"> Sound effects</label>
+        <label class="br-toggle"><input type="checkbox" id="ghost-toggle"> Show landing preview</label>
+      </section>
+
+      <section class="br-card br-keys" aria-labelledby="keys-heading">
+        <h2 id="keys-heading">Controls</h2>
+        <ul>
+          <li><span><kbd>←</kbd><kbd>→</kbd></span> Move</li>
+          <li><span><kbd>↑</kbd><kbd>X</kbd></span> Rotate right</li>
+          <li><span><kbd>Z</kbd></span> Rotate left</li>
+          <li><span><kbd>↓</kbd></span> Soft drop</li>
+          <li><span><kbd>Space</kbd></span> Hard drop</li>
+          <li><span><kbd>C</kbd><kbd>Shift</kbd></span> Hold piece</li>
+          <li><span><kbd>R</kbd></span> Unleash rage</li>
+          <li><span><kbd>P</kbd><kbd>Esc</kbd></span> Pause</li>
+        </ul>
+        <p class="br-hint">On touch screens: tap the board to rotate, swipe to move, swipe down to drop.</p>
+      </section>
+    </aside>
+
+    <main class="br-stage">
+      <div class="br-mobile-hud" aria-hidden="true">
+        <div><span>Score</span><strong data-hud="score">0</strong></div>
+        <div><span>Lines</span><strong data-hud="lines">0</strong></div>
+        <div><span>Level</span><strong data-hud="level">1</strong></div>
+        <div class="br-mobile-rage"><span>Rage</span><span class="br-meter" data-rage-meter><span class="br-meter-fill" data-rage-fill></span></span></div>
+      </div>
+
+      <div class="br-playfield">
+        <div class="br-side">
+          <span class="br-side-label">Hold</span>
+          <canvas id="hold-canvas" class="br-preview" aria-label="Held piece"></canvas>
+        </div>
+
+        <div class="br-board-wrap">
+          <canvas id="board-canvas" class="br-board" aria-label="Block Rage playfield"></canvas>
+          <div class="br-overlay" id="overlay">
+            <div class="br-overlay-card">
+              <h2 id="overlay-title">Block Rage</h2>
+              <p id="overlay-text"></p>
+              <button class="br-button br-primary" id="overlay-button" type="button">Play</button>
+              <span class="br-overlay-hint">or press <kbd>Enter</kbd></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="br-side">
+          <span class="br-side-label">Next</span>
+          <canvas id="next-canvas" class="br-preview br-preview-next" aria-label="Next pieces"></canvas>
+        </div>
+      </div>
+
+      <div class="br-touch" id="touch-controls" aria-label="Touch controls">
+        <button type="button" data-action="hold" aria-label="Hold piece">Hold</button>
+        <button type="button" data-action="rotateCCW" aria-label="Rotate left">⟲</button>
+        <button type="button" data-action="rotateCW" aria-label="Rotate right">⟳</button>
+        <button type="button" data-action="rage" class="br-touch-rage" aria-label="Unleash rage">Rage</button>
+        <button type="button" data-action="left" aria-label="Move left">◀</button>
+        <button type="button" data-action="down" aria-label="Soft drop">▼</button>
+        <button type="button" data-action="right" aria-label="Move right">▶</button>
+        <button type="button" data-action="hardDrop" aria-label="Hard drop">Drop</button>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+  <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+  <script src="../../shared/dashboard-tool-bridge.js"></script>
+</body>
+</html>
