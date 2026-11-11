@@ -178,13 +178,31 @@
 </div>
 
 <input type="file" id="file-input" style="display:none" accept=".glb,.gltf,.obj">
-<script type="importmap">
-{
-    "imports": {
-        "three": "/vendor/three/build/three.module.js",
-        "three/addons/": "/vendor/three/examples/jsm/"
+<script>
+// URage Now serves three.js locally under /vendor/three. The public website
+// and tools.urage.net do not, so fall back to the pinned CDN build there.
+(() => {
+    const localBase = '/vendor/three/';
+    const cdnBase = 'https://cdn.jsdelivr.net/npm/three@0.170.0/';
+    let base = cdnBase;
+    try {
+        const probe = new XMLHttpRequest();
+        probe.open('HEAD', `${localBase}build/three.module.js`, false);
+        probe.send();
+        if (probe.status >= 200 && probe.status < 300) base = localBase;
+    } catch (error) {
+        base = cdnBase;
     }
-}
+    const importMap = document.createElement('script');
+    importMap.type = 'importmap';
+    importMap.textContent = JSON.stringify({
+        imports: {
+            three: `${base}build/three.module.js`,
+            'three/addons/': `${base}examples/jsm/`
+        }
+    });
+    document.currentScript.after(importMap);
+})();
 </script>
 <script type="module" src="script.js"></script>
   <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
