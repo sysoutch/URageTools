@@ -387,6 +387,15 @@
       "thumbnail": "/dev/gamejuice-generator/thumbnail.png"
     },
     {
+      "id": "dev__house-generator",
+      "category": "dev",
+      "slug": "house-generator",
+      "title": "House Generator",
+      "description": "An interactive, procedural house generator built with Three.js. Design multi-story homes, explore furnished rooms in 3D, and export screenshots, all from a single HTML file.",
+      "href": "/dev/house-generator/",
+      "thumbnail": "/shared/tool-cover.png"
+    },
+    {
       "id": "dev__html-button-generator",
       "category": "dev",
       "slug": "html-button-generator",
