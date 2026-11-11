@@ -59,12 +59,20 @@ function updateControls() {
   ui.chainBtn.classList.toggle('active', state.chainMode);
   if (state.masterGain) state.masterGain.gain.value = p.volume / 100;
   markPresets();
+  updateSoundControls();
   if (typeof updateDeck === 'function') updateDeck();
 }
 
+// A preset as a fresh pattern, with the kit that fits its style (beat-sounds.js).
+function presetPattern(name) {
+  const pattern = clone(PRESETS[name]);
+  pattern.name = name;
+  if (window.BeatSounds) BeatSounds.applyKit(pattern, BeatSounds.PRESET_KITS[name] || 'Classic');
+  return pattern;
+}
+
 function applyPreset(name) {
-  state.patterns[state.activePattern] = clone(PRESETS[name]);
-  state.patterns[state.activePattern].name = name;
+  state.patterns[state.activePattern] = presetPattern(name);
   updateControls(); renderLanes(); persistLocal();
 }
 
@@ -673,10 +681,11 @@ function renderLanes(highlightStep) {
     const laneState = p.lanes[lane.key];
     const info = document.createElement('div');
     info.className = 'lane-info';
-    info.innerHTML = '<div class="lane-head"><div class="emoji lane-icon">' + icon(lane.icon) + '</div><div class="lane-name"><strong>' + lane.label + '</strong><span>' + lane.hint + '</span></div></div><div class="lane-tools"><button class="tiny-btn ' + (laneState.mute ? 'active' : '') + '" data-action="mute">M</button><button class="tiny-btn ' + (laneState.solo ? 'active' : '') + '" data-action="solo">S</button><input type="range" min="0" max="1" step="0.01" value="' + laneState.volume + '" data-action="vol" /></div>';
+    info.innerHTML = '<div class="lane-head"><div class="emoji lane-icon">' + icon(lane.icon) + '</div><div class="lane-name"><strong>' + lane.label + '</strong>' + soundPicker(lane, p) + '</div></div><div class="lane-tools"><button class="tiny-btn ' + (laneState.mute ? 'active' : '') + '" data-action="mute">M</button><button class="tiny-btn ' + (laneState.solo ? 'active' : '') + '" data-action="solo">S</button><input type="range" min="0" max="1" step="0.01" value="' + laneState.volume + '" data-action="vol" /></div>';
     info.querySelector('[data-action="mute"]').addEventListener('click', () => { laneState.mute = !laneState.mute; if (laneState.mute) laneState.solo = false; renderLanes(); persistLocal(); });
     info.querySelector('[data-action="solo"]').addEventListener('click', () => { laneState.solo = !laneState.solo; if (laneState.solo) laneState.mute = false; renderLanes(); persistLocal(); });
     info.querySelector('[data-action="vol"]').addEventListener('input', (e) => { laneState.volume = Number(e.target.value); persistLocal(); });
+    info.querySelector('[data-action="sound"]').addEventListener('change', (e) => { setLaneSound(lane.key, e.target.value); });
     row.appendChild(info);
     for (let step = 0; step < p.steps; step++) {
       const btn = document.createElement('button');
@@ -779,6 +788,7 @@ function loadLocal() {
 }
 
 function attachEventHandlers() {
+  initSoundControls();
   ui.playBtn.addEventListener('click', startPlayback);
   ui.stopBtn.addEventListener('click', stopPlayback);
   ui.clearBtn.addEventListener('click', clearPattern);
@@ -1060,3 +1070,63 @@ function attachEventHandlers() {
 
 window.__urageToolDescribeCurrentAssets = describeCurrentAssets;
 window.__urageToolDescribeCurrentAsset = () => describeCurrentAssets()[0] || null;
+
+
+// =========================================================
+// SOUNDS - a sound per lane, kits, per-hit variation (beat-sounds.js)
+// =========================================================
+
+// A lane's sound picker, in its name block.
+function soundPicker(lane, pattern) {
+  const current = (pattern.sounds && pattern.sounds[lane.key]) || 'classic';
+  const options = BeatEngine.soundsFor(lane.key).map((s) => '<option value="' + s.id + '"' + (s.id === current ? ' selected' : '') + '>' + s.label + '</option>').join('');
+  return '<select class="lane-sound" data-action="sound" aria-label="' + lane.label + ' sound">' + options + '</select>';
+}
+
+function setLaneSound(key, id) {
+  const p = currentPattern();
+  p.sounds = Object.assign({}, p.sounds, { [key]: id });
+  updateSoundControls();
+  persistLocal();
+  previewLane(key);
+}
+
+// One hit of a lane, so a new sound can be heard straight away while stopped.
+function previewLane(key) {
+  if (state.isPlaying) return;
+  ensureAudio();
+  state.audio.resume();
+  const p = currentPattern();
+  const solo = clone(p);
+  solo.party = false;
+  BeatEngine.LANES.forEach((k) => { solo.lanes[k].steps = solo.lanes[k].steps.map(() => false); solo.lanes[k].mute = false; solo.lanes[k].solo = false; });
+  solo.lanes[key].steps[0] = true;
+  BeatEngine.playStep(state.audio, state.masterGain, solo, 0, state.audio.currentTime + 0.02);
+}
+
+function initSoundControls() {
+  ui.kitSelect = document.getElementById('kitSelect');
+  ui.variation = document.getElementById('variation');
+  ui.variationValue = document.getElementById('variationValue');
+  if (!ui.kitSelect || !window.BeatSounds) return;
+  ui.kitSelect.innerHTML = Object.keys(BeatSounds.KITS).map((name) => '<option value="' + name + '">' + name + '</option>').join('') + '<option value="" disabled>Custom mix</option>';
+  ui.kitSelect.addEventListener('change', () => {
+    BeatSounds.applyKit(currentPattern(), ui.kitSelect.value);
+    updateControls(); renderLanes(); persistLocal();
+  });
+  ui.variation.addEventListener('input', (e) => {
+    currentPattern().variation = Number(e.target.value);
+    ui.variationValue.textContent = e.target.value + '%';
+    persistLocal();
+  });
+  updateSoundControls();
+}
+
+function updateSoundControls() {
+  if (!ui.kitSelect || !window.BeatSounds) return;
+  const p = currentPattern();
+  ui.kitSelect.value = BeatSounds.kitOf(p) || '';
+  const amount = Math.round(Number(p.variation) || 0);
+  ui.variation.value = amount;
+  ui.variationValue.textContent = amount + '%';
+}

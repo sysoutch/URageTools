@@ -366,6 +366,15 @@
       <section class="panel sequencer">
         <div class="section-title">
           <h2>Sequencer</h2>
+          <div class="seq-tools">
+            <label class="seq-field"><span><i class="fas fa-drum" aria-hidden="true"></i>Kit</span>
+              <select id="kitSelect" aria-label="Kit: one sound for every lane"></select>
+            </label>
+            <label class="seq-field seq-variation" title="Every hit a little different: loudness, pitch and brightness, with accents on the beat">
+              <span><i class="fas fa-wave-square" aria-hidden="true"></i>Variation <b id="variationValue">0%</b></span>
+              <input id="variation" type="range" min="0" max="100" value="0" />
+            </label>
+          </div>
           <span class="grid-legend"><span><i class="swatch silenced"></i>Left out this bar</span><span><i class="swatch extra"></i>Added by party mode</span></span>
         </div>
 
@@ -383,6 +392,7 @@
   </div>
 
   <script src="js/beat-engine.js"></script>
+  <script src="js/beat-sounds.js"></script>
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script src="js/audio-engine.js"></script>

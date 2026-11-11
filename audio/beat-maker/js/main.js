@@ -3,7 +3,7 @@
 // =========================================================
 
 const state = {
-  patterns: { A: clone(PRESETS['Neon Bounce']), B: clone(PRESETS['Lo-Fi Night']) },
+  patterns: { A: presetPattern('Neon Bounce'), B: presetPattern('Lo-Fi Night') },
   activePattern: 'A',
   chainMode: false,
   currentStep: 0,

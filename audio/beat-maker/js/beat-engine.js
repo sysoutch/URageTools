@@ -92,40 +92,76 @@
   // The pattern's key: its own, or the engine's.
   const bassOf = (pattern) => (pattern && pattern.bass && pattern.bass.length ? pattern.bass : BASS_SCALE);
   const chordsOf = (pattern) => (pattern && pattern.chords && pattern.chords.length ? pattern.chords : CHORD_BANK);
+  // The bass note and the chord a step plays: four chords spread over the loop.
+  const bassAt = (pattern, step) => { const notes = bassOf(pattern); return notes[step % notes.length]; };
+  const chordAt = (pattern, step, steps) => { const bank = chordsOf(pattern); return bank[Math.floor((step % steps) / Math.max(1, steps / 4)) % bank.length]; };
+
+  // Per-hit feel (`pattern.variation`, 0-100): `pitch` and `tone` scale a voice's tuning and brightness a little on
+  // every hit, so a lane never machine-guns. NO_FEEL leaves a voice exactly as it always was.
+  const NO_FEEL = Object.freeze({ gain: 1, pitch: 1, tone: 1 });
+  // Lanes that play notes keep their tuning; only their brightness varies.
+  const TUNED = ['bass', 'chord'];
+  function feelOf(pattern, key, step) {
+    const amount = Math.max(0, Math.min(100, Number(pattern.variation) || 0)) / 100;
+    if (!amount) return NO_FEEL;
+    const wobble = () => Math.random() * 2 - 1;
+    // Accents: the beat a little louder, the off-sixteenths a little softer.
+    const accent = step % 4 === 0 ? 0.14 : step % 2 === 1 ? -0.1 : 0;
+    return {
+      gain: Math.max(0.35, 1 + amount * (accent + wobble() * 0.2)),
+      pitch: TUNED.includes(key) ? 1 : 1 + amount * wobble() * 0.03,
+      tone: 1 + amount * wobble() * 0.25,
+    };
+  }
+
+  // Extra sounds per lane, added by beat-sounds.js (addSounds). A pattern picks one with `sounds: { kick: '808' }`;
+  // a lane without one, or with a name this page doesn't know, plays its classic voice below.
+  const SOUNDS = Object.fromEntries(LANES.map((key) => [key, {}]));
+  function addSounds(bank) {
+    Object.entries(bank).forEach(([key, variants]) => { if (SOUNDS[key]) Object.assign(SOUNDS[key], variants); });
+  }
+  function soundOf(pattern, key) {
+    const name = pattern.sounds && pattern.sounds[key];
+    return name && SOUNDS[key][name] ? SOUNDS[key][name] : null;
+  }
+  // The sound names a lane can pick, classic first, with their labels.
+  function soundsFor(key) {
+    return [{ id: 'classic', label: 'Classic' }].concat(Object.entries(SOUNDS[key] || {}).map(([id, s]) => ({ id, label: s.label || id })));
+  }
 
   // The voices. Each plays one hit into `out` at `time`, `level` being the lane's loudness (0-1). `step`, `steps` and
-  // `pattern` say where in the loop it is; `lift` is party mode's variation (0 or 1).
+  // `pattern` say where in the loop it is; `lift` is party mode's variation (0 or 1); `feel` the hit's per-hit feel.
   const voices = {
     // A kick: a sine diving from 160 to 48 Hz, a click on top, a touch of drive.
-    kick(ctx, out, time, level) {
-      const body = osc(ctx, 'sine', 160, time, 0.42);
-      body.frequency.exponentialRampToValueAtTime(48, time + 0.11);
+    kick(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) {
+      const body = osc(ctx, 'sine', 160 * feel.pitch, time, 0.42);
+      body.frequency.exponentialRampToValueAtTime(48 * feel.pitch, time + 0.11);
       const sat = drive(ctx);
       body.connect(sat);
       sat.connect(envelope(ctx, out, time, 1.05 * level, 0.002, 0.4));
-      noiseBurst(ctx, out, time, 0.35 * level, 'white', 'highpass', 3000, 0.7, 0.012, 0.001);
+      noiseBurst(ctx, out, time, 0.35 * level, 'white', 'highpass', 3000 * feel.tone, 0.7, 0.012, 0.001);
     },
     noiseHit(ctx, out, time, level, type, highpass, length) {
       noiseBurst(ctx, out, time, Math.max(0.05, 0.55 * level), type, 'highpass', highpass, 0.7, length);
     },
     // A snare: a tuned body under a bright crack.
-    snare(ctx, out, time, level) {
-      const body = osc(ctx, 'triangle', 220, time, 0.14);
-      body.frequency.exponentialRampToValueAtTime(170, time + 0.08);
+    snare(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) {
+      const body = osc(ctx, 'triangle', 220 * feel.pitch, time, 0.14);
+      body.frequency.exponentialRampToValueAtTime(170 * feel.pitch, time + 0.08);
       body.connect(envelope(ctx, out, time, 0.45 * level, 0.002, 0.12));
-      noiseBurst(ctx, out, time, 0.5 * level, 'white', 'bandpass', 3200, 0.6, 0.2);
+      noiseBurst(ctx, out, time, 0.5 * level, 'white', 'bandpass', 3200 * feel.tone, 0.6, 0.2);
     },
     // A clap: three quick slaps and a tail, with an echo behind it.
-    clap(ctx, out, time, level) {
-      [0, 0.011, 0.023].forEach((d, i) => noiseBurst(ctx, out, time + d, (i === 2 ? 0.55 : 0.4) * level, 'white', 'bandpass', 1400, 1.1, i === 2 ? 0.22 : 0.02));
-      noiseBurst(ctx, out, time + 0.18, 0.12 * level, 'white', 'bandpass', 1600, 1.2, 0.25);
+    clap(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) {
+      [0, 0.011, 0.023].forEach((d, i) => noiseBurst(ctx, out, time + d, (i === 2 ? 0.55 : 0.4) * level, 'white', 'bandpass', 1400 * feel.tone, 1.1, i === 2 ? 0.22 : 0.02));
+      noiseBurst(ctx, out, time + 0.18, 0.12 * level, 'white', 'bandpass', 1600 * feel.tone, 1.2, 0.25);
     },
     // Closed hats: six square partials, metallic, cut short.
-    hats(ctx, out, time, level) { voices.metal(ctx, out, time, 0.2 * level, 0.055); },
+    hats(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) { voices.metal(ctx, out, time, 0.2 * level, 0.055 * feel.tone, feel.tone); },
     openhat(ctx, out, time, level) { voices.metal(ctx, out, time, 0.16 * level, 0.32); },
-    metal(ctx, out, time, level, length) {
-      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7000;
-      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 10000; bp.Q.value = 0.8;
+    metal(ctx, out, time, level, length, bright = 1) {
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7000 * bright;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 10000 * bright; bp.Q.value = 0.8;
       hp.connect(bp); bp.connect(envelope(ctx, out, time, level, 0.001, length));
       [2, 3, 4.16, 5.43, 6.79, 8.21].forEach((k) => osc(ctx, 'square', 40 * k * 10.3, time, length).connect(hp));
     },
@@ -138,7 +174,7 @@
     },
     // The bass: a sub sine and a saw through a plucked filter. It ducks under a kick on the same step (the pump), and
     // with `lift` every fourth note jumps an octave.
-    bass(ctx, out, time, level, step, steps, pattern, lift, pumped) {
+    bass(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) {
       const notes = bassOf(pattern);
       let freq = noteFreq(notes[step % notes.length]);
       if (lift && step % 4 === 2) freq *= 2;
@@ -147,19 +183,19 @@
       sub.connect(envelope(ctx, out, start, 0.32 * level, 0.006, len));
       const saw = osc(ctx, 'sawtooth', freq, start, len), lp = ctx.createBiquadFilter();
       lp.type = 'lowpass'; lp.Q.value = 6;
-      lp.frequency.setValueAtTime(1400, start);
+      lp.frequency.setValueAtTime(1400 * feel.tone, start);
       lp.frequency.exponentialRampToValueAtTime(180, start + len * 0.8);
       saw.connect(lp); lp.connect(envelope(ctx, out, start, 0.16 * level, 0.004, len));
     },
     // Chords: a stab of three detuned saws a note, through a filter that opens wider in a lifted phrase, and two
     // softer echoes after it.
-    chord(ctx, out, time, level, step, steps, pattern, lift) {
-      const bank = chordsOf(pattern), notes = bank[Math.floor((step % steps) / Math.max(1, steps / 4)) % bank.length];
+    chord(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) {
+      const notes = chordAt(pattern, step, steps);
       const spb = pattern ? 60 / pattern.bpm : 0.5;
       [[0, 1], [spb * 0.75, 0.35], [spb * 1.5, 0.15]].forEach(([d, k]) => {
         const t = time + d, lp = ctx.createBiquadFilter();
         lp.type = 'lowpass'; lp.Q.value = 2;
-        lp.frequency.setValueAtTime(lift ? 4200 : 2600, t);
+        lp.frequency.setValueAtTime((lift ? 4200 : 2600) * feel.tone, t);
         lp.frequency.exponentialRampToValueAtTime(700, t + 0.32);
         lp.connect(envelope(ctx, out, t, 0.075 * level * k, 0.006, 0.38));
         notes.forEach((note) => [-9, 0, 9].forEach((cents) => {
@@ -170,16 +206,16 @@
       });
     },
     // Perc: a conga, its pitch walking with the step.
-    perc(ctx, out, time, level, step) {
-      const o = osc(ctx, 'sine', 340 + (step % 4) * 45, time, 0.16);
-      o.frequency.exponentialRampToValueAtTime(220 + (step % 4) * 30, time + 0.06);
+    perc(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) {
+      const o = osc(ctx, 'sine', (340 + (step % 4) * 45) * feel.pitch, time, 0.16);
+      o.frequency.exponentialRampToValueAtTime((220 + (step % 4) * 30) * feel.pitch, time + 0.06);
       o.connect(envelope(ctx, out, time, 0.28 * level, 0.002, 0.15));
-      noiseBurst(ctx, out, time, 0.06 * level, 'white', 'bandpass', 2500, 1, 0.02);
+      noiseBurst(ctx, out, time, 0.06 * level, 'white', 'bandpass', 2500 * feel.tone, 1, 0.02);
     },
     // FX: a zap rising through a band filter.
-    fx(ctx, out, time, level) {
-      const o = osc(ctx, 'sawtooth', 300, time, 0.2);
-      o.frequency.exponentialRampToValueAtTime(1200, time + 0.14);
+    fx(ctx, out, time, level, step, steps, pattern, lift, pumped, feel = NO_FEEL) {
+      const o = osc(ctx, 'sawtooth', 300 * feel.pitch, time, 0.2);
+      o.frequency.exponentialRampToValueAtTime(1200 * feel.pitch, time + 0.14);
       const filter = ctx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1400; filter.Q.value = 3;
       o.connect(filter); filter.connect(envelope(ctx, out, time, 0.12 * level, 0.01, 0.18));
     },
@@ -285,7 +321,10 @@
     LANES.forEach((key) => {
       if (!pattern.lanes[key].steps[step] || !audible(pattern, key) || silent(key)) return;
       const level = laneLevel(pattern, key);
-      if (level > 0) voices[key](ctx, out, time, level, step, pattern.steps, pattern, plan.lift, key === 'bass' && kickHere);
+      if (level <= 0) return;
+      const feel = feelOf(pattern, key, step), pumped = key === 'bass' && kickHere, sound = soundOf(pattern, key);
+      if (sound) sound.play(ctx, out, time, level * feel.gain, { step, steps: pattern.steps, pattern, lift: plan.lift, pumped, feel });
+      else voices[key](ctx, out, time, level * feel.gain, step, pattern.steps, pattern, plan.lift, pumped, feel);
     });
     const drums = pattern.volume / 100, spb = secondsPerStep(pattern);
     plan.extras.forEach((hit) => voices[hit.voice](ctx, out, time, drums * hit.level, hit.steps ? hit.steps * spb : hit.arg));
@@ -330,6 +369,8 @@
     if (short.bass) out.bass = short.bass.slice();
     if (short.chords) out.chords = short.chords.map((c) => c.slice());
     if (short.party === false) out.party = false;
+    if (short.sounds) out.sounds = { ...short.sounds };
+    if (short.variation != null) out.variation = short.variation;
     return out;
   }
 
@@ -409,6 +450,9 @@
   root.BeatEngine = {
     LANES, MAX_STEPS, BASS_SCALE, CHORD_BANK, PRESETS,
     noteFreq, voices, audible, laneLevel, playStep, secondsPerStep, swingDelay, expand, section, arrangement, barAt,
+    // Sound variants (beat-sounds.js) and the building blocks they are made of.
+    addSounds, soundsFor, feelOf, NO_FEEL,
+    synth: { osc, envelope, noiseBurst, noise, drive, bassAt, chordAt, QUIET },
     // Every preset as a full pattern, steps `length` long.
     presets: (length) => Object.fromEntries(Object.entries(PRESETS).map(([name, p]) => [name, expand(p, length)])),
   };
