@@ -66,7 +66,7 @@
             <div class="stat">
               <label>Tempo</label>
               <strong><span id="bpmValue">112</span> BPM</strong>
-              <input id="bpm" type="range" min="70" max="170" value="112" />
+              <input id="bpm" type="range" min="70" max="180" value="112" />
             </div>
 
             <div class="stat">
@@ -410,10 +410,31 @@
     <!-- RIGHT CONTENT -->
     <main class="content">
 
+      <!-- The deck: play, what's on, and where party mode is in its phrase (ui.js updateDeck). -->
+      <section class="panel deck" id="deck">
+        <button class="deck-play" id="deckPlay" aria-label="Play or pause (Space)">▶</button>
+        <div class="deck-info">
+          <div class="deck-title">
+            <strong id="deckPreset">Custom beat</strong>
+            <span class="deck-ab" role="group" aria-label="Pattern">
+              <button type="button" id="deckA" class="on">A</button><button type="button" id="deckB">B</button>
+            </span>
+          </div>
+          <div class="deck-meta">
+            <span class="deck-bpm"><button type="button" id="bpmDown" aria-label="Slower">−</button><b id="deckBpm">112</b> BPM<button type="button" id="bpmUp" aria-label="Faster">+</button></span>
+            <span class="deck-section" id="deckSection">Groove</span>
+            <span class="dim">Bar <b id="deckBar">1</b> / 16</span>
+            <span class="beat-pulse" id="beatPulse" aria-hidden="true"></span>
+          </div>
+          <div class="phrase" id="phrase" aria-label="Party mode phrase: 16 bars"></div>
+        </div>
+        <button type="button" class="party-btn on" id="partyBtn" title="Party mode: fills, breakdowns, build-ups and drops over every 16 bars">🎉 Party mode</button>
+      </section>
+
       <section class="panel">
         <div class="section-title">
           <h2>Preset bank</h2>
-          <span>Instant ideas</span>
+          <span>Pick a style, then make it yours</span>
         </div>
 
         <div class="preset-grid" id="presetGrid"></div>
@@ -425,12 +446,12 @@
           <span>Click steps to toggle notes and hits</span>
         </div>
 
+        <div id="stepRuler" class="step-ruler" aria-hidden="true"></div>
         <div id="lanes"></div>
 
         <p class="footer-note">
-          Added next logical features: more lanes, per-lane volume,
-          mute/solo, A/B patterns, chain playback, save slots,
-          JSON import/export, and keyboard shortcuts.
+          Space plays and pauses, R randomises. Party mode dresses any loop up over 16 bars: a crash on each phrase,
+          a fill every fourth bar, a breakdown, a build-up with a snare roll and a rising sweep, and a drop.
         </p>
       </section>
 
@@ -438,11 +459,13 @@
 
   </div>
 
+  <script src="js/beat-engine.js"></script>
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script src="js/audio-engine.js"></script>
   <script src="js/sequencer.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/deck.js"></script>
   <script src="js/main.js"></script>
   <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
 

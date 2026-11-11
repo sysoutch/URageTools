@@ -58,10 +58,13 @@ function updateControls() {
   ui.patternLabel.textContent = state.activePattern; ui.lengthLabel.textContent = p.steps;
   ui.chainBtn.classList.toggle('active', state.chainMode);
   if (state.masterGain) state.masterGain.gain.value = p.volume / 100;
+  markPresets();
+  if (typeof updateDeck === 'function') updateDeck();
 }
 
 function applyPreset(name) {
   state.patterns[state.activePattern] = clone(PRESETS[name]);
+  state.patterns[state.activePattern].name = name;
   updateControls(); renderLanes(); persistLocal();
 }
 
@@ -494,22 +497,24 @@ function updateAutoRandomUI() {
 function duplicateAtoB() { state.patterns.B = clone(state.patterns.A); if (state.activePattern === 'B') updateControls(); renderLanes(); persistLocal(); }
 function togglePattern(name) { state.activePattern = name; updateControls(); renderLanes(); persistLocal(); }
 
+// The presets as chips: name, style and tempo; the one the pattern came from lit (A and B are on the deck now).
 function buildPresetCards() {
   ui.presetGrid.innerHTML = '';
-  [{ name:'Pattern A', info:'Select A', onClick:()=>togglePattern('A') }, { name:'Pattern B', info:'Select B', onClick:()=>togglePattern('B') }].forEach(item => {
-    const card = document.createElement('button');
-    card.className = 'preset-card';
-    card.innerHTML = '<strong>' + item.name + '</strong><small>' + item.info + '</small>';
-    card.addEventListener('click', item.onClick);
-    ui.presetGrid.appendChild(card);
-  });
   Object.entries(PRESETS).forEach(([name, preset]) => {
     const card = document.createElement('button');
     card.className = 'preset-card';
-    card.innerHTML = '<strong>' + name + '</strong><small>' + preset.bpm + ' BPM · ' + preset.steps + ' steps</small>';
+    card.dataset.preset = name;
+    const style = (typeof PRESET_STYLE !== 'undefined' && PRESET_STYLE[name]) || 'Beat';
+    card.innerHTML = '<strong>' + name + '</strong><small><em>' + style + '</em> · ' + preset.bpm + ' BPM</small>';
     card.addEventListener('click', () => applyPreset(name));
     ui.presetGrid.appendChild(card);
   });
+  markPresets();
+}
+
+function markPresets() {
+  const name = currentPattern().name;
+  ui.presetGrid.querySelectorAll('.preset-card').forEach((card) => card.classList.toggle('active', card.dataset.preset === name));
 }
 
 // =========================================================
@@ -650,13 +655,21 @@ function renderMemoryGrid() {
   });
 }
 
+// The grid, built again when the pattern changes. While it plays only the playhead moves (markPlayhead): building
+// all of it on every step (up to 256 buttons, 16 times a second) made it stutter.
 function renderLanes(highlightStep) {
   const p = currentPattern();
   const activeHighlight = typeof highlightStep === 'number' ? highlightStep : state.currentStep;
   ui.lanes.innerHTML = '';
+  ui.columns = Array.from({ length: p.steps }, () => []);
+  ui.playhead = state.isPlaying ? activeHighlight : -1;
+  if (typeof renderRuler === 'function') renderRuler();
   laneMeta.forEach((lane) => {
     const row = document.createElement('div');
     row.className = 'lane';
+    // As many columns as the pattern has steps: a fixed 16 hid the second bar of every 32-step pattern.
+    row.style.gridTemplateColumns = '190px repeat(' + p.steps + ', minmax(0, 1fr))';
+    row.classList.toggle('long', p.steps > 16);
     const laneState = p.lanes[lane.key];
     const info = document.createElement('div');
     info.className = 'lane-info';
@@ -669,6 +682,7 @@ function renderLanes(highlightStep) {
       const btn = document.createElement('button');
       btn.className = 'step ' + lane.colorClass + (laneState.steps[step] ? ' on' : '') + ((activeHighlight === step && state.isPlaying) ? ' current' : '') + (step % 4 === 0 ? ' bar' : '');
       btn.setAttribute('aria-label', lane.label + ' step ' + (step + 1));
+      ui.columns[step].push(btn);
       btn.addEventListener('click', () => {
         laneState.steps[step] = !laneState.steps[step];
         renderLanes(activeHighlight); persistLocal();
@@ -677,6 +691,14 @@ function renderLanes(highlightStep) {
     }
     ui.lanes.appendChild(row);
   });
+}
+
+// The playing step's column lit, the last one put out.
+function markPlayhead(step) {
+  if (!ui.columns) return;
+  if (ui.playhead >= 0 && ui.columns[ui.playhead]) ui.columns[ui.playhead].forEach((b) => b.classList.remove('current'));
+  if (ui.columns[step]) ui.columns[step].forEach((b) => b.classList.add('current'));
+  ui.playhead = step;
 }
 
 function exportJSON() {

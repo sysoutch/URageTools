@@ -25,6 +25,7 @@ function initApp() {
   renderLanes();
   renderMemoryGrid();
   attachEventHandlers();
+  initDeck();
 }
 
 initApp();

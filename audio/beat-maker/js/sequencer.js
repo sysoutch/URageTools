@@ -6,16 +6,15 @@ function secondsPerStep() {
   return 60 / currentPattern().bpm / 4;
 }
 
+// nextNoteTime stays on the grid; swing is added when a step is played (BeatEngine.swingDelay), so it no longer
+// slows the tempo down.
 function nextStep() {
   const pattern = currentPattern();
-  const stepLen = secondsPerStep();
-  const swingOffset = (state.currentStep % 2 === 1) ? stepLen * (currentPattern().swing / 100) * 0.35 : 0;
-  state.nextNoteTime += stepLen + swingOffset;
-  
-  // Detect loop wrap-around for auto-random
-  const wrapped = state.currentStep >= pattern.steps;
+  state.nextNoteTime += secondsPerStep();
+
+  // Detect loop wrap-around for auto-random. (It used to wrap one step late, playing 17 steps of a 16-step loop.)
   state.currentStep++;
-  if (wrapped) {
+  if (state.currentStep >= pattern.steps) {
     state.currentStep = 0;
     if (state.chainMode) state.activePattern = state.activePattern === 'A' ? 'B' : 'A';
     // Trigger auto-random loop check after wrapping
@@ -27,13 +26,15 @@ function scheduler() {
   while (state.nextNoteTime < state.audio.currentTime + state.scheduleAheadTime) {
     const drawStep = state.currentStep;
     const drawPattern = state.activePattern;
-    playStep(drawStep, state.nextNoteTime);
-    const delay = Math.max(0, (state.nextNoteTime - state.audio.currentTime) * 1000);
+    const playAt = state.nextNoteTime + BeatEngine.swingDelay(currentPattern(), drawStep);
+    playStep(drawStep, playAt);
+    const delay = Math.max(0, (playAt - state.audio.currentTime) * 1000);
     setTimeout(() => {
       ui.stepLabel.textContent = String(drawStep + 1);
       ui.patternLabel.textContent = drawPattern;
       ui.lengthLabel.textContent = String(currentPattern().steps);
-      renderLanes(drawStep);
+      if (state.activePattern === drawPattern) markPlayhead(drawStep); else renderLanes(drawStep);
+      deckStep(drawStep);
     }, delay);
     nextStep();
   }
@@ -44,6 +45,7 @@ function setPlayState(on) {
   state.isPlaying = on;
   ui.playBtn.textContent = on ? '❚❚ Pause' : '▶ Play';
   ui.led.classList.toggle('on', on);
+  updateDeck();
 }
 
 function startPlayback() {

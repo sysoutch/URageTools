@@ -491,3 +491,121 @@ textarea.export-box {
   font-family: monospace;
   font-size: 13px;
 }
+
+/* =========================================================
+   DECK (js/deck.js): play, what's on, party mode's phrase
+========================================================= */
+
+.deck {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+}
+
+.deck-play {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  font-size: 28px;
+  background: var(--accent);
+  color: #120a08;
+  border: 0;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  transition: transform .12s ease, box-shadow .3s ease;
+}
+.deck-play:hover { transform: scale(1.05); }
+.deck-play.playing { box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 22%, transparent); }
+
+.deck-info { min-width: 0; display: grid; gap: 8px; }
+.deck-title { display: flex; align-items: center; gap: 12px; }
+.deck-title strong { font-size: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deck-ab { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.deck-ab button { padding: 4px 12px; border: 0; border-radius: 0; background: transparent; color: var(--muted); font-weight: 700; }
+.deck-ab button.on { background: var(--accent); color: #120a08; }
+
+.deck-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; color: var(--muted); font-size: 13px; }
+.deck-bpm { display: inline-flex; align-items: center; gap: 6px; color: var(--text); }
+.deck-bpm b { font-size: 18px; min-width: 34px; text-align: center; }
+.deck-bpm button { width: 24px; height: 24px; padding: 0; border-radius: 8px; line-height: 1; }
+
+.deck-section {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+}
+.deck-section.breakdown { background: #2e5fa8; }
+.deck-section.build-up { background: #c9761f; animation: deck-throb .5s ease-in-out infinite alternate; }
+.deck-section.drop { background: #d93a6a; }
+.deck-section.lift { background: #7a43c8; }
+
+.beat-pulse { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.12); }
+.beat-pulse.beat { animation: deck-pulse .22s ease-out; }
+.beat-pulse.downbeat { animation: deck-pulse-big .3s ease-out; }
+
+.phrase { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 4px; }
+.phrase.off { opacity: .35; }
+.phrase-bar { height: 12px; border-radius: 4px; background: rgba(255,255,255,.1); transition: transform .15s ease, box-shadow .15s ease; }
+.phrase-bar.drop { background: #d93a6a; }
+.phrase-bar.breakdown { background: #2e5fa8; }
+.phrase-bar.build-up { background: #c9761f; }
+.phrase-bar.now { background: #fff; transform: scaleY(1.7); box-shadow: 0 0 10px 2px rgba(255,255,255,.55); outline: 2px solid #fff; }
+
+.party-btn { padding: 12px 16px; border-radius: 14px; font-weight: 700; white-space: nowrap; }
+.party-btn.on { background: linear-gradient(135deg, #ff4fa0, #ff9a3d); color: #160a10; border-color: transparent; }
+
+@keyframes deck-pulse { from { background: var(--accent); transform: scale(1.5); } to { background: rgba(255,255,255,.12); transform: scale(1); } }
+@keyframes deck-pulse-big { from { background: #fff; transform: scale(2); } to { background: rgba(255,255,255,.12); transform: scale(1); } }
+@keyframes deck-throb { from { filter: brightness(1); } to { filter: brightness(1.35); } }
+
+/* Presets as chips: more of them in view, the active one lit. */
+.preset-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.preset-card { min-height: 0; padding: 9px 12px; border-radius: 12px; }
+.preset-card small em { font-style: normal; color: var(--accent); }
+.preset-card.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 22%, var(--panel-2)); box-shadow: 0 0 0 1px var(--accent) inset; }
+
+/* The step numbers over the grid, and a bright playhead. */
+.step-ruler { display: grid; gap: 10px; margin-bottom: 4px; font-size: 11px; color: var(--muted); text-align: center; }
+.step-ruler .beat { color: var(--text); font-weight: 700; }
+.step-ruler .bar { color: var(--accent); }
+.lane.long, .step-ruler.long { gap: 4px; }
+.step.current { outline: 2px solid rgba(255,255,255,.55); box-shadow: 0 0 12px rgba(255,255,255,.25); }
+
+@media (max-width: 900px) {
+  .deck { grid-template-columns: 60px minmax(0, 1fr); }
+  .deck-play { width: 60px; height: 60px; font-size: 22px; }
+  .party-btn { grid-column: span 2; }
+}
+
+/* The dashboard's shared button style (tools/shared/css/components/tool-components.css) paints every button the same
+   dark grey with !important: that hid every hit in the grid and flattened the deck. The tool's own colours win back. */
+body[data-dashboard-theme] .step { background: var(--step-off) !important; border-color: rgba(255,255,255,.06) !important; min-height: 72px; padding: 0; }
+body[data-dashboard-theme] .step.on.kick { background: color-mix(in srgb, var(--kick) 72%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.on.snare { background: color-mix(in srgb, var(--snare) 72%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.on.hats { background: color-mix(in srgb, var(--hat) 75%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.on.clap { background: color-mix(in srgb, var(--clap) 72%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.on.bass { background: color-mix(in srgb, var(--bass) 72%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.on.chord { background: color-mix(in srgb, var(--chord) 72%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.on.perc { background: color-mix(in srgb, var(--perc) 72%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.on.fx { background: color-mix(in srgb, var(--fx) 72%, rgba(255,255,255,.08)) !important; }
+body[data-dashboard-theme] .step.current:not(.on) { background: var(--step-current) !important; }
+body[data-dashboard-theme] .step.current { border-color: rgba(255,255,255,.7) !important; }
+body[data-dashboard-theme] .step:hover:not(.on) { background: rgba(255,255,255,.12) !important; }
+
+body[data-dashboard-theme] .deck .deck-play {
+  width: 76px; height: 76px; min-height: 0; padding: 0; border-radius: 50%; font-size: 26px;
+  background: var(--accent) !important; color: #120a08 !important; border-color: transparent !important;
+}
+body[data-dashboard-theme] .deck .deck-ab button { min-height: 0; padding: 4px 12px; border-radius: 0; border: 0 !important; background: transparent !important; }
+body[data-dashboard-theme] .deck .deck-ab button.on { background: var(--accent) !important; color: #120a08 !important; }
+body[data-dashboard-theme] .deck .deck-bpm button { min-height: 0; width: 26px; height: 26px; padding: 0; border-radius: 8px; }
+body[data-dashboard-theme] .deck .party-btn.on { background: linear-gradient(135deg, #ff4fa0, #ff9a3d) !important; color: #160a10 !important; border-color: transparent !important; }
+
+body[data-dashboard-theme] .preset-card { display: block; min-height: 0; padding: 9px 12px; text-align: left; }
+.preset-card strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body[data-dashboard-theme] .preset-card.active { border-color: var(--accent) !important; background: color-mix(in srgb, var(--accent) 24%, var(--panel-2)) !important; }
