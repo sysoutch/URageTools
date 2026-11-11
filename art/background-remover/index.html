@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../../shared/dashboard-theme.js"></script>
+    <link rel="stylesheet" href="style.css">
+<title>Background Remover | URage Tools</title>
+<link rel="canonical" href="https://urage.net/tools/art/background-remover/">
+<meta name="description" content="Remove a plain background from an image in your browser: click the background colour, tune tolerance and softness, and download a transparent PNG. Nothing is uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="URage Tools">
+<meta property="og:url" content="https://urage.net/tools/art/background-remover/">
+<meta property="og:title" content="Background Remover | URage Tools">
+<meta property="og:description" content="Remove a plain background from an image in your browser: click the background colour, tune tolerance and softness, and download a transparent PNG. Nothing is uploaded.">
+<meta property="og:image" content="https://urage.net/tools/shared/tool-cover.png">
+<meta property="og:image:alt" content="Background Remover preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Background Remover | URage Tools">
+<meta name="twitter:description" content="Remove a plain background from an image in your browser: click the background colour, tune tolerance and softness, and download a transparent PNG. Nothing is uploaded.">
+<meta name="twitter:image" content="https://urage.net/tools/shared/tool-cover.png">
+</head>
+<body data-dashboard-theme="fire">
+    <div class="bgr-shell">
+        <aside class="bgr-sidebar" data-dashboard-tool-sidebar data-dashboard-tool-sidebar-label="Background Remover">
+            <header class="bgr-brand">
+                <p class="bgr-kicker">Image cut-out</p>
+                <h1>Background Remover</h1>
+                <p>Click the background to pick its colour. Everything close to it turns transparent, with a soft edge.</p>
+            </header>
+
+            <section class="bgr-card">
+                <label class="bgr-upload" for="fileInput">
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <strong>Open an image</strong>
+                    <span>or drop it on the preview, or paste with Ctrl+V</span>
+                </label>
+            </section>
+
+            <section class="bgr-card" aria-labelledby="keysTitle">
+                <div class="bgr-row">
+                    <h2 id="keysTitle">Background colours</h2>
+                    <button class="bgr-link" id="autoPickButton" type="button" disabled>From edges</button>
+                </div>
+                <div class="bgr-swatches" id="swatches">
+                    <p class="bgr-hint">Click the image to add a colour.</p>
+                </div>
+            </section>
+
+            <section class="bgr-card" aria-label="Cut-out settings">
+                <label class="bgr-slider" for="toleranceInput">
+                    <span>Tolerance <b id="toleranceValue">10%</b></span>
+                    <input type="range" id="toleranceInput" min="0" max="60" value="10">
+                    <small>How close a colour must be to count as background.</small>
+                </label>
+                <label class="bgr-slider" for="softnessInput">
+                    <span>Edge softness <b id="softnessValue">8%</b></span>
+                    <input type="range" id="softnessInput" min="0" max="40" value="8">
+                    <small>The fade between background and subject.</small>
+                </label>
+                <label class="bgr-check"><input type="checkbox" id="edgesOnlyInput" checked> Only background touching the edges</label>
+                <label class="bgr-check"><input type="checkbox" id="despillInput" checked> Remove the colour fringe</label>
+                <label class="bgr-check"><input type="checkbox" id="trimInput"> Trim empty borders on download</label>
+            </section>
+
+            <section class="bgr-card" aria-label="Export">
+                <button class="bgr-primary" id="downloadButton" type="button" disabled>Download PNG</button>
+                <button class="bgr-secondary" id="resetButton" type="button" disabled>Clear colours</button>
+                <p class="bgr-status" id="status" role="status" aria-live="polite">Open an image to start.</p>
+            </section>
+        </aside>
+
+        <main class="bgr-stage">
+            <div class="bgr-toolbar" role="toolbar" aria-label="Preview">
+                <div class="bgr-segments" role="group" aria-label="Preview background">
+                    <button type="button" class="active" data-backdrop="checker">Checker</button>
+                    <button type="button" data-backdrop="dark">Dark</button>
+                    <button type="button" data-backdrop="light">Light</button>
+                    <button type="button" data-backdrop="accent">Colour</button>
+                </div>
+                <button class="bgr-secondary" id="compareButton" type="button" disabled>Hold to see original</button>
+            </div>
+            <div class="bgr-canvas-wrap backdrop-checker" id="canvasWrap">
+                <canvas id="preview" aria-label="Preview: click to pick a background colour"></canvas>
+                <div class="bgr-empty" id="emptyState">
+                    <strong>Drop an image here</strong>
+                    <span>PNG, JPEG or WebP. It stays on your computer.</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+    <script src="../../shared/dashboard-current-output-autodescribe.js"></script>
+    <script src="../../shared/dashboard-tool-bridge.js"></script>
+</body>
+</html>

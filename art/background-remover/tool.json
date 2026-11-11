@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "art__background-remover",
+  "title": "Background Remover",
+  "description": "Remove a plain background from an image in your browser: click the background colour, tune tolerance and softness, and download a transparent PNG. Nothing is uploaded.",
+  "integration": {
+    "theme": true,
+    "currentOutput": true,
+    "toolBridge": true,
+    "dashboardSidebar": true,
+    "acceptsFiles": true,
+    "outputKind": "image",
+    "persistState": false
+  }
+}

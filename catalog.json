@@ -72,6 +72,15 @@
       "thumbnail": "/art/albedo-tools/thumbnail.png"
     },
     {
+      "id": "art__background-remover",
+      "category": "art",
+      "slug": "background-remover",
+      "title": "Background Remover",
+      "description": "Remove a plain background from an image in your browser: click the background colour, tune tolerance and softness, and download a transparent PNG. Nothing is uploaded.",
+      "href": "/art/background-remover/",
+      "thumbnail": "/shared/tool-cover.png"
+    },
+    {
       "id": "art__color-palette-extractor",
       "category": "art",
       "slug": "color-palette-extractor",
