@@ -10,13 +10,13 @@
     <link rel="apple-touch-icon" href="/images/urage-logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,800&family=Atkinson+Hyperlegible+Next:wght@400;700&family=Big+Shoulders+Stencil+Display:wght@800&family=Share+Tech+Mono&family=Montserrat:wght@400;500;600;700&family=VT323&family=Metal+Mania&family=Luckiest+Guy&family=Quicksand:wght@400;500;600;700&family=Press+Start+2P&family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.min.css">
     <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
     <style>
         :root { --surface:var(--card-bg); --text:var(--text-main); --muted:var(--text-dim); --line:var(--border); }
         * { box-sizing:border-box; }
-        body { min-height:100vh; margin:0; color:var(--text); background:radial-gradient(circle at 15% 0%,rgba(255,97,54,.22),transparent 34rem), radial-gradient(circle at 90% 15%,rgba(194,124,255,.14),transparent 28rem), var(--bg); font-family:'Space Grotesk',system-ui,sans-serif; }
+        body { min-height:100vh; margin:0; color:var(--text); background:var(--bg); font-family:var(--font-family); }
         a { color:inherit; }
         .shell { width:min(1200px,calc(100% - 2rem)); margin:auto; }
         .tools-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.25rem 0; border-bottom:1px solid var(--line); }
@@ -31,7 +31,7 @@
         .tools-page-hero { display:grid; min-height:170px; margin-top:calc(var(--nav-height) + var(--ticker-height)); place-items:center; overflow:hidden; border-bottom:1px solid var(--border); background:color-mix(in srgb,var(--card-bg) 62%,var(--bg)); text-align:center; }
         .tools-page-hero h1 { margin:0; font-size:clamp(2.1rem,6.4vw,3.6rem); line-height:1.04; }
         .tools-page-hero-search { width:min(100% - 2rem,480px); margin-top:1rem; }
-        .eyebrow { margin:0 0 .85rem; color:var(--accent); font:500 .78rem/1 'DM Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
+        .eyebrow { margin:0 0 .85rem; color:var(--accent); font:500 .78rem/1 var(--font-family); }
         h1 { margin:0; font-size:clamp(2.5rem,7vw,5rem); line-height:.98; letter-spacing:-.06em; }
         .tools-title { display:inline-flex; letter-spacing:-.075em; }
         .hero p:last-child { max-width:640px; color:var(--muted); font-size:1.15rem; line-height:1.7; }
@@ -47,32 +47,31 @@
         input { min-width:min(100%,320px); padding:.8rem 1rem; border-radius:.7rem; outline:none; }
         input:focus { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent); }
         button { cursor:pointer; font:inherit; }
-        .summary { margin:0 0 1.25rem; color:var(--muted); font:400 .82rem/1.4 'DM Mono',monospace; }
+        .summary { margin:0 0 1.25rem; color:var(--muted); font:400 .82rem/1.4 var(--font-family); }
         .tool-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(245px,1fr)); gap:1rem; padding-bottom:4rem; }
-        .tool-card { display:flex; min-height:210px; flex-direction:column; justify-content:space-between; gap:1.25rem; padding:1.2rem; border:1px solid var(--line); border-radius:1rem; background:linear-gradient(145deg,rgba(255,255,255,.04),transparent),var(--surface); text-decoration:none; transition:transform .18s ease,border-color .18s ease; }
+        .tool-card { display:flex; min-height:210px; flex-direction:column; justify-content:space-between; gap:1.25rem; padding:1.2rem; border:1px solid var(--line); border-radius:1rem; background:var(--surface); text-decoration:none; transition:transform .18s ease,border-color .18s ease; }
         .tool-card:hover { transform:translateY(-4px); border-color:var(--accent); }
         .tool-thumbnail { width:calc(100% + 2.4rem); aspect-ratio:16/9; margin:-1.2rem -1.2rem -0.1rem; border-radius:1rem 1rem 0 0; object-fit:cover; border-bottom:1px solid var(--line); }
-        .tool-category { margin:0 0 .55rem; color:var(--accent); font:500 .7rem/1 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; }
+        .tool-category { margin:0 0 .55rem; color:var(--accent); font:500 .7rem/1 var(--font-family); }
         .tool-card h2 { margin:0; font-size:1.25rem; line-height:1.1; }
         .tool-card p { margin:.75rem 0 0; color:var(--muted); font-size:.92rem; line-height:1.5; }
-        .open { font:500 .78rem/1 'DM Mono',monospace; }
+        .open { font:500 .78rem/1 var(--font-family); }
         .empty { grid-column:1/-1; padding:2rem; border:1px dashed var(--line); border-radius:1rem; color:var(--muted); text-align:center; }
         .desktop-note { margin:0 0 1.25rem; color:var(--muted); line-height:1.6; }
-        footer { padding:1.5rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
         @media (max-width:600px) { .tools-header { align-items:flex-start; flex-direction:column; } }
     </style>
 </head>
 <body>
-    <div class="ticker"><div class="ticker-content">ASSETS: Blender add-ons and Unity tools forged with rage • GAMES: Experiments, prototypes, and worlds in progress • TOOLS: Free utilities for developers and artists • COMMUNITY: Join us on Discord •</div></div>
+    <div class="ticker"><div class="ticker-content">Assets: Blender add-ons and Unity tools forged with rage • Games: experiments, prototypes and worlds in progress • Tools: free utilities for developers and artists • Community: join us on Discord •</div></div>
     <nav class="navbar">
         <div class="container">
             <a href="/" class="logo" style="text-decoration:none;color:inherit;"><span><img class="site-logo-image" src="/images/urage-logo.png" alt="URage flame logo" width="48" height="48"></span> <span class="site-brand-name"><span class="brand-metal-letter">U</span><span class="brand-fire-letters">Rage</span></span></a>
             <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false"><span class="mobile-menu-icon" aria-hidden="true"></span></button>
             <div class="nav-menu"><a href="https://urage.net/assets/" class="chip" aria-label="Assets"><i class="bi bi-box-seam" aria-hidden="true"></i><span class="nav-label">Assets</span></a><a href="https://urage.net/addons/" class="chip" aria-label="Addons"><i class="bi bi-plugin" aria-hidden="true"></i><span class="nav-label">Addons</span></a><a href="https://urage.net/3d-models/" class="chip" aria-label="3D Models"><i class="bi bi-box" aria-hidden="true"></i><span class="nav-label">3D Models</span></a><a href="https://urage.net/images/" class="chip" aria-label="Images"><i class="bi bi-image" aria-hidden="true"></i><span class="nav-label">Images</span></a><a href="https://urage.net/games/" class="chip" aria-label="Games"><i class="bi bi-controller" aria-hidden="true"></i><span class="nav-label">Games</span></a><a href="https://urage.net/tools/" class="chip active is-current" aria-current="page" aria-label="Tools"><i class="bi bi-tools" aria-hidden="true"></i><span class="nav-label">Tools</span></a><a href="https://urage.net/blog/" class="chip" aria-label="Blog"><i class="bi bi-journal-text" aria-hidden="true"></i><span class="nav-label">Blog</span></a><a href="https://urage.net/social/" class="chip" aria-label="Social"><i class="bi bi-people" aria-hidden="true"></i><span class="nav-label">Social</span></a></div>
-            <div class="nav-actions"><select id="themeSelect" class="theme-select" aria-label="Theme selector"><option value="modern-dark">Modern Dark</option><option value="modern-light">Modern Light</option><option value="mario">Mario World</option><option value="crash">Crash Bandicoot</option><option value="spyro">Spyro Realm</option><option value="cyberpunk">Cyberpunk</option><option value="gb-green">GameBoy Green</option><option value="gb-blue">GameBoy Blue</option></select></div>
+            <div class="nav-actions"><select id="themeSelect" class="theme-select" aria-label="Theme selector"><option value="modern-dark">Modern Dark</option><option value="modern-light">Modern Light</option><option value="pixel">Pixel Art</option><option value="mario">Mario World</option><option value="crash">Crash Bandicoot</option><option value="spyro">Spyro Realm</option><option value="cyberpunk">Cyberpunk</option><option value="gb-green">GameBoy Green</option><option value="gb-blue">GameBoy Blue</option></select></div>
         </div>
     </nav>
-    <header class="tools-page-hero"><h1><span class="page-hero-metal">OUR</span> <span class="page-hero-accent">TOOLS</span></h1><input id="search" class="tools-page-hero-search" type="search" placeholder="Search web tools" aria-label="Search web tools"></header>
+    <header class="tools-page-hero"><h1>Tools</h1><input id="search" class="tools-page-hero-search" type="search" placeholder="Search web tools" aria-label="Search web tools"></header>
     <div class="shell">
         <header class="tools-header">
             <a class="brand" href="/"><span class="brand-mark"><img src="./urage-logo.png" alt="URage flame logo" width="40" height="40"></span><span class="brand-word"><span class="tools-word"><span class="metal-letter">T</span><span class="fire-word">OOLS</span></span></span></a>
@@ -110,7 +109,7 @@
             </section>
         </main>
     </div>
-    <footer><div class="container"><div class="footer-grid"><div><div class="logo" style="margin-bottom:1.5rem;"><span><img class="site-logo-image" src="/images/urage-logo.png" alt="URage flame logo" width="128" height="128" loading="lazy"></span> <span class="site-brand-name"><span class="brand-metal-letter">U</span><span class="brand-fire-letters">Rage</span></span></div><p style="color:var(--text-dim);">Assets, games, and tools for developers and digital artists.</p></div><div class="footer-links"><h3>Explore</h3><a href="/studio/">URage Now</a><a href="/assets/">Assets</a><a href="/3d-models/">3D Models</a><a href="/images/">Images</a><a href="/games/">Games</a><a href="/tools/">Tools</a></div><div class="footer-links"><h3>Community</h3><a href="https://urage.net/discord/" target="_blank" rel="noopener noreferrer">Discord</a><a href="https://github.com/sysoutch/URageTools" target="_blank" rel="noopener noreferrer">GitHub</a></div></div><div style="margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);color:var(--text-dim);font-size:.8rem;display:flex;justify-content:space-between;"><p>© 2026 URage Project. All rights reserved.</p><p>sysout.ch</p></div></div></footer>
+    <footer><div class="container"><div class="footer-grid"><div><div class="logo" style="margin-bottom:1.5rem;"><span><img class="site-logo-image" src="/images/urage-logo.png" alt="URage flame logo" width="128" height="128" loading="lazy"></span> <span class="site-brand-name"><span class="brand-metal-letter">U</span><span class="brand-fire-letters">Rage</span></span></div><p>Assets, games, and tools for developers and digital artists.</p></div><div class="footer-links"><h3>Explore</h3><a href="/studio/">URage Now</a><a href="/assets/">Assets</a><a href="/3d-models/">3D Models</a><a href="/images/">Images</a><a href="/games/">Games</a><a href="/tools/">Tools</a></div><div class="footer-links"><h3>Community</h3><a href="https://urage.net/discord/" target="_blank" rel="noopener noreferrer">Discord</a><a href="https://github.com/sysoutch/URageTools" target="_blank" rel="noopener noreferrer">GitHub</a></div></div><div style="margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);color:var(--text-dim);font-size:.8rem;display:flex;justify-content:space-between;"><p>© 2026 URage Project. All rights reserved.</p><p>sysout.ch</p></div></div></footer>
     <script>
         const savedTheme = localStorage.getItem('theme') || 'modern-dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
